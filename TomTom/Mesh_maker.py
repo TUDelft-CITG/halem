@@ -186,8 +186,11 @@ class flow_2D_FM2():
 
 class Graph_flow_model():
     def __init__(self, name_textfile_flow, dx_min, blend, nl, number_of_neighbor_layers, vship, Load_flow, WD_min):
+        'Load Flow'
         self.flow = Load_flow(name_textfile_flow)
+        print('1/4')
 
+        'Calculate nodes and flow conditions in nodes'
         self.nodes_index, self.LS = Get_nodes(self.flow, nl, dx_min, blend)
         self.nodes = self.flow.nodes[self.nodes_index]
 
@@ -197,25 +200,21 @@ class Graph_flow_model():
         self.v = v[self.nodes_index]
         WD = np.asarray(np.transpose(self.flow.WD))
         self.WD = WD[self.nodes_index]
-
         self.t = self.flow.t
         self.mask = np.full(self.u.shape, False)
-
         self.mask[self.WD < WD_min] = True
-
-        self.tria = Delaunay(self.nodes)
-        self.graph = Graph()
-
+        print('2/4')
 
         'Calculate edges'
+        self.tria = Delaunay(self.nodes)
+        self.graph = Graph()
         for from_node in range(len(self.nodes)):       
             to_nodes = find_neighbors2(from_node, self.tria, number_of_neighbor_layers)
             for to_node in to_nodes:
                 L = haversine(self.nodes[from_node], self.nodes[int(to_node)])
                 self.graph.add_edge(from_node, int(to_node), L)
+        print('3/4')
 
-
-        print('1/3')
         'Calculate Weights'
         self.weight_space = []
         self.weight_time = []
@@ -230,16 +229,16 @@ class Graph_flow_model():
                 
                 W = Functions.costfunction_timeseries(edge, vs, self.nodes, self.u, self.v, self.mask) + self.t
                 W = FIFO_maker(W) - self.t
-                graph_time.add_edge(from_node, to_node, W)
-                
+                                
                 L = Functions.costfunction_spaceseries(edge, vs, self.nodes, self.u, self.v, self.mask)
                 L = L + np.arange(len(L))* (1/len(L))
                 L = FIFO_maker(L) - np.arange(len(L))* (1/len(L))
+
+                graph_time.add_edge(from_node, to_node, W)
                 graph_space.add_edge(from_node, to_node, L)
             
             self.weight_space.append(graph_space)
             self.weight_time.append(graph_time)
             print(QQ, len(vship))
             QQ = QQ +1
-
-        print("3/3")       
+        print("4/4")       

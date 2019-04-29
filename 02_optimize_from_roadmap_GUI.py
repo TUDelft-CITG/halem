@@ -14,7 +14,6 @@ from matplotlib import gridspec as gridspec
 plt.style.use('ggplot')
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-
 import pickle
 from scipy.interpolate import griddata
 from cartopy import config
@@ -22,6 +21,16 @@ import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 import ipywidgets as widgets
 from tkinter import *
+
+name_textfile_load = 'D:/DCSM-FM/A06_pieter/Roadmap_Neightbourlayers=1,Vship=0,WD_min=2'
+with open(name_textfile_load, 'rb') as input:
+    Roadmap = pickle.load(input)
+
+x_r = np.arange(3,7, 0.01)
+y_r = np.arange(52,55, 0.01)
+y_r, x_r = np.meshgrid(y_r,x_r)
+LS_r = griddata((Roadmap.flow.nodes[:,1], Roadmap.flow.nodes[:,0]), Roadmap.flow.WD[73], (x_r, y_r), method= 'linear')
+
 
 class LineBuilder:
     def __init__(self, line):
@@ -51,7 +60,7 @@ class mclass:
         self.text2.insert(END, 't0 = ')
         self.text2.pack()
         self.t0 = Entry()
-        self.t0.insert(END, '01/07/2013 16:00:00')
+        self.t0.insert(END, '01/07/2013 04:00:00')
         self.t0.pack()
 
         self.button1 = Button (window, text="Select Start & End", command=self.plot)
@@ -66,7 +75,6 @@ class mclass:
         ax.gridlines(color = 'grey', zorder = 3)
         ax.add_feature(cfeature.NaturalEarthFeature('physical', 'land', '10m', edgecolor='face', facecolor='palegoldenrod'))
 
-
         line, = plt.plot([], [], 'b')
         points, = plt.plot([],[], 'ro')
         self.linebuilder = LineBuilder(line)
@@ -75,14 +83,9 @@ class mclass:
         ax.set_extent([4.5, 6, 52.8, 53.8])
         plt.show()
     def calc(self):
-
         t0 = self.t0.get()
         vship = float(self.vship.get())
 
-        name_textfile_load = 'D:/DCSM-FM/A06_pieter/Roadmap_Neightbourlayers=1,Vship=0,WD_min=1.4'
-        with open(name_textfile_load, 'rb') as input:
-            Roadmap = pickle.load(input)
-        
         vv= np.abs(Roadmap.vship - vship)
         arg_vship = int(np.argwhere(vv == vv.min()))
         print("V_ship = ", Roadmap.vship[arg_vship])
@@ -103,17 +106,10 @@ class mclass:
         route_time = Calc_path.Has_route(start, stop, Roadmap, t0, graph_functions_time)
         route_space = Calc_path.Has_route(start, stop, Roadmap, t0, graph_functions_space)
 
-        x_r = np.arange(3,7, 0.01)
-        y_r = np.arange(52,55, 0.01)
-        y_r, x_r = np.meshgrid(y_r,x_r)
-
-        LS_r = griddata((Roadmap.flow.nodes[:,1], Roadmap.flow.nodes[:,0]), Roadmap.flow.WD[73], (x_r, y_r), method= 'linear')
-
-
-        fig = plt.figure(figsize=(8, 8))
+        fig = plt.figure(figsize=(8, 12))
         gs = gridspec.GridSpec(2, 2)
         ax = plt.subplot(gs[0, 0:2], projection=ccrs.Mercator())
-        cval = np.arange(1.5,20, 0.5)
+        cval = np.arange(2,30, 0.5)
         plt.contourf(x_r,y_r, LS_r, cval, zorder = 1, transform=ccrs.PlateCarree())
         cbar = plt.colorbar()
         cbar.set_label('Depth [m]')
