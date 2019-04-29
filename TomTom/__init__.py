@@ -45,3 +45,19 @@ def plot_timeseries(route, Roadmap):
     plt.ylabel('time [s]')
 
     plt.ylim(route.route[0,1]-2000,route.route[-1,1]+2000)
+
+def RODFF_time(start, stop, t0, vship, Roadmap):
+        vv= np.abs(Roadmap.vship - vship)
+        arg_vship = int(np.argwhere(vv == vv.min()))
+
+        class graph_functions_time:
+                function_type = "time optimalisation"
+                weights = Roadmap.weight_time[arg_vship].weights
+                time = Roadmap.weight_time[arg_vship].weights
+               
+        route = Calc_path.Has_route(start, stop, Roadmap, t0, graph_functions_time)
+
+        path = Roadmap.nodes[list(map(int, route.route[:,0]))]
+        time = route.route[:,1]
+
+        return path, time
