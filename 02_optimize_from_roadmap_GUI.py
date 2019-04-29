@@ -1,9 +1,6 @@
-from collections import defaultdict
 import math
 import numpy as np
 from numpy import ma
-import datetime, time
-from datetime import datetime
 import netCDF4
 from netCDF4 import Dataset, num2date
 
@@ -20,7 +17,6 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 import pickle
 from scipy.interpolate import griddata
-import os
 from cartopy import config
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
@@ -46,21 +42,21 @@ class LineBuilder:
 
 class mclass:
     def __init__(self,  window):
-        self.text1 = Text(height=1, width=10)
+        self.text1 = Text(height=1)
         self.text1.insert(END, 'vship = ')
         self.text1.pack()
         self.vship = Entry()
         self.vship.pack()
-        self.text2 = Text(height=1, width=10)
+        self.text2 = Text(height=1)
         self.text2.insert(END, 't0 = ')
         self.text2.pack()
         self.t0 = Entry()
         self.t0.insert(END, '01/07/2013 16:00:00')
         self.t0.pack()
 
-        self.button1 = Button (window, text="Start", command=self.plot)
+        self.button1 = Button (window, text="Select Start & End", command=self.plot)
         self.button1.pack()
-        self.button2 = Button (window, text="Calc", command=self.calc)
+        self.button2 = Button (window, text="Calculate Optimal Route", command=self.calc)
         self.button2.pack()
     
     def plot(self):
