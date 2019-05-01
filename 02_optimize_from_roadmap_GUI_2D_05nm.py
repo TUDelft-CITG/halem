@@ -22,7 +22,7 @@ import cartopy.feature as cfeature
 import ipywidgets as widgets
 from tkinter import *
 
-name_textfile_load = 'D:/DCSM-FM/A06_pieter/Roadmap_Neightbourlayers=1,Vship=0,WD_min=2'
+name_textfile_load = 'D:/DCSM-FM/A06_pieter/Progres1_HAM317'
 with open(name_textfile_load, 'rb') as input:
     Roadmap = pickle.load(input)
 

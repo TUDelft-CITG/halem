@@ -47,8 +47,11 @@ def plot_timeseries(route, Roadmap):
     plt.ylim(route.route[0,1]-2000,route.route[-1,1]+2000)
 
 def RODFF_time(start, stop, t0, vship, Roadmap):
+        start = start[::-1]
+        stop = stop[::-1]
+
         vv= np.abs(Roadmap.vship - vship)
-        arg_vship = int(np.argwhere(vv == vv.min()))
+        arg_vship = int(np.argwhere(vv == vv.min())[0])
 
         class graph_functions_time:
                 function_type = "time optimalisation"
@@ -57,7 +60,19 @@ def RODFF_time(start, stop, t0, vship, Roadmap):
                
         route = Calc_path.Has_route(start, stop, Roadmap, t0, graph_functions_time)
 
-        path = Roadmap.nodes[list(map(int, route.route[:,0]))]
+        path2 = Roadmap.nodes[list(map(int, route.route[:,0]))]
+        path = np.zeros((path2.shape))
+        path[:,0] = path2[:,1]
+        path[:,1] = path2[:,0]
+
         time = route.route[:,1]
 
-        return path, time
+        dist = []
+        D = 0
+        for i in range(route.route[:,0].shape[0] -1 ):
+                D =D + Mesh_maker.haversine((route.y_route[i], route.x_route[i]), (route.y_route[i +1], route.x_route[i+1]))
+                dist.append(D)
+        dist = np.array(dist)
+
+
+        return path, time, dist

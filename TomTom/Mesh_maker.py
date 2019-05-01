@@ -97,6 +97,9 @@ def Length_scale(node, flow, blend, nl):
     nb = find_neighbors(node, flow.tria)
     mag  = (flow.u[:,node]**2 +  flow.v[:,node]**2 )**0.5
     mag = mag.max()
+
+    if len(nb) == 0 :
+        return 1
     
     dvdx = []
     dudy = []
@@ -122,7 +125,14 @@ def Get_nodes(flow, nl, dx_min, blend):
     nodes = flow.nodes
     new_nodes =[0]
     LS = []
+    q = int(0)
+    qq = 1
     for i in range(len(nodes)):
+        q = q + int(1)
+        if q == 1000:
+            print(qq/ len(nodes)/1000, '%')
+            q = int(0)
+            qq +=1
         LS_node = Length_scale(i, flow, blend, nl)  
         LS.append(LS_node)
         closest_nod = closest_node(i, new_nodes, nodes)
@@ -142,7 +152,7 @@ def Get_nodes(flow, nl, dx_min, blend):
     
     return new_nodes, LS
 
-class flow_2D_FM():
+class flow_2D_FM_05nm():
     def __init__(self, name):
         nc = Dataset(name)
 
@@ -184,23 +194,198 @@ class flow_2D_FM2():
         self.nodes[:,1] = x
         self.tria = Delaunay(self.nodes)
 
+class flow_2D_FM_100m_tot():
+    def __init__(self, name):      
+        name = 'D:/DCSM-FM_100m/A06_pieter/DCSM-FM_100m_0008_map.nc'
+        b = -35
+        
+        nc = Dataset(name)
+        x = nc.variables['mesh2d_face_x'][:b]
+        y = nc.variables['mesh2d_face_y'][:b]
+        WD1 = nc.variables['mesh2d_waterdepth'][:,:b]
+        u1 = nc.variables['mesh2d_ucx'][:,:b]
+        v1 = nc.variables['mesh2d_ucy'][:,:b]
+        nodes1 = np.zeros((len(x),2))
+        nodes1[:,0] = y
+        nodes1[:,1] = x
+
+        print('1/7')
+
+        name = 'D:/DCSM-FM_100m/A06_pieter/DCSM-FM_100m_0009_map.nc'
+        a = 13
+        b = -101
+        
+        nc = Dataset(name)
+        x = nc.variables['mesh2d_face_x'][a:b]
+        y = nc.variables['mesh2d_face_y'][a:b]
+        WD2 = nc.variables['mesh2d_waterdepth'][:,a:b]
+        u2 = nc.variables['mesh2d_ucx'][:,a:b]
+        v2 = nc.variables['mesh2d_ucy'][:,a:b]
+        nodes2 = np.zeros((len(x),2))
+        nodes2[:,0] = y
+        nodes2[:,1] = x
+
+        nodes1 = np.concatenate((nodes1, nodes2, ), axis = 0)
+        WD1 = np.concatenate((WD1, WD2, ), axis = 1)
+        u1 = np.concatenate((u1, u2,), axis = 1)
+        v1 = np.concatenate((v1, v2, ), axis = 1)
+
+        print('2/7')
+
+        name = 'D:/DCSM-FM_100m/A06_pieter/DCSM-FM_100m_0018_map.nc'
+        b = -173
+        
+        nc = Dataset(name)
+        x = nc.variables['mesh2d_face_x'][:b]
+        y = nc.variables['mesh2d_face_y'][:b]
+        WD2 = nc.variables['mesh2d_waterdepth'][:,:b]
+        u2 = nc.variables['mesh2d_ucx'][:,:b]
+        v2 = nc.variables['mesh2d_ucy'][:,:b]
+        nodes2 = np.zeros((len(x),2))
+        nodes2[:,0] = y
+        nodes2[:,1] = x
+
+        nodes1 = np.concatenate((nodes1, nodes2, ), axis = 0)
+        WD1 = np.concatenate((WD1, WD2, ), axis = 1)
+        u1 = np.concatenate((u1, u2,), axis = 1)
+        v1 = np.concatenate((v1, v2, ), axis = 1)
+
+        print('3/7')
+
+        name = 'D:/DCSM-FM_100m/A06_pieter/DCSM-FM_100m_0013_map.nc'
+        a = -20000
+        b = -200
+        
+        nc = Dataset(name)
+        x = nc.variables['mesh2d_face_x'][a:b]
+        y = nc.variables['mesh2d_face_y'][a:b]
+        WD2 = nc.variables['mesh2d_waterdepth'][:,a:b]
+        u2 = nc.variables['mesh2d_ucx'][:,a:b]
+        v2 = nc.variables['mesh2d_ucy'][:,a:b]
+        nodes2 = np.zeros((len(x),2))
+        nodes2[:,0] = y
+        nodes2[:,1] = x
+
+        nodes1 = np.concatenate((nodes1, nodes2, ), axis = 0)
+        WD1 = np.concatenate((WD1, WD2, ), axis = 1)
+        u1 = np.concatenate((u1, u2,), axis = 1)
+        v1 = np.concatenate((v1, v2, ), axis = 1)
+
+        print('4/7')
+
+        name = 'D:/DCSM-FM_100m/A06_pieter/DCSM-FM_100m_0007_map.nc'
+        b = -300
+        
+        nc = Dataset(name)
+        x = nc.variables['mesh2d_face_x'][:b]
+        y = nc.variables['mesh2d_face_y'][:b]
+        WD2 = nc.variables['mesh2d_waterdepth'][:,:b]
+        u2 = nc.variables['mesh2d_ucx'][:,:b]
+        v2 = nc.variables['mesh2d_ucy'][:,:b]
+        nodes2 = np.zeros((len(x),2))
+        nodes2[:,0] = y
+        nodes2[:,1] = x
+
+        nodes1 = np.concatenate((nodes1, nodes2, ), axis = 0)
+        WD1 = np.concatenate((WD1, WD2, ), axis = 1)
+        u1 = np.concatenate((u1, u2,), axis = 1)
+        v1 = np.concatenate((v1, v2, ), axis = 1)
+
+        print('5/7')
+
+        name = 'D:/DCSM-FM_100m/A06_pieter/DCSM-FM_100m_0019_map.nc'
+        b = -12533
+        
+        nc = Dataset(name)
+        x = nc.variables['mesh2d_face_x'][:b]
+        y = nc.variables['mesh2d_face_y'][:b]
+        WD2 = nc.variables['mesh2d_waterdepth'][:,:b]
+        u2 = nc.variables['mesh2d_ucx'][:,:b]
+        v2 = nc.variables['mesh2d_ucy'][:,:b]
+        nodes2 = np.zeros((len(x),2))
+        nodes2[:,0] = y
+        nodes2[:,1] = x
+
+        nodes1 = np.concatenate((nodes1, nodes2, ), axis = 0)
+        WD1 = np.concatenate((WD1, WD2, ), axis = 1)
+        u1 = np.concatenate((u1, u2,), axis = 1)
+        v1 = np.concatenate((v1, v2, ), axis = 1)
+
+        print('6/7')
+        
+        name = 'D:/DCSM-FM_100m/A06_pieter/DCSM-FM_100m_0006_map.nc'
+        a = -19000 + 149 
+        b = -5649
+
+        nc = Dataset(name)
+        x = nc.variables['mesh2d_face_x'][a:b]
+        y = nc.variables['mesh2d_face_y'][a:b]
+        WD2 = nc.variables['mesh2d_waterdepth'][:,a:b]
+        u2 = nc.variables['mesh2d_ucx'][:,a:b]
+        v2 = nc.variables['mesh2d_ucy'][:,0:b]
+        nodes2 = np.zeros((len(x),2))
+        nodes2[:,0] = y
+        nodes2[:,1] = x
+        
+        t = nc.variables['time'][:]
+        t0 = "22/12/2012 00:00:00"
+        d = datetime.strptime(t0, "%d/%m/%Y %H:%M:%S")
+        t0 = d.timestamp()
+        self.t = t+t0
+
+        nodes = np.concatenate((nodes1, nodes2, ), axis = 0)
+        WD = np.concatenate((WD1, WD2, ), axis = 1)
+        u = np.concatenate((u1, u2,), axis = 1)
+        v = np.concatenate((v1, v2, ), axis = 1)
+
+        print('7/7')
+        
+        idx = np.unique(nodes, axis = 0, return_index=True)[1]
+        
+        self.nodes = nodes[idx]
+        self.WD = WD[:,idx]
+        self.u = u[:,idx]
+        self.v = v[:,idx]
+        
+        self.tria = Delaunay(self.nodes)
+
+class flow_3D_FM_05nm():
+    def __init__(self, name):
+        nc = Dataset(name)
+
+        t = nc.variables['time'][:]
+        t0 = "22/12/2012 00:00:00"
+        d = datetime.strptime(t0, "%d/%m/%Y %H:%M:%S")
+        t0 = d.timestamp()
+        self.t = t+t0
+        
+        x = nc.variables['mesh2d_face_x'][:8000]
+        y = nc.variables['mesh2d_face_y'][:8000]
+
+        self.nodes = np.zeros((len(x),2))
+        self.nodes[:,0] = y
+        self.nodes[:,1] = x
+
+        self.WD = nc.variables['mesh2d_waterdepth'][:,:8000]
+        self.u = nc.variables['mesh2d_ucx'][:,:8000, 0]
+        self.v = nc.variables['mesh2d_ucy'][:,:8000, 0]
+
+        self.tria = Delaunay(self.nodes)
+
 class Graph_flow_model():
     def __init__(self, name_textfile_flow, dx_min, blend, nl, number_of_neighbor_layers, vship, Load_flow, WD_min):
         'Load Flow'
-        self.flow = Load_flow(name_textfile_flow)
+        flow = Load_flow(name_textfile_flow)
         print('1/4')
 
         'Calculate nodes and flow conditions in nodes'
-        self.nodes_index, self.LS = Get_nodes(self.flow, nl, dx_min, blend)
-        self.nodes = self.flow.nodes[self.nodes_index]
+        self.nodes_index, self.LS = Get_nodes(flow, nl, dx_min, blend)
+        self.nodes = flow.nodes[self.nodes_index]
 
-        u = np.asarray(np.transpose(self.flow.u))
-        self.u = u[self.nodes_index]
-        v = np.asarray(np.transpose(self.flow.v))
-        self.v = v[self.nodes_index]
-        WD = np.asarray(np.transpose(self.flow.WD))
-        self.WD = WD[self.nodes_index]
-        self.t = self.flow.t
+        self.u = np.asarray(np.transpose(flow.u))[self.nodes_index]
+        self.v = np.asarray(np.transpose(flow.v))[self.nodes_index]
+        self.WD = np.asarray(np.transpose(flow.WD))[self.nodes_index]
+        self.t = flow.t
         self.mask = np.full(self.u.shape, False)
         self.mask[self.WD < WD_min] = True
         print('2/4')
