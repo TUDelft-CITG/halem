@@ -133,7 +133,7 @@ def Get_nodes(flow, nl, dx_min, blend):
         q = q + int(1)
         if q == 1000:
             clear_output(wait= True)
-            print(qq/ len(nodes)*100000, '%')
+            print(np.round(qq/ len(nodes)*100000,3), '%')
             q = int(0)
             qq +=1
         LS_node = Length_scale(i, flow, blend, nl)  
@@ -381,8 +381,10 @@ class flow_3D_FM_05nm():
 class flow_NOOS():
     def __init__(self, name):
         nc = Dataset(name)
-        x_domain = (250,380)
-        y_domain = (530,760)
+        # x_domain = (250,380)
+        # y_domain = (530,760)
+        x_domain = (300,390)
+        y_domain = (650,760)
 
         v = nc.variables['VELV'][:,:,:]
         u = nc.variables['VELU'][:,:,:]
@@ -595,7 +597,7 @@ class Graph_flow_model():
             self.weight_space.append(graph_space)
             self.weight_time.append(graph_time)
             clear_output(wait= True)
-            print('3/4',QQ / len(vship)*100)
+            print('3/4',QQ / len(vship)*100,'%')
             QQ = QQ +1
         clear_output(wait= True)
         print("4/4")       
