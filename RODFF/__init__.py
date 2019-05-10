@@ -52,7 +52,6 @@ def RODFF_time(start, stop, t0, vship, Roadmap):
 
         vv= np.abs(Roadmap.vship - vship)
         arg_vship = int(np.argwhere(vv == vv.min())[0])
-
         class graph_functions_time:
                 function_type = "time optimalisation"
                 weights = Roadmap.weight_time[arg_vship].weights
