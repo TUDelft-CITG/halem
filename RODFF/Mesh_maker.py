@@ -381,10 +381,10 @@ class flow_3D_FM_05nm():
 class flow_NOOS():
     def __init__(self, name):
         nc = Dataset(name)
-        # x_domain = (250,380)
-        # y_domain = (530,760)
-        x_domain = (300,390)
-        y_domain = (650,760)
+        x_domain = (250,380)                      # general-waddden sea
+        y_domain = (530,760)
+        # x_domain = (300,390)                      # Texel-case
+        # y_domain = (650,760)
 
         v = nc.variables['VELV'][:,:,:]
         u = nc.variables['VELU'][:,:,:]
@@ -563,12 +563,12 @@ class Graph_flow_model():
 
         'Calculate edges'
         self.tria = Delaunay(self.nodes)
-        self.graph = Graph()
+        graph = Graph()
         for from_node in range(len(self.nodes)):       
             to_nodes = find_neighbors2(from_node, self.tria, number_of_neighbor_layers)
             for to_node in to_nodes:
                 L = haversine(self.nodes[from_node], self.nodes[int(to_node)])
-                self.graph.add_edge(from_node, int(to_node), L)
+                graph.add_edge(from_node, int(to_node), L)
         clear_output(wait= True)
         print('3/4')
 
@@ -576,28 +576,30 @@ class Graph_flow_model():
         self.weight_space = []
         self.weight_time = []
         self.vship = vship
-        QQ = 0
-        for vs in vship:
-            graph_time = Graph()
-            graph_space = Graph()
-            for edge in self.graph.weights:
-                from_node = edge[0]
-                to_node = edge[1]
-                
-                W = Functions.costfunction_timeseries(edge, vs, self.nodes, self.u, self.v, self.mask) + self.t
-                W = FIFO_maker(W) - self.t
-                                
-                L = Functions.costfunction_spaceseries(edge, vs, self.nodes, self.u, self.v, self.mask)
-                L = L + np.arange(len(L))* (1/len(L))
-                L = FIFO_maker(L) - np.arange(len(L))* (1/len(L))
+        graph_time = Graph()
+        graph_space = Graph()
+        self.graph = Graph()
 
-                graph_time.add_edge(from_node, to_node, W)
-                graph_space.add_edge(from_node, to_node, L)
-            
-            self.weight_space.append(graph_space)
-            self.weight_time.append(graph_time)
-            clear_output(wait= True)
-            print('3/4',QQ / len(vship)*100,'%')
-            QQ = QQ +1
+        for edge in graph.weights:
+            for i in range(len(vship)):
+                    for j in range(len(vship)):
+                        from_node = edge[0]
+                        to_node = edge[1]
+                        W = Functions.costfunction_timeseries(edge, vship[j], self.nodes, self.u, self.v, self.mask) + self.t
+                        W = FIFO_maker(W) - self.t
+                                        
+                        L = Functions.costfunction_spaceseries(edge, vship[j], self.nodes, self.u, self.v, self.mask)
+                        L = L + np.arange(len(L))* (1/len(L))
+                        L = FIFO_maker(L) - np.arange(len(L))* (1/len(L))
+
+                        dist = haversine(self.nodes[from_node], self.nodes[int(to_node)])
+                        graph_time.add_edge((from_node, vship[i]), (to_node, vship[j]), W)
+                        graph_space.add_edge((from_node, vship[i]), (to_node, vship[j]), L)
+                        self.graph.add_edge((from_node, vship[i]), (to_node, vship[j]), dist)
+                        #print((from_node, vship[i]), (to_node, vship[j]), W[0])
+        
+        self.graph_time = graph_time
+        self.graph_space = graph_space
+
         clear_output(wait= True)
         print("4/4")       
