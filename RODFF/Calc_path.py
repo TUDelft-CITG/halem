@@ -31,7 +31,7 @@ def dijsktra(graph, initial, end, t0, graph_functions):
     current_node = initial
     visited = set()
     Graph_data = graph
-    graph = graph.graph
+    graph = graph_functions.graph
     
     while current_node != end:
         visited.add(current_node)
@@ -77,10 +77,8 @@ class Has_route:
         start = find_startstop(start, graph.nodes)
         stop =  find_startstop(stop, graph.nodes)
 
-        self.start = (start, graph.vship[0])
-        self.stop = (stop, graph.vship[-1])
-
-        print(t0)
+        self.start = (start, graph_functions.vship[0])
+        self.stop = (stop, graph_functions.vship[-1])
 
         self.route= np.array(dijsktra(graph, self.start, self.stop, t0, graph_functions))
 

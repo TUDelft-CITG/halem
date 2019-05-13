@@ -7,7 +7,6 @@ import numpy as np
 from numpy import ma
 import pickle
 
-
 import os
 import matplotlib.pyplot as plt
 from matplotlib import pyplot as plt
@@ -46,15 +45,21 @@ def plot_timeseries(route, Roadmap):
 
     plt.ylim(route.route[0,1]-2000,route.route[-1,1]+2000)
 
-def RODFF_time(start, stop, t0, Roadmap):
+def RODFF_time(start, stop, t0, Roadmap, vmax):
         start = start[::-1]
         stop = stop[::-1]
 
+        vvmax = Roadmap.vship[:,-1]
+
+        vv= np.abs(vvmax - vmax)
+        arg_vship = int(np.argwhere(vv == vv.min())[0])
         class graph_functions_time:
                 function_type = "time optimalisation"
-                weights = Roadmap.graph_time.weights
-                time = Roadmap.graph_time.weights
-               
+                weights = Roadmap.weight_time[arg_vship].weights
+                time = Roadmap.weight_time[arg_vship].weights
+                vship = Roadmap.vship[arg_vship]
+                graph = Roadmap.graphs[arg_vship]
+
         route = Calc_path.Has_route(start, stop, Roadmap, t0, graph_functions_time)
 
         path2 = np.array(route.route[:,0], dtype=int)
@@ -70,7 +75,5 @@ def RODFF_time(start, stop, t0, Roadmap):
                 D =D + Mesh_maker.haversine((route.y_route[i], route.x_route[i]), (route.y_route[i +1], route.x_route[i+1]))
                 dist.append(D)
         dist = np.array(dist)
-
-
         return path, time, dist
 
