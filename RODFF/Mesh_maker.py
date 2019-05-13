@@ -188,6 +188,7 @@ class Graph_flow_model():
         'Calculate Weights'
         self.weight_space = []
         self.weight_time = []
+        self.weight_cost = []
         self.graphs = []
         self.vship = vship
 
@@ -221,11 +222,12 @@ class Graph_flow_model():
             
             self.weight_space.append(graph_space)
             self.weight_time.append(graph_time)
+            self.weight_cost.append(graph_cost)
             self.graphs.append(graph)
             
         clear_output(wait= True)
         print("4/4")       
-        
+
 class Graph_flow_model_with_indices():
     def __init__(self, name_textfile_flow, nodes_index, number_of_neighbor_layers, vship, Load_flow, WD_min, compute_cost):
         'Load Flow'
@@ -257,14 +259,15 @@ class Graph_flow_model_with_indices():
         print('3/4')
 
         'Calculate Weights'
-        self.weight_space = []
+        #self.weight_space = []
         self.weight_time = []
+        self.weight_cost = []
         self.graphs = []
         self.vship = vship
 
         for vv in range(len(self.vship[:,-1])):
             graph_time = Graph()
-            graph_space = Graph()
+            # graph_space = Graph()
             graph_cost = Graph()
             graph = Graph()
             vship = self.vship[vv]
@@ -277,21 +280,22 @@ class Graph_flow_model_with_indices():
                             W = Functions.costfunction_timeseries(edge, vship[j], self.nodes, self.u, self.v, self.mask) + self.t
                             W = FIFO_maker(W) - self.t
                                             
-                            L = Functions.costfunction_spaceseries(edge, vship[j], self.nodes, self.u, self.v, self.mask)
-                            L = L + np.arange(len(L))* (1/len(L))
-                            L = FIFO_maker(L) - np.arange(len(L))* (1/len(L))
+                            # L = Functions.costfunction_spaceseries(edge, vship[j], self.nodes, self.u, self.v, self.mask)
+                            # L = L + np.arange(len(L))* (1/len(L))
+                            # L = FIFO_maker(L) - np.arange(len(L))* (1/len(L))
 
                             euros = compute_cost(W,  vship[j] )
 
                             dist = haversine(self.nodes[from_node], self.nodes[int(to_node)])
 
                             graph_time.add_edge((from_node, vship[i]), (to_node, vship[j]), W)
-                            graph_space.add_edge((from_node, vship[i]), (to_node, vship[j]), L)
+                            # graph_space.add_edge((from_node, vship[i]), (to_node, vship[j]), L)
                             graph_cost.add_edge((from_node, vship[i]), (to_node, vship[j]), euros)
                             graph.add_edge((from_node, vship[i]), (to_node, vship[j]), dist)
             
-            self.weight_space.append(graph_space)
+            # self.weight_space.append(graph_space)
             self.weight_time.append(graph_time)
+            self.weight_cost.append(graph_cost)
             self.graphs.append(graph)
             
         clear_output(wait= True)
