@@ -78,7 +78,7 @@ class Has_route:
         stop =  find_startstop(stop, graph.nodes)
 
         self.start = (start, graph_functions.vship[0])
-        self.stop = (stop, graph_functions.vship[-1])
+        self.stop = (stop, graph_functions.vship[0])
 
         self.route= np.array(dijsktra(graph, self.start, self.stop, t0, graph_functions))
 
