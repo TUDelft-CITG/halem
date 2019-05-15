@@ -82,6 +82,30 @@ def FIFO_maker(y):
                 None
     return(y_FIFO)
 
+def FIFO_maker3(y,N1):
+    arg = np.squeeze(argrelextrema(y, np.less))
+    y_FIFO = 1*y
+    if arg.shape == ():
+        loc = np.argwhere(y <= y[arg])[-2:]
+        if loc.shape == (2,1):
+            if True in N1[int(loc[0]):int(loc[1])]:
+                None
+            else:
+                y_FIFO[int(loc[0]):int(loc[1])] = y[arg]
+        else:
+            None
+    else:
+        for a in arg:
+            loc = np.argwhere(y <= y[a])[-2:] 
+            if loc.shape == (2,1):
+                if True in N1[int(loc[0]):int(loc[1])]:
+                    None
+                else:
+                    y_FIFO[int(loc[0]):int(loc[1])] = y[a]
+            else:
+                None
+    return(y_FIFO)
+
 def closest_node(node, nodes, node_list):
     node_x = node_list[node][1]
     node_y = node_list[node][0]
@@ -247,6 +271,7 @@ class Graph_flow_model_with_indices():
 
         self.nodes, self.u, self.v, self.WD = nodes_on_land(nodes,u,v,WD)
 
+        self.tria = Delaunay(self.nodes)
         self.t = flow.t
         self.mask = np.full(self.u.shape, False)
         self.mask[self.WD < WD_min] = True
@@ -254,7 +279,6 @@ class Graph_flow_model_with_indices():
         print('2/4')
 
         'Calculate edges'
-        self.tria = Delaunay(self.nodes)
         graph0 = Graph()
         for from_node in range(len(self.nodes)):       
             to_nodes = find_neighbors2(from_node, self.tria, number_of_neighbor_layers)
@@ -284,13 +308,13 @@ class Graph_flow_model_with_indices():
                             from_node = edge[0]
                             to_node = edge[1]
                             W = Functions.costfunction_timeseries(edge, vship[j], self.nodes, self.u, self.v, self.mask) + self.t
-                            W = FIFO_maker(W) - self.t
+                            W = FIFO_maker3(W, self.mask[from_node]) - self.t
                                             
                             L = Functions.costfunction_spaceseries(edge, vship[j], self.nodes, self.u, self.v, self.mask)
                             L = L + np.arange(len(L))* (1/len(L))
-                            L = FIFO_maker(L) - np.arange(len(L))* (1/len(L))
+                            L = FIFO_maker3(L, self.mask[from_node]) - np.arange(len(L))* (1/len(L))
 
-                            euros = compute_cost(W,  vship[j] )
+                            euros = compute_cost(W,  vship[j])
 
                             dist = haversine(self.nodes[from_node], self.nodes[int(to_node)])
 
@@ -305,4 +329,4 @@ class Graph_flow_model_with_indices():
             self.graphs.append(graph)
             
         clear_output(wait= True)
-        print("4/4")       
+        print("4/4")

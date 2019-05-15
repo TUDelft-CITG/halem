@@ -1,6 +1,7 @@
 import RODFF.Mesh_maker as Mesh_maker
 import RODFF.Functions as Functions
 import RODFF.Calc_path as Calc_path
+import RODFF.Flow_class as Flow_class
 
 import math
 import numpy as np
