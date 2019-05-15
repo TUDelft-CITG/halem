@@ -46,7 +46,7 @@ def plot_timeseries(route, Roadmap):
 
     plt.ylim(route.route[0,1]-2000,route.route[-1,1]+2000)
 
-def RODFF_time(start, stop, t0, Roadmap, vmax):
+def RODFF_time(start, stop, t0, vmax, Roadmap):
         start = start[::-1]
         stop = stop[::-1]
 
@@ -59,7 +59,6 @@ def RODFF_time(start, stop, t0, Roadmap, vmax):
                 weights = Roadmap.weight_time[arg_vship].weights
                 time = Roadmap.weight_time[arg_vship].weights
                 vship = Roadmap.vship[arg_vship]
-                graph = Roadmap.graphs[arg_vship]
 
         route = Calc_path.Has_route(start, stop, Roadmap, t0, graph_functions_time)
 

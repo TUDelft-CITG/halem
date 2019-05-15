@@ -13,6 +13,69 @@ from datetime import datetime
 import pickle
 from IPython.display import clear_output
 
+class flow_NOOS():
+    def __init__(self, name):
+        nc = Dataset(name)
+        x_domain = (250,380)                      # general-waddden sea
+        y_domain = (530,760)
+        # x_domain = (300,390)                      # Texel-case
+        # y_domain = (650,760)
+
+        v = nc.variables['VELV'][:,:,:]
+        u = nc.variables['VELU'][:,:,:]
+        d = nc.variables['SEP'][:,:,:]
+        x = nc.variables['x'][:,:]
+        y = nc.variables['y'][:,:]
+        t = nc.variables['time'][:]
+        t = t *60
+        x = x[x_domain[0]:x_domain[1], y_domain[0]:y_domain[1]]
+        y = y[x_domain[0]:x_domain[1], y_domain[0]:y_domain[1]]
+        u = u[:,x_domain[0]:x_domain[1], y_domain[0]:y_domain[1]]
+        v = v[:,x_domain[0]:x_domain[1], y_domain[0]:y_domain[1]]
+        d = d[:,x_domain[0]:x_domain[1], y_domain[0]:y_domain[1]]
+
+        x_temp = ma.array(x.reshape(x.size))
+        y_temp = ma.array(y.reshape(x.size))
+
+        nodes = np.zeros((y_temp[y_temp.mask == False].size,2))
+        nodes[:,0] = y_temp[y_temp.mask == False]
+        nodes[:,1] = x_temp[y_temp.mask == False]
+        print('1/3')
+
+        bat, nodesb = self.bat()
+        Db_new = griddata((nodesb[:,1],nodesb[:,0]), bat, (x,y), method='linear')
+
+        WD = d * 0
+        for i in range(d.shape[0]):
+            WD[i,:,:] = d[i,:,:] - Db_new
+
+        print('2/3')
+
+        u_n = []
+        v_n = []
+        d_n = []
+
+        for node in nodes:
+            xloc = np.argwhere(x == node[1])[0,1]
+            yloc = np.argwhere(y == node[0])[0,0]
+            u_n.append(u[:,yloc,xloc])
+            v_n.append(v[:,yloc,xloc])
+            d_n.append(WD[:,yloc,xloc])
+
+        d_n = np.array(d_n)
+        d_n[d_n < -600] = 0
+        v_n = np.array(v_n)
+        v_n[v_n < -600] = 0
+        u_n = np.array(u_n)
+        u_n[u_n < -600] = 0
+        
+        self.nodes = nodes
+        self.u = np.transpose(u_n)
+        self.v = np.transpose(v_n)
+        self.WD = np.transpose(d_n)
+        self.tria = Delaunay(nodes)
+        self.t = t
+
 class Graph():
     def __init__(self):
         """
@@ -210,20 +273,28 @@ class Graph_flow_model():
                 L = haversine(self.nodes[from_node], self.nodes[int(to_node)])
                 graph0.add_edge(from_node, int(to_node), L)
         clear_output(wait= True)
+
+        self.graph = Graph()
+        vship = vship[0]
+        for edge in graph0.weights:
+            for i in range(len(vship)):
+                    for j in range(len(vship)):
+                        from_node = edge[0]
+                        to_node = edge[1]
+                        self.graph.add_edge((from_node, i), (to_node, j), 1)
+        
         print('3/4')
 
         'Calculate Weights'
         self.weight_space = []
         self.weight_time = []
         self.weight_cost = []
-        self.graphs = []
         self.vship = vship
 
         for vv in range(len(self.vship[:,-1])):
             graph_time = Graph()
             graph_space = Graph()
             graph_cost = Graph()
-            graph = Graph()
             vship = self.vship[vv]
             print(vship)
             for edge in graph0.weights:
@@ -237,20 +308,15 @@ class Graph_flow_model():
                             L = Functions.costfunction_spaceseries(edge, vship[j], self.nodes, self.u, self.v, self.mask)
                             L = L + np.arange(len(L))* (1/len(L))
                             L = FIFO_maker(L) - np.arange(len(L))* (1/len(L))
-
                             euros = compute_cost(W,  vship[j] )
 
-                            dist = haversine(self.nodes[from_node], self.nodes[int(to_node)])
-
-                            graph_time.add_edge((from_node, vship[i]), (to_node, vship[j]), W)
-                            graph_space.add_edge((from_node, vship[i]), (to_node, vship[j]), L)
-                            graph_cost.add_edge((from_node, vship[i]), (to_node, vship[j]), euros)
-                            graph.add_edge((from_node, vship[i]), (to_node, vship[j]), dist)
+                            graph_time.add_edge((from_node, i), (to_node, j), W)
+                            graph_space.add_edge((from_node, i), (to_node,j), L)
+                            graph_cost.add_edge((from_node, i), (to_node, j), euros)
             
             self.weight_space.append(graph_space)
             self.weight_time.append(graph_time)
             self.weight_cost.append(graph_cost)
-            self.graphs.append(graph)
             
         clear_output(wait= True)
         print("4/4")       
@@ -279,6 +345,7 @@ class Graph_flow_model_with_indices():
         print('2/4')
 
         'Calculate edges'
+        self.vship = vship
         graph0 = Graph()
         for from_node in range(len(self.nodes)):       
             to_nodes = find_neighbors2(from_node, self.tria, number_of_neighbor_layers)
@@ -286,47 +353,48 @@ class Graph_flow_model_with_indices():
                 L = haversine(self.nodes[from_node], self.nodes[int(to_node)])
                 graph0.add_edge(from_node, int(to_node), L)
         clear_output(wait= True)
+
+        self.graph = Graph()
+        vship1 = vship[0]
+        for edge in graph0.weights:
+            for i in range(len(vship1)):
+                    for j in range(len(vship1)):
+                        from_node = edge[0]
+                        to_node = edge[1]
+                        self.graph.add_edge((from_node, i), (to_node, j), 1)
+        
         print('3/4')
 
         'Calculate Weights'
         self.weight_space = []
         self.weight_time = []
         self.weight_cost = []
-        self.graphs = []
-        self.vship = vship
-
-        for vv in range(len(self.vship[:,-1])):
+        
+        for vv in range(len(self.vship)):
             graph_time = Graph()
             graph_space = Graph()
             graph_cost = Graph()
-            graph = Graph()
             vship = self.vship[vv]
-            print(vship)
             for edge in graph0.weights:
                 for i in range(len(vship)):
                         for j in range(len(vship)):
                             from_node = edge[0]
                             to_node = edge[1]
                             W = Functions.costfunction_timeseries(edge, vship[j], self.nodes, self.u, self.v, self.mask) + self.t
-                            W = FIFO_maker3(W, self.mask[from_node]) - self.t
+                            W = FIFO_maker(W) - self.t
                                             
                             L = Functions.costfunction_spaceseries(edge, vship[j], self.nodes, self.u, self.v, self.mask)
                             L = L + np.arange(len(L))* (1/len(L))
-                            L = FIFO_maker3(L, self.mask[from_node]) - np.arange(len(L))* (1/len(L))
+                            L = FIFO_maker(L) - np.arange(len(L))* (1/len(L))
+                            euros = compute_cost(W,  vship[j] )
 
-                            euros = compute_cost(W,  vship[j])
-
-                            dist = haversine(self.nodes[from_node], self.nodes[int(to_node)])
-
-                            graph_time.add_edge((from_node, vship[i]), (to_node, vship[j]), W)
-                            graph_space.add_edge((from_node, vship[i]), (to_node, vship[j]), L)
-                            graph_cost.add_edge((from_node, vship[i]), (to_node, vship[j]), euros)
-                            graph.add_edge((from_node, vship[i]), (to_node, vship[j]), dist)
+                            graph_time.add_edge((from_node, i), (to_node, j), W)
+                            graph_space.add_edge((from_node, i), (to_node,j), L)
+                            graph_cost.add_edge((from_node, i), (to_node, j), euros)
             
             self.weight_space.append(graph_space)
             self.weight_time.append(graph_time)
             self.weight_cost.append(graph_cost)
-            self.graphs.append(graph)
             
         clear_output(wait= True)
-        print("4/4")
+        print("4/4")       
