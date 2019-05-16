@@ -43,8 +43,7 @@ def costfunction_timeseries(edge, vship, nodes, u, v, mask):
     t[mask[edge[0]] == True] = np.inf
     t[mask[edge[1]] == True] = np.inf
     t[(U_w * np.sin(alpha2))**2 > vship ** 2] = np.inf
-    t[s_t < 0] = np.inf
-    
+    t[s_t < 0] = np.inf  
     return np.array(t)
 
 def costfunction_spaceseries(edge, vship, nodes, u, v, mask):

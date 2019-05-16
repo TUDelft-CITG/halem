@@ -95,7 +95,7 @@ class mclass:
         elif self.tkvar.get() == 'DCSMFM_100_m':
             name_textfile_load = 'D:/Roadmaps/'
         elif self.tkvar.get() =='DCSM_zuno_NOOS':
-            name_textfile_load = 'D:/Roadmaps/Rm_DCSM_zuno_WDmin=1.5,nl=(1, 1)'
+            name_textfile_load = 'test'
         else:
             name_textfile_load = 'D:/DCSM-FM/A06_pieter/Progres1_HAM317'
 
@@ -105,24 +105,21 @@ class mclass:
         x_r = np.arange(3,7, 0.01)
         y_r = np.arange(52,55, 0.01)
         y_r, x_r = np.meshgrid(y_r,x_r)
-        LS_r = griddata((Roadmap.nodes[:,1], Roadmap.nodes[:,0]), Roadmap.WD[:,73], (x_r, y_r), method= 'linear')
+        LS_r = griddata((Roadmap.nodes[:,1], Roadmap.nodes[:,0]), Roadmap.WD[:,1], (x_r, y_r), method= 'linear')
 
         t0 = self.t0.get()
         vship = float(self.vship.get())
 
-        vv= np.abs(Roadmap.vship - vship)
-        arg_vship = int(np.argwhere(vv == vv.min()))
-        print("V_ship = ", Roadmap.vship[arg_vship])
-
+       
         class graph_functions_time:
             function_type = "time optimalisation"
-            weights = Roadmap.weight_time[arg_vship].weights
-            time = Roadmap.weight_time[arg_vship].weights
-            
+            weights = Roadmap.graph_time.weights
+            time = Roadmap.graph_time.weights
+
         class graph_functions_space:
-            function_type = "length optimalisation"
-            weights = Roadmap.weight_space[arg_vship].weights
-            time = Roadmap.weight_time[arg_vship].weights
+            function_type = "time optimalisation"
+            weights = Roadmap.graph_space.weights
+            time = Roadmap.graph_time.weights
             
         start = (np.array(self.linebuilder.nodes)[0,:])[::-1]
         stop = (np.array(self.linebuilder.nodes)[1,:])[::-1]
@@ -144,8 +141,8 @@ class mclass:
         ax.add_feature(cfeature.NaturalEarthFeature('physical', 'land', '10m', edgecolor='face', facecolor='palegoldenrod'))
         t = route_time.route[:,2][-1]
         perc = ((route_space.route[:,1][-1] - route_space.route[:,1][0]) - (route_time.route[:,1][-1] - route_time.route[:,1][0]))/ (route_space.route[:,1][-1] - route_space.route[:,1][0])*100
-        plt.title("Fastest route is {} hours and {} minutes, \n Shorest route is {} km long,\n Fasest route is {} % faster than the shortest route, \n Ship speed is {} m/s \n"
-                    .format(int(t/3600), int((t-int(t/3600)*3600)/60),np.round(route_space.route[:,2][-1]/1000, 2), np.round(perc,2),vship))
+        #plt.title("Fastest route is {} hours and {} minutes, \n Shorest route is {} km long,\n Fasest route is {} % faster than the shortest route, \n Ship speed is {} m/s \n"
+        #            .format(int(t/3600), int((t-int(t/3600)*3600)/60),np.round(route_space.route[:,2][-1]/1000, 2), np.round(perc,2),vship))
         ax.set_extent([4.5, 6, 52.8, 53.8])
         plt.legend(loc = 'best')
         plt.subplot(gs[1, 0])
