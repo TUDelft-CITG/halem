@@ -13,69 +13,6 @@ from datetime import datetime
 import pickle
 from IPython.display import clear_output
 
-class flow_NOOS():
-    def __init__(self, name):
-        nc = Dataset(name)
-        x_domain = (250,380)                      # general-waddden sea
-        y_domain = (530,760)
-        # x_domain = (300,390)                      # Texel-case
-        # y_domain = (650,760)
-
-        v = nc.variables['VELV'][:,:,:]
-        u = nc.variables['VELU'][:,:,:]
-        d = nc.variables['SEP'][:,:,:]
-        x = nc.variables['x'][:,:]
-        y = nc.variables['y'][:,:]
-        t = nc.variables['time'][:]
-        t = t *60
-        x = x[x_domain[0]:x_domain[1], y_domain[0]:y_domain[1]]
-        y = y[x_domain[0]:x_domain[1], y_domain[0]:y_domain[1]]
-        u = u[:,x_domain[0]:x_domain[1], y_domain[0]:y_domain[1]]
-        v = v[:,x_domain[0]:x_domain[1], y_domain[0]:y_domain[1]]
-        d = d[:,x_domain[0]:x_domain[1], y_domain[0]:y_domain[1]]
-
-        x_temp = ma.array(x.reshape(x.size))
-        y_temp = ma.array(y.reshape(x.size))
-
-        nodes = np.zeros((y_temp[y_temp.mask == False].size,2))
-        nodes[:,0] = y_temp[y_temp.mask == False]
-        nodes[:,1] = x_temp[y_temp.mask == False]
-        print('1/3')
-
-        bat, nodesb = self.bat()
-        Db_new = griddata((nodesb[:,1],nodesb[:,0]), bat, (x,y), method='linear')
-
-        WD = d * 0
-        for i in range(d.shape[0]):
-            WD[i,:,:] = d[i,:,:] - Db_new
-
-        print('2/3')
-
-        u_n = []
-        v_n = []
-        d_n = []
-
-        for node in nodes:
-            xloc = np.argwhere(x == node[1])[0,1]
-            yloc = np.argwhere(y == node[0])[0,0]
-            u_n.append(u[:,yloc,xloc])
-            v_n.append(v[:,yloc,xloc])
-            d_n.append(WD[:,yloc,xloc])
-
-        d_n = np.array(d_n)
-        d_n[d_n < -600] = 0
-        v_n = np.array(v_n)
-        v_n[v_n < -600] = 0
-        u_n = np.array(u_n)
-        u_n[u_n < -600] = 0
-        
-        self.nodes = nodes
-        self.u = np.transpose(u_n)
-        self.v = np.transpose(v_n)
-        self.WD = np.transpose(d_n)
-        self.tria = Delaunay(nodes)
-        self.t = t
-
 class Graph():
     def __init__(self):
         """
@@ -94,18 +31,8 @@ class Graph():
         self.weights[(from_node, to_node)] = weight
 
 def haversine(coord1, coord2):
-    R = 6372800                                      # https://janakiev.com/blog/gps-points-distance-python/
-    lat1, lon1 = coord1
-    lat2, lon2 = coord2                              # use the Haversine function to determine the distance between two points in the WGS84 coordinate system
-    
-    phi1, phi2 = math.radians(lat1), math.radians(lat2) 
-    dphi       = math.radians(lat2 - lat1)
-    dlambda    = math.radians(lon2 - lon1)
-    
-    a = math.sin(dphi/2)**2 + \
-        math.cos(phi1)*math.cos(phi2)*math.sin(dlambda/2)**2
-    
-    return 2*R*math.atan2(math.sqrt(a), math.sqrt(1 - a))
+    dist = Functions.haversine(coord1, coord2)
+    return dist
 
 def find_neighbors(pindex, triang):
     return triang.vertex_neighbor_vertices[1]\
@@ -187,7 +114,7 @@ def Length_scale(node, flow, blend, nl):
     mag  = (flow.u[:,node]**2 +  flow.v[:,node]**2 )**0.5
     mag = mag.max()
 
-    if len(nb) == 0 :
+    if len(nb) < 2 :
         return 1
     
     dvdx = []
