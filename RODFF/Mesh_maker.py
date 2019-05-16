@@ -108,30 +108,46 @@ def closest_node(node, nodes, node_list):
     pt = nodes[pt]
     return pt
 
+def slope(xs,ys,zs):
+    tmp_A = []
+    tmp_b = []
+    for i in range(len(xs)):
+        tmp_A.append([xs[i], ys[i], 1])
+        tmp_b.append(zs[i])
+    b = np.matrix(tmp_b).T
+    A = np.matrix(tmp_A)
+    fit = (A.T * A).I * A.T * b
+    errors = b - A * fit
+    residual = np.linalg.norm(errors)
+    
+    return fit[0], fit[1]
+
+def curl_func(node, flow):
+    nb = find_neighbors(node, flow.tria)
+    nb = np.append(nb,node)
+    DUDY = []
+    DVDX = []
+    xs = flow.nodes[nb][:,1]
+    ys = flow.nodes[nb][:,0]
+    for i in range(len(flow.t)):
+        u = flow.u[i,nb]
+        v = flow.v[i,nb]
+        dudy = float(slope(xs,ys,u)[1])
+        dvdx = float(slope(xs,ys,v)[0])
+        DUDY.append(dudy)
+        DVDX.append(dvdx)
+    return np.mean(DUDY) - np.mean(DVDX)
+
 def Length_scale(node, flow, blend, nl):
-    nodes = flow.nodes
     nb = find_neighbors(node, flow.tria)
     mag  = (flow.u[:,node]**2 +  flow.v[:,node]**2 )**0.5
     mag = mag.max()
 
     if len(nb) < 2 :
         return 1
-    
-    dvdx = []
-    dudy = []
 
-    for i in range(len(flow.u[:,node])):
-        u_v = flow.u[i][nb] - flow.u[i][node]
-        v_v = flow.v[i][nb] - flow.v[i][node]
-        Delta = nodes[nb] - nodes[node]
-        Delta_inv = np.linalg.inv(Delta[:2,:])
-        _ , Dudy = Delta_inv.dot(u_v[:2])
-        Dvdx, _ = Delta_inv.dot(v_v[:2])
-        dudy.append(Dudy)
-        dvdx.append(Dvdx)
+    curl = abs(curl_func(node, flow))   
 
-    curl = abs((np.array(dudy) - np.array(dvdx))/len(nb)).max()
-        
     LS_c = ma.array(1 / (1+curl) ** nl[0])
     LS_m = ma.array(1 / (1+mag) ** nl[1])
     LS = ma.array(blend * LS_c + (1-blend)*LS_m)
@@ -193,6 +209,7 @@ class Graph_flow_model():
         print('2/4')
 
         'Calculate edges'
+        self.vship = vship
         graph0 = Graph()
         for from_node in range(len(self.nodes)):       
             to_nodes = find_neighbors2(from_node, self.tria, number_of_neighbor_layers)
@@ -202,10 +219,10 @@ class Graph_flow_model():
         clear_output(wait= True)
 
         self.graph = Graph()
-        vship = vship[0]
+        vship1 = vship[0]
         for edge in graph0.weights:
-            for i in range(len(vship)):
-                    for j in range(len(vship)):
+            for i in range(len(vship1)):
+                    for j in range(len(vship1)):
                         from_node = edge[0]
                         to_node = edge[1]
                         self.graph.add_edge((from_node, i), (to_node, j), 1)
@@ -216,14 +233,12 @@ class Graph_flow_model():
         self.weight_space = []
         self.weight_time = []
         self.weight_cost = []
-        self.vship = vship
-
-        for vv in range(len(self.vship[:,-1])):
+        
+        for vv in range(len(self.vship)):
             graph_time = Graph()
             graph_space = Graph()
             graph_cost = Graph()
             vship = self.vship[vv]
-            print(vship)
             for edge in graph0.weights:
                 for i in range(len(vship)):
                         for j in range(len(vship)):
@@ -246,7 +261,7 @@ class Graph_flow_model():
             self.weight_cost.append(graph_cost)
             
         clear_output(wait= True)
-        print("4/4")       
+        print("4/4")             
 
 class Graph_flow_model_with_indices():
     def __init__(self, name_textfile_flow, nodes_index, number_of_neighbor_layers, vship, Load_flow, WD_min, compute_cost, nodes_on_land):
