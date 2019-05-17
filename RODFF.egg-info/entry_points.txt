@@ -1,3 +1,0 @@
-[console_scripts]
-RODFF = RODFF.cli:cli
-

@@ -1,7 +1,7 @@
-import RODFF.Mesh_maker as Mesh_maker
-import RODFF.Functions as Functions
-import RODFF.Calc_path as Calc_path
-import RODFF.Flow_class as Flow_class
+import halem.Mesh_maker as Mesh_maker
+import halem.Functions as Functions
+import halem.Calc_path as Calc_path
+import halem.Flow_class as Flow_class
 
 import math
 import numpy as np
@@ -18,12 +18,6 @@ from datetime import datetime
 def save_object(obj, filename):
     with open(filename, 'wb') as output:  # Overwrites any existing file.
         pickle.dump(obj, output, pickle.HIGHEST_PROTOCOL)
-        
-def printtime(t):
-    print("Route completed in",int(t/3600), "hour", 
-      int((t-int(t/3600)*3600)/60), "minutes and", 
-      np.round(t -int(t/3600)*3600- int((t-int(t/3600)*3600)/60)*60, 2), "seconds")
-    return
 
 def plot_timeseries(route, Roadmap):
     dist = []
@@ -46,7 +40,7 @@ def plot_timeseries(route, Roadmap):
 
     plt.ylim(route.route[0,1]-2000,route.route[-1,1]+2000)
 
-def RODFF_time(start, stop, t0, vmax, Roadmap):
+def HALEM_time(start, stop, t0, vmax, Roadmap):
         start = start[::-1]
         stop = stop[::-1]
 
@@ -61,12 +55,7 @@ def RODFF_time(start, stop, t0, vmax, Roadmap):
                 vship = Roadmap.vship[arg_vship]
 
         route = Calc_path.Has_route(start, stop, Roadmap, t0, graph_functions_time)
-
-        path2 = np.array(route.route[:,0], dtype=int)
-        path = np.zeros((len(route.route[:,0]),2))
-        path[:,0] = Roadmap.nodes[path2][:,1]
-        path[:,1] = Roadmap.nodes[path2][:,0]
-
+        path = Roadmap.nodes[np.array(route.route[:,0], dtype=int)]
         time = route.route[:,1]
 
         dist = []

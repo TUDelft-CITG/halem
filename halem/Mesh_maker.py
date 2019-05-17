@@ -5,7 +5,7 @@ from numpy import ma
 import netCDF4
 from netCDF4 import Dataset, num2date
 from scipy.spatial import Delaunay
-import RODFF.Functions as Functions
+import halem.Functions as Functions
 from scipy.signal import argrelextrema
 from scipy.interpolate import griddata
 import datetime, time
@@ -136,7 +136,10 @@ def curl_func(node, flow):
         dvdx = float(slope(xs,ys,v)[0])
         DUDY.append(dudy)
         DVDX.append(dvdx)
-    return np.mean(DUDY) - np.mean(DVDX)
+    DUDY = np.array(DUDY)
+    DVDX = np.array(DVDX)
+    curl = (np.abs(DUDY - DVDX)).max()
+    return curl
 
 def Length_scale(node, flow, blend, nl):
     nb = find_neighbors(node, flow.tria)
@@ -310,12 +313,12 @@ class Graph_flow_model_with_indices():
         'Calculate Weights'
         self.weight_space = []
         self.weight_time = []
-        self.weight_cost = []
+        # self.weight_cost = []
         
         for vv in range(len(self.vship)):
             graph_time = Graph()
             graph_space = Graph()
-            graph_cost = Graph()
+            # graph_cost = Graph()
             vship = self.vship[vv]
             for edge in graph0.weights:
                 for i in range(len(vship)):
@@ -328,15 +331,15 @@ class Graph_flow_model_with_indices():
                             L = Functions.costfunction_spaceseries(edge, vship[j], self.nodes, self.u, self.v, self.mask)
                             L = L + np.arange(len(L))* (1/len(L))
                             L = FIFO_maker(L) - np.arange(len(L))* (1/len(L))
-                            euros = compute_cost(W,  vship[j] )
+                            # euros = compute_cost(W,  vship[j] )
 
                             graph_time.add_edge((from_node, i), (to_node, j), W)
                             graph_space.add_edge((from_node, i), (to_node,j), L)
-                            graph_cost.add_edge((from_node, i), (to_node, j), euros)
+                            # graph_cost.add_edge((from_node, i), (to_node, j), euros)
             
             self.weight_space.append(graph_space)
             self.weight_time.append(graph_time)
-            self.weight_cost.append(graph_cost)
+            # self.weight_cost.append(graph_cost)
             
         clear_output(wait= True)
         print("4/4")       

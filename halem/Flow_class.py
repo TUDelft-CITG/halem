@@ -5,7 +5,7 @@ from numpy import ma
 import netCDF4
 from netCDF4 import Dataset, num2date
 from scipy.spatial import Delaunay
-import RODFF.Functions as Functions
+import halem.Functions as Functions
 from scipy.signal import argrelextrema
 from scipy.interpolate import griddata
 import datetime, time

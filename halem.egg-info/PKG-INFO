@@ -1,5 +1,5 @@
 Metadata-Version: 2.1
-Name: RODFF
+Name: halem
 Version: 0.0.1
 Summary: The Route optimization for dynamic flow field searches the optimal route for a given flow field.
 Home-page: https://github.com/TUDelft-CITG/Route_optimization_in_dynamic_currents
@@ -7,7 +7,7 @@ Author: Pieter van Halem
 Author-email: pieter.vanhalem@vanoord.com
 License: mit
 Description: UNKNOWN
-Keywords: Route Optimization in Dynamic Floe Fields
+Keywords: Route Optimization in Dynamic Flow Fields
 Platform: any
 Classifier: Development Status :: 1 - Pre-Alpha
 Classifier: Intended Audience :: Developers
