@@ -263,9 +263,13 @@ class Graph_flow_model():
             self.weight_time.append(graph_time)
             self.weight_cost.append(graph_cost)
             
+            clear_output(wait= True)
+            print(np.round((vv+1)/len(self.vship)*100,2), '%')
+           
+            
         clear_output(wait= True)
-        print("4/4")             
-
+        print("4/4") 
+                     
 class Graph_flow_model_with_indices():
     def __init__(self, name_textfile_flow, nodes_index, number_of_neighbor_layers, vship, Load_flow, WD_min, compute_cost, nodes_on_land):
         'Load Flow'

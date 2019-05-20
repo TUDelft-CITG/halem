@@ -60,10 +60,10 @@ def HALEM_time(start, stop, t0, vmax, Roadmap):
         vv= np.abs(vvmax - vmax)
         arg_vship = int(np.argwhere(vv == vv.min())[0])
         class graph_functions_time:
-                function_type = "time optimalisation"
-                weights = Roadmap.weight_time[arg_vship].weights
-                time = Roadmap.weight_time[arg_vship].weights
-                vship = Roadmap.vship[arg_vship]
+            function_type = "time optimalisation"
+            weights = Roadmap.weight_time[arg_vship].weights
+            time = Roadmap.weight_time[arg_vship].weights
+            vship = Roadmap.vship[arg_vship]
 
         route = Calc_path.Has_route(start, stop, Roadmap, t0, graph_functions_time)
         path = Roadmap.nodes[np.array(route.route[:,0], dtype=int)]
@@ -75,5 +75,5 @@ def HALEM_time(start, stop, t0, vmax, Roadmap):
                 D =D + Mesh_maker.haversine((route.y_route[i], route.x_route[i]), (route.y_route[i +1], route.x_route[i+1]))
                 dist.append(D)
         dist = np.array(dist)
-        return path, time, dist
+        return path[:,::-1], time, dist
 
