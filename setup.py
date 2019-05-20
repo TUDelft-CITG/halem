@@ -28,6 +28,7 @@ requires = [
     "netCDF4",
     "click",
     "matplotlib",
+    "IPython",
     "pint",
     "pyproj",
     "plotly",
