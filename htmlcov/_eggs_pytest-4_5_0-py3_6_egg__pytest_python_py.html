@@ -22,8 +22,8 @@
         <img id="keyboard_icon" src="keybd_closed.png" alt="Show keyboard shortcuts" />
         <h2 class="stats">
             826 statements &nbsp;
-            <span class="run hide_run shortkey_r button_toggle_run">227 run</span>
-            <span class="mis shortkey_m button_toggle_mis">599 missing</span>
+            <span class="run hide_run shortkey_r button_toggle_run">225 run</span>
+            <span class="mis shortkey_m button_toggle_mis">601 missing</span>
             <span class="exc shortkey_x button_toggle_exc">0 excluded</span>
         </h2>
     </div>
@@ -267,7 +267,7 @@
 <p id="n211" class="stm mis"><a href="#n211">211</a></p>
 <p id="n212" class="pln"><a href="#n212">212</a></p>
 <p id="n213" class="stm run hide_run"><a href="#n213">213</a></p>
-<p id="n214" class="stm run hide_run"><a href="#n214">214</a></p>
+<p id="n214" class="stm mis"><a href="#n214">214</a></p>
 <p id="n215" class="stm mis"><a href="#n215">215</a></p>
 <p id="n216" class="stm run hide_run"><a href="#n216">216</a></p>
 <p id="n217" class="pln"><a href="#n217">217</a></p>
@@ -383,7 +383,7 @@
 <p id="n327" class="stm run hide_run"><a href="#n327">327</a></p>
 <p id="n328" class="pln"><a href="#n328">328</a></p>
 <p id="n329" class="stm mis"><a href="#n329">329</a></p>
-<p id="n330" class="stm run hide_run"><a href="#n330">330</a></p>
+<p id="n330" class="stm mis"><a href="#n330">330</a></p>
 <p id="n331" class="pln"><a href="#n331">331</a></p>
 <p id="n332" class="stm mis"><a href="#n332">332</a></p>
 <p id="n333" class="stm run hide_run"><a href="#n333">333</a></p>
@@ -398,7 +398,7 @@
 <p id="n342" class="stm run hide_run"><a href="#n342">342</a></p>
 <p id="n343" class="pln"><a href="#n343">343</a></p>
 <p id="n344" class="stm mis"><a href="#n344">344</a></p>
-<p id="n345" class="stm run hide_run"><a href="#n345">345</a></p>
+<p id="n345" class="stm mis"><a href="#n345">345</a></p>
 <p id="n346" class="pln"><a href="#n346">346</a></p>
 <p id="n347" class="stm mis"><a href="#n347">347</a></p>
 <p id="n348" class="pln"><a href="#n348">348</a></p>
@@ -641,7 +641,7 @@
 <p id="n585" class="pln"><a href="#n585">585</a></p>
 <p id="n586" class="stm mis"><a href="#n586">586</a></p>
 <p id="n587" class="stm run hide_run"><a href="#n587">587</a></p>
-<p id="n588" class="stm mis"><a href="#n588">588</a></p>
+<p id="n588" class="stm run hide_run"><a href="#n588">588</a></p>
 <p id="n589" class="stm run hide_run"><a href="#n589">589</a></p>
 <p id="n590" class="stm run hide_run"><a href="#n590">590</a></p>
 <p id="n591" class="stm mis"><a href="#n591">591</a></p>
@@ -1752,7 +1752,7 @@
 <p id="t211" class="stm mis">        <span class="key">return</span><span class="strut">&nbsp;</span></p>
 <p id="t212" class="pln">    <span class="com"># nothing was collected elsewhere, let's do it here</span><span class="strut">&nbsp;</span></p>
 <p id="t213" class="stm run hide_run">    <span class="key">if</span> <span class="nam">safe_isclass</span><span class="op">(</span><span class="nam">obj</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
-<p id="t214" class="stm run hide_run">        <span class="key">if</span> <span class="nam">collector</span><span class="op">.</span><span class="nam">istestclass</span><span class="op">(</span><span class="nam">obj</span><span class="op">,</span> <span class="nam">name</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
+<p id="t214" class="stm mis">        <span class="key">if</span> <span class="nam">collector</span><span class="op">.</span><span class="nam">istestclass</span><span class="op">(</span><span class="nam">obj</span><span class="op">,</span> <span class="nam">name</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t215" class="stm mis">            <span class="nam">outcome</span><span class="op">.</span><span class="nam">force_result</span><span class="op">(</span><span class="nam">Class</span><span class="op">(</span><span class="nam">name</span><span class="op">,</span> <span class="nam">parent</span><span class="op">=</span><span class="nam">collector</span><span class="op">)</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t216" class="stm run hide_run">    <span class="key">elif</span> <span class="nam">collector</span><span class="op">.</span><span class="nam">istestfunction</span><span class="op">(</span><span class="nam">obj</span><span class="op">,</span> <span class="nam">name</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t217" class="pln">        <span class="com"># mock seems to store unbound methods (issue473), normalize it</span><span class="strut">&nbsp;</span></p>
@@ -1868,7 +1868,7 @@
 <p id="t327" class="stm run hide_run">        <span class="key">return</span> <span class="nam">safe_getattr</span><span class="op">(</span><span class="nam">obj</span><span class="op">,</span> <span class="str">"__test__"</span><span class="op">,</span> <span class="key">False</span><span class="op">)</span> <span class="key">is</span> <span class="key">True</span><span class="strut">&nbsp;</span></p>
 <p id="t328" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t329" class="stm mis">    <span class="key">def</span> <span class="nam">classnamefilter</span><span class="op">(</span><span class="nam">self</span><span class="op">,</span> <span class="nam">name</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
-<p id="t330" class="stm run hide_run">        <span class="key">return</span> <span class="nam">self</span><span class="op">.</span><span class="nam">_matches_prefix_or_glob_option</span><span class="op">(</span><span class="str">"python_classes"</span><span class="op">,</span> <span class="nam">name</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t330" class="stm mis">        <span class="key">return</span> <span class="nam">self</span><span class="op">.</span><span class="nam">_matches_prefix_or_glob_option</span><span class="op">(</span><span class="str">"python_classes"</span><span class="op">,</span> <span class="nam">name</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t331" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t332" class="stm mis">    <span class="key">def</span> <span class="nam">istestfunction</span><span class="op">(</span><span class="nam">self</span><span class="op">,</span> <span class="nam">obj</span><span class="op">,</span> <span class="nam">name</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t333" class="stm run hide_run">        <span class="key">if</span> <span class="nam">self</span><span class="op">.</span><span class="nam">funcnamefilter</span><span class="op">(</span><span class="nam">name</span><span class="op">)</span> <span class="key">or</span> <span class="nam">self</span><span class="op">.</span><span class="nam">isnosetest</span><span class="op">(</span><span class="nam">obj</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
@@ -1883,7 +1883,7 @@
 <p id="t342" class="stm run hide_run">            <span class="key">return</span> <span class="key">False</span><span class="strut">&nbsp;</span></p>
 <p id="t343" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t344" class="stm mis">    <span class="key">def</span> <span class="nam">istestclass</span><span class="op">(</span><span class="nam">self</span><span class="op">,</span> <span class="nam">obj</span><span class="op">,</span> <span class="nam">name</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
-<p id="t345" class="stm run hide_run">        <span class="key">return</span> <span class="nam">self</span><span class="op">.</span><span class="nam">classnamefilter</span><span class="op">(</span><span class="nam">name</span><span class="op">)</span> <span class="key">or</span> <span class="nam">self</span><span class="op">.</span><span class="nam">isnosetest</span><span class="op">(</span><span class="nam">obj</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t345" class="stm mis">        <span class="key">return</span> <span class="nam">self</span><span class="op">.</span><span class="nam">classnamefilter</span><span class="op">(</span><span class="nam">name</span><span class="op">)</span> <span class="key">or</span> <span class="nam">self</span><span class="op">.</span><span class="nam">isnosetest</span><span class="op">(</span><span class="nam">obj</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t346" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t347" class="stm mis">    <span class="key">def</span> <span class="nam">_matches_prefix_or_glob_option</span><span class="op">(</span><span class="nam">self</span><span class="op">,</span> <span class="nam">option_name</span><span class="op">,</span> <span class="nam">name</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t348" class="pln">        <span class="str">"""</span><span class="strut">&nbsp;</span></p>
@@ -2126,7 +2126,7 @@
 <p id="t585" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t586" class="stm mis">    <span class="key">def</span> <span class="nam">_recurse</span><span class="op">(</span><span class="nam">self</span><span class="op">,</span> <span class="nam">dirpath</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t587" class="stm run hide_run">        <span class="key">if</span> <span class="nam">dirpath</span><span class="op">.</span><span class="nam">basename</span> <span class="op">==</span> <span class="str">"__pycache__"</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
-<p id="t588" class="stm mis">            <span class="key">return</span> <span class="key">False</span><span class="strut">&nbsp;</span></p>
+<p id="t588" class="stm run hide_run">            <span class="key">return</span> <span class="key">False</span><span class="strut">&nbsp;</span></p>
 <p id="t589" class="stm run hide_run">        <span class="nam">ihook</span> <span class="op">=</span> <span class="nam">self</span><span class="op">.</span><span class="nam">gethookproxy</span><span class="op">(</span><span class="nam">dirpath</span><span class="op">.</span><span class="nam">dirpath</span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t590" class="stm run hide_run">        <span class="key">if</span> <span class="nam">ihook</span><span class="op">.</span><span class="nam">pytest_ignore_collect</span><span class="op">(</span><span class="nam">path</span><span class="op">=</span><span class="nam">dirpath</span><span class="op">,</span> <span class="nam">config</span><span class="op">=</span><span class="nam">self</span><span class="op">.</span><span class="nam">config</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t591" class="stm mis">            <span class="key">return</span><span class="strut">&nbsp;</span></p>
@@ -3030,7 +3030,7 @@
     <div class="content">
         <p>
             <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.io/en/coverage-5.0a5">coverage.py v5.0a5</a>,
-            created at 2019-05-20 08:37
+            created at 2019-05-20 08:53
         </p>
     </div>
 </div>

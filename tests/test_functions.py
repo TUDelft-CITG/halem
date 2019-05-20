@@ -7,25 +7,25 @@ import pytest
 import numpy as np
 import geopy.distance
 
-@pytest.fixture
+# @pytest.fixture
 def coord_a():
     return (0,0)
 
-@pytest.fixture
+# @pytest.fixture
 def coord_b():
     return (0,1)
 
-@pytest.fixture
+# @pytest.fixture
 def vship():
     return 5
 
-@pytest.fixture
+# @pytest.fixture
 def v(mag):
     v = np.array([[0,0,1,-1]])
     v = mag * np.concatenate((v,v), axis = 0)
     return v
 
-@pytest.fixture
+# @pytest.fixture
 def u(mag):
     u = np.array([[1,-1,0,0]])
     u = mag * np.concatenate((u,u), axis = 0)
