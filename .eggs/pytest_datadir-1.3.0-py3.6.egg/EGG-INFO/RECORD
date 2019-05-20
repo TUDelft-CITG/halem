@@ -1,0 +1,11 @@
+pytest_datadir/__init__.py,sha256=KygHQRyhmnVOstCwi9EkpzixahjBiXZTT-OXLnyeDIU,163
+pytest_datadir/_version.py,sha256=UxQjF-ZfV8gtzhC01FtmqLu_7a_QwlV9dQbH56o4LOc,116
+pytest_datadir/plugin.py,sha256=ZaAP3_y3BYUZh2iefEogQ2S8xYyfNyyo-LGEHBHjBBI,1463
+pytest_datadir-1.3.0.data/data/LICENSE,sha256=iIu3SjwfjOjVRjviAvvUEAcFoSPBC_GR5ITK9GCDJDw,1189
+pytest_datadir-1.3.0.dist-info/AUTHORS,sha256=QJT-DfnuTATsocCdZU1h6KV2koHmDKp7znvwPMHFy_g,114
+pytest_datadir-1.3.0.dist-info/LICENSE,sha256=iIu3SjwfjOjVRjviAvvUEAcFoSPBC_GR5ITK9GCDJDw,1189
+pytest_datadir-1.3.0.dist-info/METADATA,sha256=dhaiEfIC1CU-eMzqRALl48rgCEGkVHoxJYHuX77m8mM,2835
+pytest_datadir-1.3.0.dist-info/WHEEL,sha256=_wJFdOYk7i3xxT8ElOkUJvOdOvfNGbR9g-bf6UQT6sU,110
+pytest_datadir-1.3.0.dist-info/entry_points.txt,sha256=nFb31yxYI390r8CwSwZ4ra7dNtg6cYWV0fTzpf2lojA,51
+pytest_datadir-1.3.0.dist-info/top_level.txt,sha256=UoYejL--InkpnWQVPNeDZyj7Wj0K18UysdZVgAja3FE,15
+pytest_datadir-1.3.0.dist-info/RECORD,,

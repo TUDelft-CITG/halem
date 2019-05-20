@@ -4,7 +4,6 @@ import halem.Calc_path as Calc_path
 import halem.Flow_class as Flow_class
 
 import pytest
-from click.testing import CliRunner
 import numpy as np
 import geopy.distance
 
@@ -47,7 +46,6 @@ def test_costfunction_space(coord_a, coord_b,u, v, vship):
     mask = np.full((u(1).shape), False)
     L = Functions.costfunction_spaceseries(edge, vship(), nodes, u(1), v(1), mask)
     dist = Functions.haversine(coord_a(), coord_b()) * np.ones(u(1).shape[1])
-    
     np.testing.assert_array_equal(L,dist)
     
 def test_costfunction_time(coord_a, coord_b,u, v, vship):
@@ -59,5 +57,9 @@ def test_costfunction_time(coord_a, coord_b,u, v, vship):
     VV = np.array([vship() + mag, vship() - mag, (vship()**2 - mag**2)**0.5, (vship()**2 - mag**2)**0.5 ])
     dist1 = Functions.haversine(coord_a(), coord_b())
     dist = dist1/VV
-
     np.testing.assert_array_equal(L,dist)
+
+# test_haversine(coord_a, coord_b)
+# test_costfunction_space(coord_a, coord_b,u, v, vship)
+# test_costfunction_time(coord_a, coord_b,u, v, vship)
+# print('Passed all tests')
