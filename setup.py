@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-    Setup file for hydraulic_infrastructure_realisation.
+    Setup file for Route_Optimization_in_Dynamic_Flow_Fields.
     Use setup.cfg to configure your project.
 
     This file was generated with PyScaffold 3.1.

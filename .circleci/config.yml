@@ -11,26 +11,26 @@ jobs:
       - run:
           name: Install coverage badge beforte running tests
           command: |
-            docker exec -it hydraulic-infrastructure-realisation bash -c "pip install coverage coverage-badge "
+            docker exec -it Route_optimization_in_dynamic_currents bash -c "pip install coverage coverage-badge "
       
       - run:
           name: Run tests
           command: |
-            docker exec -it hydraulic-infrastructure-realisation bash -c "python setup.py test"
-            docker cp hydraulic-infrastructure-realisation:/Hydraulic-Infrastructure-Realisation/htmlcov /tmp/artifacts
+            docker exec -it Route_optimization_in_dynamic_currents bash -c "python setup.py test"
+            docker cp Route_optimization_in_dynamic_currents:/Route_optimization_in_dynamic_currents/htmlcov /tmp/artifacts
       
       - run:
           name: Build docs
           command: |
-            docker exec -it hydraulic-infrastructure-realisation bash -c "pip install sphinx"
-            docker exec -it hydraulic-infrastructure-realisation bash -c "python setup.py docs"
-            docker cp hydraulic-infrastructure-realisation:/Hydraulic-Infrastructure-Realisation/docs/_build/html /tmp/artifacts/docs
+            docker exec -it Route_optimization_in_dynamic_currents bash -c "pip install sphinx"
+            docker exec -it Route_optimization_in_dynamic_currents bash -c "python setup.py docs"
+            docker cp Route_optimization_in_dynamic_currents:/Route_optimization_in_dynamic_currents/docs/_build/html /tmp/artifacts/docs
       
       - run:
           name: Generate coverage badge
           command: |
-            docker exec -it hydraulic-infrastructure-realisation bash -c "coverage-badge -o coverage.svg"
-            docker cp hydraulic-infrastructure-realisation:/Hydraulic-Infrastructure-Realisation/coverage.svg /tmp/artifacts/
+            docker exec -it Route_optimization_in_dynamic_currents bash -c "coverage-badge -o coverage.svg"
+            docker cp Route_optimization_in_dynamic_currents:/Route_optimization_in_dynamic_currents/coverage.svg /tmp/artifacts/
       
       - store_artifacts:
           path: /tmp/artifacts
