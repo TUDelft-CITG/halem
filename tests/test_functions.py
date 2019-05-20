@@ -7,32 +7,27 @@ import pytest
 import numpy as np
 import geopy.distance
 
-# @pytest.fixture
 def coord_a():
     return (0,0)
 
-# @pytest.fixture
 def coord_b():
     return (0,1)
 
-# @pytest.fixture
 def vship():
     return 5
 
-# @pytest.fixture
 def v(mag):
     v = np.array([[0,0,1,-1]])
     v = mag * np.concatenate((v,v), axis = 0)
     return v
 
-# @pytest.fixture
 def u(mag):
     u = np.array([[1,-1,0,0]])
     u = mag * np.concatenate((u,u), axis = 0)
     return u
 
 
-def test_haversine(coord_a, coord_b):
+def test_haversine():
     dist = Functions.haversine(coord_a(), coord_a())
     dist1 = Functions.haversine(coord_a(), coord_b())
     dist2 = geopy.distance.geodesic(coord_a(), coord_b()).m
@@ -40,7 +35,7 @@ def test_haversine(coord_a, coord_b):
     assert dist == 0 
     assert abs(dist1 - dist2) < 0.01*dist1
     
-def test_costfunction_space(coord_a, coord_b,u, v, vship):
+def test_costfunction_space():
     edge = (0,1)
     nodes = [coord_a(), coord_b()]
     mask = np.full((u(1).shape), False)
@@ -48,7 +43,7 @@ def test_costfunction_space(coord_a, coord_b,u, v, vship):
     dist = Functions.haversine(coord_a(), coord_b()) * np.ones(u(1).shape[1])
     np.testing.assert_array_equal(L,dist)
     
-def test_costfunction_time(coord_a, coord_b,u, v, vship):
+def test_costfunction_time():
     mag = 3
     edge = (0,1)
     nodes = [coord_a(), coord_b()]
@@ -58,8 +53,3 @@ def test_costfunction_time(coord_a, coord_b,u, v, vship):
     dist1 = Functions.haversine(coord_a(), coord_b())
     dist = dist1/VV
     np.testing.assert_array_equal(L,dist)
-
-# test_haversine(coord_a, coord_b)
-# test_costfunction_space(coord_a, coord_b,u, v, vship)
-# test_costfunction_time(coord_a, coord_b,u, v, vship)
-# print('Passed all tests')

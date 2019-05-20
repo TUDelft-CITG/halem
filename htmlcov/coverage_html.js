@@ -1,5 +1,5 @@
 // Licensed under the Apache License: http://www.apache.org/licenses/LICENSE-2.0
-// For details: https://github.com/nedbat/coveragepy/blob/master/NOTICE.txt
+// For details: https://bitbucket.org/ned/coveragepy/src/default/NOTICE.txt
 
 // Coverage.py HTML report browser code.
 /*jslint browser: true, sloppy: true, vars: true, plusplus: true, maxerr: 50, indent: 4 */
@@ -169,13 +169,22 @@ coverage.wire_up_filter = function () {
 
 // Loaded on index.html
 coverage.index_ready = function ($) {
-    // Look for a localStorage item containing previous sort settings:
+    // Look for a cookie containing previous sort settings:
     var sort_list = [];
-    var storage_name = "COVERAGE_INDEX_SORT";
-    var stored_list = localStorage.getItem(storage_name);
+    var cookie_name = "COVERAGE_INDEX_SORT";
+    var i;
 
-    if (stored_list) {
-        sort_list = JSON.parse('[[' + stored_list + ']]');
+    // This almost makes it worth installing the jQuery cookie plugin:
+    if (document.cookie.indexOf(cookie_name) > -1) {
+        var cookies = document.cookie.split(";");
+        for (i = 0; i < cookies.length; i++) {
+            var parts = cookies[i].split("=");
+
+            if ($.trim(parts[0]) === cookie_name && parts[1]) {
+                sort_list = eval("[[" + parts[1] + "]]");
+                break;
+            }
+        }
     }
 
     // Create a new widget which exists only to save and restore
@@ -222,7 +231,7 @@ coverage.index_ready = function ($) {
 
     // Watch for page unload events so we can save the final sort settings:
     $(window).unload(function () {
-        localStorage.setItem(storage_name, sort_list.toString())
+        document.cookie = cookie_name + "=" + sort_list.toString() + "; path=/";
     });
 };
 
@@ -546,16 +555,11 @@ coverage.resize_scroll_markers = function () {
 
     var previous_line = -99,
         last_mark,
-        last_top,
-        offsets = {};
+        last_top;
 
-    // Calculate line offsets outside loop to prevent relayouts
-    c.missed_lines.each(function() {
-        offsets[this.id] = $(this).offset().top;
-    });
     c.missed_lines.each(function () {
-        var id_name = $(this).attr('id'),
-            line_top = Math.round(offsets[id_name] * marker_scale),
+        var line_top = Math.round($(this).offset().top * marker_scale),
+            id_name = $(this).attr('id'),
             line_number = parseInt(id_name.substring(1, id_name.length));
 
         if (line_number === previous_line + 1) {

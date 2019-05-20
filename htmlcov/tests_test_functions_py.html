@@ -63,26 +63,26 @@
 <p id="n7" class="stm run hide_run"><a href="#n7">7</a></p>
 <p id="n8" class="stm run hide_run"><a href="#n8">8</a></p>
 <p id="n9" class="pln"><a href="#n9">9</a></p>
-<p id="n10" class="pln"><a href="#n10">10</a></p>
-<p id="n11" class="stm run hide_run"><a href="#n11">11</a></p>
+<p id="n10" class="stm run hide_run"><a href="#n10">10</a></p>
+<p id="n11" class="pln"><a href="#n11">11</a></p>
 <p id="n12" class="stm mis"><a href="#n12">12</a></p>
 <p id="n13" class="pln"><a href="#n13">13</a></p>
-<p id="n14" class="pln"><a href="#n14">14</a></p>
-<p id="n15" class="stm run hide_run"><a href="#n15">15</a></p>
+<p id="n14" class="stm run hide_run"><a href="#n14">14</a></p>
+<p id="n15" class="pln"><a href="#n15">15</a></p>
 <p id="n16" class="stm mis"><a href="#n16">16</a></p>
 <p id="n17" class="pln"><a href="#n17">17</a></p>
-<p id="n18" class="pln"><a href="#n18">18</a></p>
-<p id="n19" class="stm run hide_run"><a href="#n19">19</a></p>
+<p id="n18" class="stm run hide_run"><a href="#n18">18</a></p>
+<p id="n19" class="pln"><a href="#n19">19</a></p>
 <p id="n20" class="stm mis"><a href="#n20">20</a></p>
 <p id="n21" class="pln"><a href="#n21">21</a></p>
-<p id="n22" class="pln"><a href="#n22">22</a></p>
-<p id="n23" class="stm run hide_run"><a href="#n23">23</a></p>
+<p id="n22" class="stm run hide_run"><a href="#n22">22</a></p>
+<p id="n23" class="pln"><a href="#n23">23</a></p>
 <p id="n24" class="stm mis"><a href="#n24">24</a></p>
 <p id="n25" class="stm mis"><a href="#n25">25</a></p>
 <p id="n26" class="stm mis"><a href="#n26">26</a></p>
 <p id="n27" class="pln"><a href="#n27">27</a></p>
-<p id="n28" class="pln"><a href="#n28">28</a></p>
-<p id="n29" class="stm run hide_run"><a href="#n29">29</a></p>
+<p id="n28" class="stm run hide_run"><a href="#n28">28</a></p>
+<p id="n29" class="pln"><a href="#n29">29</a></p>
 <p id="n30" class="stm mis"><a href="#n30">30</a></p>
 <p id="n31" class="stm mis"><a href="#n31">31</a></p>
 <p id="n32" class="stm mis"><a href="#n32">32</a></p>
@@ -130,26 +130,26 @@
 <p id="t7" class="stm run hide_run"><span class="key">import</span> <span class="nam">numpy</span> <span class="key">as</span> <span class="nam">np</span><span class="strut">&nbsp;</span></p>
 <p id="t8" class="stm run hide_run"><span class="key">import</span> <span class="nam">geopy</span><span class="op">.</span><span class="nam">distance</span><span class="strut">&nbsp;</span></p>
 <p id="t9" class="pln"><span class="strut">&nbsp;</span></p>
-<p id="t10" class="pln"><span class="com"># @pytest.fixture</span><span class="strut">&nbsp;</span></p>
-<p id="t11" class="stm run hide_run"><span class="key">def</span> <span class="nam">coord_a</span><span class="op">(</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
+<p id="t10" class="stm run hide_run"><span class="op">@</span><span class="nam">pytest</span><span class="op">.</span><span class="nam">fixture</span><span class="strut">&nbsp;</span></p>
+<p id="t11" class="pln"><span class="key">def</span> <span class="nam">coord_a</span><span class="op">(</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t12" class="stm mis">    <span class="key">return</span> <span class="op">(</span><span class="num">0</span><span class="op">,</span><span class="num">0</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t13" class="pln"><span class="strut">&nbsp;</span></p>
-<p id="t14" class="pln"><span class="com"># @pytest.fixture</span><span class="strut">&nbsp;</span></p>
-<p id="t15" class="stm run hide_run"><span class="key">def</span> <span class="nam">coord_b</span><span class="op">(</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
+<p id="t14" class="stm run hide_run"><span class="op">@</span><span class="nam">pytest</span><span class="op">.</span><span class="nam">fixture</span><span class="strut">&nbsp;</span></p>
+<p id="t15" class="pln"><span class="key">def</span> <span class="nam">coord_b</span><span class="op">(</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t16" class="stm mis">    <span class="key">return</span> <span class="op">(</span><span class="num">0</span><span class="op">,</span><span class="num">1</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t17" class="pln"><span class="strut">&nbsp;</span></p>
-<p id="t18" class="pln"><span class="com"># @pytest.fixture</span><span class="strut">&nbsp;</span></p>
-<p id="t19" class="stm run hide_run"><span class="key">def</span> <span class="nam">vship</span><span class="op">(</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
+<p id="t18" class="stm run hide_run"><span class="op">@</span><span class="nam">pytest</span><span class="op">.</span><span class="nam">fixture</span><span class="strut">&nbsp;</span></p>
+<p id="t19" class="pln"><span class="key">def</span> <span class="nam">vship</span><span class="op">(</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t20" class="stm mis">    <span class="key">return</span> <span class="num">5</span><span class="strut">&nbsp;</span></p>
 <p id="t21" class="pln"><span class="strut">&nbsp;</span></p>
-<p id="t22" class="pln"><span class="com"># @pytest.fixture</span><span class="strut">&nbsp;</span></p>
-<p id="t23" class="stm run hide_run"><span class="key">def</span> <span class="nam">v</span><span class="op">(</span><span class="nam">mag</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
+<p id="t22" class="stm run hide_run"><span class="op">@</span><span class="nam">pytest</span><span class="op">.</span><span class="nam">fixture</span><span class="strut">&nbsp;</span></p>
+<p id="t23" class="pln"><span class="key">def</span> <span class="nam">v</span><span class="op">(</span><span class="nam">mag</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t24" class="stm mis">    <span class="nam">v</span> <span class="op">=</span> <span class="nam">np</span><span class="op">.</span><span class="nam">array</span><span class="op">(</span><span class="op">[</span><span class="op">[</span><span class="num">0</span><span class="op">,</span><span class="num">0</span><span class="op">,</span><span class="num">1</span><span class="op">,</span><span class="op">-</span><span class="num">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t25" class="stm mis">    <span class="nam">v</span> <span class="op">=</span> <span class="nam">mag</span> <span class="op">*</span> <span class="nam">np</span><span class="op">.</span><span class="nam">concatenate</span><span class="op">(</span><span class="op">(</span><span class="nam">v</span><span class="op">,</span><span class="nam">v</span><span class="op">)</span><span class="op">,</span> <span class="nam">axis</span> <span class="op">=</span> <span class="num">0</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t26" class="stm mis">    <span class="key">return</span> <span class="nam">v</span><span class="strut">&nbsp;</span></p>
 <p id="t27" class="pln"><span class="strut">&nbsp;</span></p>
-<p id="t28" class="pln"><span class="com"># @pytest.fixture</span><span class="strut">&nbsp;</span></p>
-<p id="t29" class="stm run hide_run"><span class="key">def</span> <span class="nam">u</span><span class="op">(</span><span class="nam">mag</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
+<p id="t28" class="stm run hide_run"><span class="op">@</span><span class="nam">pytest</span><span class="op">.</span><span class="nam">fixture</span><span class="strut">&nbsp;</span></p>
+<p id="t29" class="pln"><span class="key">def</span> <span class="nam">u</span><span class="op">(</span><span class="nam">mag</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t30" class="stm mis">    <span class="nam">u</span> <span class="op">=</span> <span class="nam">np</span><span class="op">.</span><span class="nam">array</span><span class="op">(</span><span class="op">[</span><span class="op">[</span><span class="num">1</span><span class="op">,</span><span class="op">-</span><span class="num">1</span><span class="op">,</span><span class="num">0</span><span class="op">,</span><span class="num">0</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t31" class="stm mis">    <span class="nam">u</span> <span class="op">=</span> <span class="nam">mag</span> <span class="op">*</span> <span class="nam">np</span><span class="op">.</span><span class="nam">concatenate</span><span class="op">(</span><span class="op">(</span><span class="nam">u</span><span class="op">,</span><span class="nam">u</span><span class="op">)</span><span class="op">,</span> <span class="nam">axis</span> <span class="op">=</span> <span class="num">0</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t32" class="stm mis">    <span class="key">return</span> <span class="nam">u</span><span class="strut">&nbsp;</span></p>
@@ -194,7 +194,7 @@
     <div class="content">
         <p>
             <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.io/en/coverage-5.0a5">coverage.py v5.0a5</a>,
-            created at 2019-05-20 09:06
+            created at 2019-05-20 09:19
         </p>
     </div>
 </div>

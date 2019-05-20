@@ -1,5 +1,5 @@
 /* Licensed under the Apache License: http://www.apache.org/licenses/LICENSE-2.0 */
-/* For details: https://github.com/nedbat/coveragepy/blob/master/NOTICE.txt */
+/* For details: https://bitbucket.org/ned/coveragepy/src/default/NOTICE.txt */
 
 /* CSS styles for coverage.py. */
 
@@ -205,15 +205,15 @@ h2.stats {
     padding: 0 .5em;
     color: #999999;
     font-family: verdana, sans-serif;
-}
+    font-size: .625em;   /* 10/16 */
+    line-height: 1.6em;  /* 16/10 */
+    }
 .linenos p.highlight {
     background: #ffdd00;
     }
 .linenos p a {
     text-decoration: none;
     color: #999999;
-    font-size: .8333em;   /* 10/12 */
-    line-height: 1em;
     }
 .linenos p a:hover {
     text-decoration: underline;
@@ -365,7 +365,6 @@ td.text {
     height: 100%;
     background: white;
     border-left: 1px solid #eee;
-    will-change: transform; /* for faster scrolling of fixed element in Chrome */
     }
 
 #scroll_marker .marker {
