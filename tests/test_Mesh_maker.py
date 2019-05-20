@@ -297,7 +297,7 @@ def test_Graph_flow_model():
 def test_Graph_flow_model_with_indices():
     name_textfile_flow = 'maaktnietuit'
     Load_flow = flow_class
-    nodes_index = np.loadtxt('Data/idx.csv', dtype=int)
+    nodes_index = np.loadtxt('tests/Data/idx.csv', dtype=int)
     vship = np.array([[4],[5]])
     WD_min = 1
 

@@ -134,11 +134,11 @@ def test_Has_route():
     assert route_space.y_route[1] == 0
     
 def test_save_obj():
-    halem.save_object(Roadmap, 'Data/Roadmap')
-    assert os.path.exists('Data/Roadmap')
-    with open('Data/Roadmap', 'rb') as input:
+    halem.save_object(Roadmap, 'tests/Data/Roadmap')
+    assert os.path.exists('tests/Data/Roadmap')
+    with open('tests/Data/Roadmap', 'rb') as input:
         Roadmap_load = pickle.load(input)
-    os.remove('Data/Roadmap')
+    os.remove('tests/Data/Roadmap')
     np.testing.assert_array_equal(Roadmap_load.nodes, Roadmap.nodes)
     np.testing.assert_array_equal(Roadmap_load.u, Roadmap.u)
     np.testing.assert_array_equal(Roadmap_load.v, Roadmap.v)
