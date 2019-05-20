@@ -30,7 +30,6 @@ requires = [
     "matplotlib",
     "IPython",
     "geopy",
-    "os",
     "pint",
     "pyproj",
     "plotly",
