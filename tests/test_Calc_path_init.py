@@ -162,4 +162,4 @@ def test_HALEM_time():
     route_time = Calc_path.Has_route(start, stop, Roadmap, t0, graph_functions_time)
     path, time, dist = halem.HALEM_time(start[::-1],stop[::-1],t0,vmax, Roadmap)
 
-    np.testing.assert_array_equal(Roadmap.nodes[np.array(route_time.route[:,0], dtype=int)], path)
+    np.testing.assert_array_equal(Roadmap.nodes[np.array(route_time.route[:,0], dtype=int)], path[:,::-1])

@@ -6,6 +6,8 @@ scipy
 netCDF4
 click
 matplotlib
+IPython
+geopy
 pint
 pyproj
 plotly
