@@ -1,5 +1,5 @@
 Metadata-Version: 2.1
-Name: halem
+Name: halem-pkg-PietervanHalem
 Version: 0.1.0
 Summary: The Route optimization for dynamic flow field searches the optimal route for a given flow field.
 Home-page: https://github.com/TUDelft-CITG/Route_optimization_in_dynamic_currents

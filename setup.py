@@ -55,19 +55,12 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(
-    name="halem-pkg-PietervanHalem",
+    name="halem",
     version="0.1.0",
     author="Pieter van Halem",
     author_email="pieter.vanhalem@vanoord.com",
     classifiers=[
-        'Development Status :: 1 - Alpha',
-        'Intended Audience :: Developers',
-        'Natural Language :: English',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
+        "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
