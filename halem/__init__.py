@@ -76,4 +76,3 @@ def HALEM_time(start, stop, t0, vmax, Roadmap):
                 dist.append(D)
         dist = np.array(dist)
         return path[:,::-1], time, dist
-
