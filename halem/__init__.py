@@ -52,6 +52,7 @@ def plot_timeseries(route, Roadmap):
     plt.ylim(route.route[0,1]-2000,route.route[-1,1]+2000)
 
 def HALEM_time(start, stop, t0, vmax, Roadmap):
+<<<<<<< HEAD
         start = start[::-1]
         stop = stop[::-1]
 
@@ -76,3 +77,108 @@ def HALEM_time(start, stop, t0, vmax, Roadmap):
                 dist.append(D)
         dist = np.array(dist)
         return path[:,::-1], time, dist
+=======
+    start = start[::-1]
+    stop = stop[::-1]
+
+    vvmax = Roadmap.vship[:,-1]
+
+    vv= np.abs(vvmax - vmax)
+    arg_vship = int(np.argwhere(vv == vv.min())[0])
+    class graph_functions_time:
+        function_type = "time optimalisation"
+        weights = Roadmap.weight_time[arg_vship].weights
+        time = Roadmap.weight_time[arg_vship].weights
+        vship = Roadmap.vship[arg_vship]
+
+    route = Calc_path.Has_route(start, stop, Roadmap, t0, graph_functions_time)
+    path = Roadmap.nodes[np.array(route.route[:,0], dtype=int)]
+    time = route.route[:,1]
+
+    dist = []
+    D = 0
+    for i in range(route.route[:,0].shape[0] -1 ):
+            D =D + Mesh_maker.haversine((route.y_route[i], route.x_route[i]), (route.y_route[i +1], route.x_route[i+1]))
+            dist.append(D)
+    dist = np.array(dist)
+    return path[:,::-1], time, dist
+
+def HALEM_space(start, stop, t0, vmax, Roadmap):
+    start = start[::-1]
+    stop = stop[::-1]
+
+    vvmax = Roadmap.vship[:,-1]
+
+    vv= np.abs(vvmax - vmax)
+    arg_vship = int(np.argwhere(vv == vv.min())[0])
+    class graph_functions_time:
+        function_type = "time optimalisation"
+        weights = Roadmap.weight_space[arg_vship].weights
+        time = Roadmap.weight_time[arg_vship].weights
+        vship = Roadmap.vship[arg_vship]
+
+    route = Calc_path.Has_route(start, stop, Roadmap, t0, graph_functions_time)
+    path = Roadmap.nodes[np.array(route.route[:,0], dtype=int)]
+    time = route.route[:,1]
+
+    dist = []
+    D = 0
+    for i in range(route.route[:,0].shape[0] -1 ):
+            D =D + Mesh_maker.haversine((route.y_route[i], route.x_route[i]), (route.y_route[i +1], route.x_route[i+1]))
+            dist.append(D)
+    dist = np.array(dist)
+    return path[:,::-1], time, dist
+
+def HALEM_cost(start, stop, t0, vmax, Roadmap):
+    start = start[::-1]
+    stop = stop[::-1]
+
+    vvmax = Roadmap.vship[:,-1]
+
+    vv= np.abs(vvmax - vmax)
+    arg_vship = int(np.argwhere(vv == vv.min())[0])
+    class graph_functions_time:
+        function_type = "time optimalisation"
+        weights = Roadmap.weight_cost[arg_vship].weights
+        time = Roadmap.weight_time[arg_vship].weights
+        vship = Roadmap.vship[arg_vship]
+
+    route = Calc_path.Has_route(start, stop, Roadmap, t0, graph_functions_time)
+    path = Roadmap.nodes[np.array(route.route[:,0], dtype=int)]
+    time = route.route[:,1]
+
+    dist = []
+    D = 0
+    for i in range(route.route[:,0].shape[0] -1 ):
+            D =D + Mesh_maker.haversine((route.y_route[i], route.x_route[i]), (route.y_route[i +1], route.x_route[i+1]))
+            dist.append(D)
+    dist = np.array(dist)
+    return path[:,::-1], time, dist
+
+def HALEM_co2(start, stop, t0, vmax, Roadmap):
+    start = start[::-1]
+    stop = stop[::-1]
+
+    vvmax = Roadmap.vship[:,-1]
+
+    vv= np.abs(vvmax - vmax)
+    arg_vship = int(np.argwhere(vv == vv.min())[0])
+    class graph_functions_time:
+        function_type = "time optimalisation"
+        weights = Roadmap.weight_cost[arg_vship].weights
+        time = Roadmap.weight_time[arg_vship].weights
+        vship = Roadmap.vship[arg_vship]
+
+    route = Calc_path.Has_route(start, stop, Roadmap, t0, graph_functions_time)
+    path = Roadmap.nodes[np.array(route.route[:,0], dtype=int)]
+    time = route.route[:,1]
+
+    dist = []
+    D = 0
+    for i in range(route.route[:,0].shape[0] -1 ):
+            D =D + Mesh_maker.haversine((route.y_route[i], route.x_route[i]), (route.y_route[i +1], route.x_route[i+1]))
+            dist.append(D)
+    dist = np.array(dist)
+    return path[:,::-1], time, dist
+
+>>>>>>> f1d67f55aed490d13151fc5dea37b86673837389
