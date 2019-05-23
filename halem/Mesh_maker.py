@@ -72,29 +72,21 @@ def FIFO_maker(y):
                 None
     return(y_FIFO)
 
-def FIFO_maker3(y,N1):
+def FIFO_maker2(y, N1):
     arg = np.squeeze(argrelextrema(y, np.less))
-    y_FIFO = 1*y
     if arg.shape == ():
-        loc = np.argwhere(y <= y[arg])[-2:]
+        arg = np.array([arg])
+    else:
+        None
+    y_FIFO = 1*y
+    for a in arg:
+        loc = np.argwhere(y[:a+1] <= y[a])[-2:] 
         if loc.shape == (2,1):
             if True in N1[int(loc[0]):int(loc[1])]:
                 None
             else:
-                y_FIFO[int(loc[0]):int(loc[1])] = y[arg]
-        else:
-            None
-    else:
-        for a in arg:
-            loc = np.argwhere(y <= y[a])[-2:] 
-            if loc.shape == (2,1):
-                if True in N1[int(loc[0]):int(loc[1])]:
-                    None
-                else:
-                    y_FIFO[int(loc[0]):int(loc[1])] = y[a]
-            else:
-                None
-    return(y_FIFO)
+                y_FIFO[int(loc[0]):int(loc[1])] = y[a]
+    return y_FIFO
 
 def closest_node(node, nodes, node_list):
     node_x = node_list[node][1]
@@ -248,11 +240,11 @@ class Graph_flow_model():
                             from_node = edge[0]
                             to_node = edge[1]
                             W = Functions.costfunction_timeseries(edge, vship[j], self.nodes, self.u, self.v, self.mask) + self.t
-                            W = FIFO_maker(W) - self.t
+                            W = FIFO_maker2(W, self.mask[from_node]) - self.t
                                             
                             L = Functions.costfunction_spaceseries(edge, vship[j], self.nodes, self.u, self.v, self.mask)
                             L = L + np.arange(len(L))* (1/len(L))
-                            L = FIFO_maker(L) - np.arange(len(L))* (1/len(L))
+                            L = FIFO_maker2(L, self.mask[from_node]) - np.arange(len(L))* (1/len(L))
                             euros = compute_cost(W,  vship[j] )
 
                             graph_time.add_edge((from_node, i), (to_node, j), W)
@@ -317,12 +309,12 @@ class Graph_flow_model_with_indices():
         'Calculate Weights'
         self.weight_space = []
         self.weight_time = []
-        # self.weight_cost = []
+        self.weight_cost = []
         
         for vv in range(len(self.vship)):
             graph_time = Graph()
             graph_space = Graph()
-            # graph_cost = Graph()
+            graph_cost = Graph()
             vship = self.vship[vv]
             for edge in graph0.weights:
                 for i in range(len(vship)):
@@ -330,20 +322,24 @@ class Graph_flow_model_with_indices():
                             from_node = edge[0]
                             to_node = edge[1]
                             W = Functions.costfunction_timeseries(edge, vship[j], self.nodes, self.u, self.v, self.mask) + self.t
-                            W = FIFO_maker(W) - self.t
+                            W = FIFO_maker2(W, self.mask[from_node]) - self.t
                                             
                             L = Functions.costfunction_spaceseries(edge, vship[j], self.nodes, self.u, self.v, self.mask)
                             L = L + np.arange(len(L))* (1/len(L))
-                            L = FIFO_maker(L) - np.arange(len(L))* (1/len(L))
-                            # euros = compute_cost(W,  vship[j] )
+                            L = FIFO_maker2(L, self.mask[from_node]) - np.arange(len(L))* (1/len(L))
+                            euros = compute_cost(W,  vship[j] )
 
                             graph_time.add_edge((from_node, i), (to_node, j), W)
                             graph_space.add_edge((from_node, i), (to_node,j), L)
-                            # graph_cost.add_edge((from_node, i), (to_node, j), euros)
+                            graph_cost.add_edge((from_node, i), (to_node, j), euros)
             
             self.weight_space.append(graph_space)
             self.weight_time.append(graph_time)
-            # self.weight_cost.append(graph_cost)
+            self.weight_cost.append(graph_cost)
+            
+            clear_output(wait= True)
+            print(np.round((vv+1)/len(self.vship)*100,2), '%')
+           
             
         clear_output(wait= True)
-        print("4/4")       
+        print("4/4") 

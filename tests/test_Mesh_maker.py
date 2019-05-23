@@ -169,6 +169,20 @@ def test_find_neighbor2():
     for i in range(1,25):
         assert i in nb
 
+def test_FIFO_maker2():
+    x = np.arange(0,2*np.pi,0.01)
+    y = 2*np.sin(x)+x
+    N1 = np.full(len(y), False)
+    y = Mesh_maker.FIFO_maker2(y, N1)
+    loc_min = argrelextrema(y, np.less)
+    assert len(loc_min[0]) == 0
+    
+    x = np.arange(0,4*np.pi,0.01)
+    y = 2*np.sin(x)+x
+    y = Mesh_maker.FIFO_maker2(y, N1)
+    loc_min = argrelextrema(y, np.less)
+    assert len(loc_min[0]) == 0
+
 def test_FIFO_maker():
     x = np.arange(0,2*np.pi,0.01)
     y = 2*np.sin(x)+x
