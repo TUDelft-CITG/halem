@@ -19,7 +19,15 @@ def find_startstop(start, nodes):
 
     return pt
 
-def find_k(t, ts):
+def find_k_time(t, ts):
+    QQ = abs(ts - t)
+    k = np.argwhere(QQ == QQ.min())[0][0]
+    return k
+
+def find_k_repeat(t, ts):
+    N = int(t/ts[-1])
+    t = t - N * ts[-1]
+    
     QQ = abs(ts - t)
     k = np.argwhere(QQ == QQ.min())[0][0]
     return k
@@ -32,7 +40,12 @@ def dijsktra(graph, initial, end, t0, graph_functions):
     visited = set()
     Graph_data = graph
     graph = graph.graph
-    
+
+    if Graph_data.t[0] == 0:
+        find_k = find_k_repeat
+    else:
+        find_k = find_k_time
+
     while current_node != end:
         visited.add(current_node)
         destinations = graph.edges[current_node]

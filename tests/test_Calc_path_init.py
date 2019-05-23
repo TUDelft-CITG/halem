@@ -73,7 +73,7 @@ def test_find_startstop():
 def test_find_k():
     ts = 100
     t = np.arange(0,200,0.33)
-    k = Calc_path.find_k(t,ts)
+    k = Calc_path.find_k_time(t,ts)
     assert k == 303
     
 def test_dijstra():

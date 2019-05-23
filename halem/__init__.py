@@ -51,6 +51,40 @@ def plot_timeseries(route, Roadmap):
 
     plt.ylim(route.route[0,1]-2000,route.route[-1,1]+2000)
 
+def plot_timeseries2(path, time, Roadmap, Color = 'r'):
+        dist = []
+        TT = []
+        D = 0
+        for i in range(len(path) -1 ):
+                nx = ((Roadmap.nodes[:,0] - path[i,1])**2 + (Roadmap.nodes[:,1] - path[i,0])**2)**0.5
+                idx = np.argwhere(nx == nx.min())[0][0]
+                D = D + Mesh_maker.haversine((path[i,1], path[i,0]), (path[i+1,1], path[i+1,0]))
+                dist.append(D)
+                T = Roadmap.mask[idx]
+                TT.append(T)
+        TT = np.array(TT)
+        dist = np.array(dist)
+        
+        if Roadmap.t[0] == 0:
+                k = Calc_path.find_k_repeat(time[0], Roadmap.t)
+                plt.plot(dist,(time[:-1] - time[0])/3600, 'o', color = Color)            
+                cval = np.arange(0,1.1, 0.5)
+                plt.contourf(dist,( Roadmap.t - Roadmap.t[k])/3600, np.transpose(TT), cval, colors=('cornflowerblue', 'sandybrown'))
+                plt.contourf(dist,( Roadmap.t - Roadmap.t[k]+Roadmap.t[-1])/3600, np.transpose(TT), cval, colors=('cornflowerblue', 'sandybrown'))
+
+                plt.colorbar()
+                plt.xlabel('traveled distance [m]')
+                plt.ylabel('time [h]')
+                plt.ylim(0, (time[-1] - time[0])/3600*1.2)
+        else:
+                plt.plot(dist,(time[:-1]-time[0])/3600, 'o', color = Color)            
+                cval = np.arange(0,1.1, 0.5)
+                plt.contourf(dist,(Roadmap.t- time[0])/3600, np.transpose(TT), cval, colors=('cornflowerblue', 'sandybrown'))
+                plt.colorbar()
+                plt.ylim(0, (time[-1]-time[0])/3600*1.2)
+                plt.xlabel('traveled distance [m]')
+                plt.ylabel('time [h]')
+
 def HALEM_time(start, stop, t0, vmax, Roadmap):
         start = start[::-1]
         stop = stop[::-1]
@@ -154,4 +188,3 @@ def HALEM_co2(start, stop, t0, vmax, Roadmap):
                 dist.append(D)
         dist = np.array(dist)
         return path[:,::-1], time, dist
-
