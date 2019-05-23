@@ -4,10 +4,11 @@ from numpy import ma
 import netCDF4
 from netCDF4 import Dataset, num2date
 
-import RODFF
-import RODFF.Mesh_maker as Mesh_maker
-import RODFF.Functions as Functions
-import RODFF.Calc_path as Calc_path
+import halem
+import halem.Mesh_maker as Mesh_maker
+import halem.Functions as Functions
+import halem.Calc_path as Calc_path
+import halem.Flow_class as Flow_class
 
 from matplotlib import pyplot as plt
 from matplotlib import gridspec as gridspec
@@ -22,7 +23,7 @@ import cartopy.feature as cfeature
 import ipywidgets as widgets
 from tkinter import *
 
-class LineBuilder:
+class LineBuilder: 
     def __init__(self, line):
         self.line = line
         self.xs = []
@@ -63,7 +64,7 @@ class mclass:
         self.text2.insert(END, 't0 = ')
         self.text2.pack()
         self.t0 = Entry()
-        self.t0.insert(END, '01/07/2013 04:00:00')
+        self.t0.insert(END, '17/04/2019 01:00:00')
         self.t0.pack()
 
         self.button1 = Button (window, text="Select Start & End", command=self.plot)
@@ -91,13 +92,13 @@ class mclass:
         if self.tkvar.get() == '3D_DCSMFM_05_nm':
             name_textfile_load = 'D:/Roadmaps/'
         elif self.tkvar.get() == 'DCSMFM_05_nm':
-            name_textfile_load = 'D:/Roadmaps/Rm_DCSM_FM_05nm_WDmin=1.5,nl=(0.9, 1)'
+            name_textfile_load = 'D:/Roadmaps/Rm_DCSM_FM_05nm_WDmin=1.5,nl=(0.9, 1)_idx'
         elif self.tkvar.get() == 'DCSMFM_100_m':
             name_textfile_load = 'D:/Roadmaps/'
         elif self.tkvar.get() =='DCSM_zuno_NOOS':
-            name_textfile_load = 'test'
+            name_textfile_load = 'D:/Roadmaps/Rm_DCSM_zuno_WDmin=1.5,nl=(1, 1)'
         else:
-            name_textfile_load = 'D:/DCSM-FM/A06_pieter/Progres1_HAM317'
+            name_textfile_load = 'D:/Roadmaps/Rm_DCSM_zuno_WDmin=1.5,nl=(1, 1)'
 
         with open(name_textfile_load, 'rb') as input:
             Roadmap = pickle.load(input)
@@ -110,32 +111,46 @@ class mclass:
         t0 = self.t0.get()
         vship = float(self.vship.get())
 
-       
+        vvmax = Roadmap.vship[:,-1]
+
+        vv= np.abs(vvmax - vship)
+        arg_vship = int(np.argwhere(vv == vv.min())[0])
+
         class graph_functions_time:
             function_type = "time optimalisation"
-            weights = Roadmap.graph_time.weights
-            time = Roadmap.graph_time.weights
+            weights = Roadmap.weight_time[arg_vship].weights
+            time = Roadmap.weight_time[arg_vship].weights
+            vship = Roadmap.vship[arg_vship]
+
+        class graph_functions_cost:
+            function_type = "time optimalisation"
+            weights = Roadmap.weight_cost[arg_vship].weights
+            time = Roadmap.weight_time[arg_vship].weights
+            vship = Roadmap.vship[arg_vship]
 
         class graph_functions_space:
             function_type = "time optimalisation"
-            weights = Roadmap.graph_space.weights
-            time = Roadmap.graph_time.weights
+            weights = Roadmap.weight_space[arg_vship].weights
+            time = Roadmap.weight_time[arg_vship].weights
+            vship = Roadmap.vship[arg_vship]
             
         start = (np.array(self.linebuilder.nodes)[0,:])[::-1]
         stop = (np.array(self.linebuilder.nodes)[1,:])[::-1]
 
         route_time = Calc_path.Has_route(start, stop, Roadmap, t0, graph_functions_time)
         route_space = Calc_path.Has_route(start, stop, Roadmap, t0, graph_functions_space)
+        route_cost = Calc_path.Has_route(start, stop, Roadmap, t0, graph_functions_cost)
 
         fig = plt.figure(figsize=(6, 9))
         gs = gridspec.GridSpec(2, 2)
         ax = plt.subplot(gs[0, 0:2], projection=ccrs.Mercator())
-        cval = np.arange(2,30, 0.5)
+        cval = np.arange(0,30, 0.5)
         plt.contourf(x_r,y_r, LS_r, cval, zorder = 1, transform=ccrs.PlateCarree())
         cbar = plt.colorbar()
         cbar.set_label('Depth [m]')
         plt.plot(route_space.x_route, route_space.y_route, 'y.', transform=ccrs.PlateCarree(), markersize = 5, label = 'Shortest Route')
         plt.plot(route_time.x_route, route_time.y_route, 'm.', transform=ccrs.PlateCarree(), markersize = 5, label = 'Fastest Route')
+        plt.plot(route_cost.x_route, route_cost.y_route, 'm.', transform=ccrs.PlateCarree(), markersize = 5, label = 'Fastest Route')
         ax.coastlines(resolution='10m', color='black', linewidth=1)
         ax.gridlines(color = 'grey', zorder = 3)
         ax.add_feature(cfeature.NaturalEarthFeature('physical', 'land', '10m', edgecolor='face', facecolor='palegoldenrod'))
@@ -146,10 +161,10 @@ class mclass:
         ax.set_extent([4.5, 6, 52.8, 53.8])
         plt.legend(loc = 'best')
         plt.subplot(gs[1, 0])
-        RODFF.plot_timeseries(route_space, Roadmap)
+        halem.plot_timeseries(route_space, Roadmap)
         plt.title('s/t Diagram \n Shortest Route')
         plt.subplot(gs[1, 1])
-        RODFF.plot_timeseries(route_time, Roadmap)
+        halem.plot_timeseries(route_time, Roadmap)
         plt.title('s/t Diagram \n Fasest Route')
         plt.show()
         
