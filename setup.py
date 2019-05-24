@@ -56,7 +56,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="halem",
-    version="0.1.2",
+    version="0.1.3",
     author="Pieter van Halem",
     author_email="pieter.vanhalem@vanoord.com",
     classifiers=[
