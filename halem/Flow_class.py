@@ -239,10 +239,10 @@ class flow_3D_FM_05nm():
 class flow_NOOS():
     def __init__(self, name):
         nc = Dataset(name)
-        x_domain = (250,380)                      # general-waddden sea
-        y_domain = (530,760)
-        # x_domain = (300,390)                      # Texel-case
-        # y_domain = (650,760)
+        # x_domain = (250,380)                      # general-waddden sea
+        # y_domain = (530,760)
+        x_domain = (300,390)                      # Texel-case
+        y_domain = (650,760)
 
         v = nc.variables['VELV'][:,:,:]
         u = nc.variables['VELU'][:,:,:]
@@ -266,7 +266,7 @@ class flow_NOOS():
         print('1/3')
 
         bat, nodesb = self.bat()
-        Db_new = griddata((nodesb[:,1],nodesb[:,0]), bat, (x,y), method='linear')
+        Db_new = griddata((nodesb[:,1],nodesb[:,0]), bat, (x,y), method='cubic')
 
         WD = d * 0
         for i in range(d.shape[0]):

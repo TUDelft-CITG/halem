@@ -94,9 +94,9 @@ class mclass:
         elif self.tkvar.get() == 'DCSMFM_05_nm':
             name_textfile_load = 'D:/Roadmaps/Rm_DCSM_FM_05nm_WDmin=1.5,nl=(0.9, 1)_idx'
         elif self.tkvar.get() == 'DCSMFM_100_m':
-            name_textfile_load = 'D:/Roadmaps/'
+            name_textfile_load = 'D:/Roadmaps/TA_General_waddensea_dt=3h'
         elif self.tkvar.get() =='DCSM_zuno_NOOS':
-            name_textfile_load = 'D:/Roadmaps/Rm_DCSM_zuno_WDmin=1.5,nl=(1, 1)'
+            name_textfile_load = 'D:/Roadmaps/Roadmap_tidal_anaysis'
         else:
             name_textfile_load = 'D:/Roadmaps/Rm_DCSM_zuno_WDmin=1.5,nl=(1, 1)'
 
