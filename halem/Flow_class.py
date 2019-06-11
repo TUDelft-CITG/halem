@@ -223,8 +223,8 @@ class flow_3D_FM_05nm():
         t0 = d.timestamp()
         self.t = t+t0
         
-        x = nc.variables['mesh2d_face_x'][:8000]
-        y = nc.variables['mesh2d_face_y'][:8000]
+        x = nc.variables['mesh2d_face_x'][:7000]
+        y = nc.variables['mesh2d_face_y'][:7000]
 
         self.nodes = np.zeros((len(x),2))
         self.nodes[:,0] = y

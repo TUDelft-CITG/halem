@@ -25,6 +25,8 @@ def find_k_time(t, ts):
     return k
 
 def find_k_repeat(t, ts):
+    ts = ts - ts[0]
+    t = t - ts[0]
     N = int(t/ts[-1])
     t = t - N * ts[-1]
     
@@ -41,10 +43,7 @@ def dijsktra(graph, initial, end, t0, graph_functions):
     Graph_data = graph
     graph = graph.graph
 
-    if Graph_data.t[0] == 0:
-        find_k = find_k_repeat
-    else:
-        find_k = find_k_time
+    find_k = find_k_time if Graph_data.repeat == False else find_k_repeat
 
     while current_node != end:
         visited.add(current_node)

@@ -13,6 +13,209 @@ from datetime import datetime
 import pickle
 from IPython.display import clear_output
 
+class Graph_flow_model():
+    def __init__(self, name_textfile_flow,
+                 dx_min, blend, nl, 
+                 number_of_neighbor_layers, 
+                 vship, 
+                 Load_flow, 
+                 WD_min, 
+                 compute_cost, 
+                 nodes_on_land, 
+                 WWL, ukc,
+                 repeat = False,
+                ):
+        self.WWL = WWL
+        self.ukc = ukc
+        self.repeat = repeat
+        
+        'Load Flow'
+        flow = Load_flow(name_textfile_flow)
+        print('1/4')
+
+        'Calculate nodes and flow conditions in nodes'
+        self.nodes_index, self.LS = Get_nodes(flow, nl, dx_min, blend)
+
+        nodes = flow.nodes[self.nodes_index]
+        u = np.asarray(np.transpose(flow.u))[self.nodes_index]
+        v = np.asarray(np.transpose(flow.v))[self.nodes_index]
+        WD = np.asarray(np.transpose(flow.WD))[self.nodes_index]
+
+        self.nodes, self.u, self.v, self.WD = nodes_on_land(nodes,u,v,WD)
+
+        self.tria = Delaunay(self.nodes)
+        self.t = flow.t
+        self.mask = np.full(self.u.shape, False)
+        self.WD_min = WD_min
+        clear_output(wait= True)
+        print('2/4')
+
+        'Calculate edges'
+        self.vship = vship
+        graph0 = Graph()
+        for from_node in range(len(self.nodes)):       
+            to_nodes = find_neighbors2(from_node, self.tria, number_of_neighbor_layers)
+            for to_node in to_nodes:
+                L = haversine(self.nodes[from_node], self.nodes[int(to_node)])
+                graph0.add_edge(from_node, int(to_node), L)
+        clear_output(wait= True)
+
+        self.graph = Graph()
+        vship1 = vship[0]
+        for edge in graph0.weights:
+            for i in range(len(vship1)):
+                    for j in range(len(vship1)):
+                        from_node = edge[0]
+                        to_node = edge[1]
+                        self.graph.add_edge((from_node, i), (to_node, j), 1)
+        
+        print('3/4')
+
+        'Calculate Weights'
+        self.weight_space = []
+        self.weight_time = []
+        self.weight_cost = []
+        
+        for vv in range(len(self.vship)):
+            graph_time = Graph()
+            graph_space = Graph()
+            graph_cost = Graph()
+            vship = self.vship[vv]
+            WD_min = self.WD_min[vv]
+            for edge in graph0.weights:
+                for i in range(len(vship)):
+                        for j in range(len(vship)):
+                            from_node = edge[0]
+                            to_node = edge[1]
+                            W = Functions.costfunction_timeseries(edge, vship[j],WD_min, self) + self.t
+                            W = FIFO_maker2(W, self.mask[from_node]) - self.t
+                                            
+                            L = Functions.costfunction_spaceseries(edge, vship[j],WD_min, self)
+                            L = L + np.arange(len(L))* (1/len(L))
+                            L = FIFO_maker2(L, self.mask[from_node]) - np.arange(len(L))* (1/len(L))
+                            euros = compute_cost(W,  vship[j] )
+
+                            graph_time.add_edge((from_node, i), (to_node, j), W)
+                            graph_space.add_edge((from_node, i), (to_node,j), L)
+                            graph_cost.add_edge((from_node, i), (to_node, j), euros)
+            
+            self.weight_space.append(graph_space)
+            self.weight_time.append(graph_time)
+            self.weight_cost.append(graph_cost)
+            
+            clear_output(wait= True)
+            print(np.round((vv+1)/len(self.vship)*100,2), '%')
+           
+            
+        clear_output(wait= True)
+        print("4/4") 
+                     
+class Graph_flow_model_with_indices():
+    def __init__(self, name_textfile_flow, 
+                 nodes_index, 
+                 number_of_neighbor_layers, 
+                 vship, 
+                 Load_flow, 
+                 WD_min, 
+                 compute_cost, 
+                 nodes_on_land,
+                 WWL,
+                 ukc,
+                 repeat = False,
+                ):
+        self.WWL = WWL
+        self.ukc = ukc
+        self.repeat = repeat
+
+
+        'Load Flow'
+        flow = Load_flow(name_textfile_flow)
+        print('1/4')
+
+        'Calculate nodes and flow conditions in nodes'
+        self.nodes_index = nodes_index
+
+        nodes = flow.nodes[self.nodes_index]
+        u = np.asarray(np.transpose(flow.u))[self.nodes_index]
+        v = np.asarray(np.transpose(flow.v))[self.nodes_index]
+        WD = np.asarray(np.transpose(flow.WD))[self.nodes_index]
+
+        self.nodes, self.u, self.v, self.WD = nodes_on_land(nodes,u,v,WD)
+
+        nodes = flow.nodes[self.nodes_index]
+        u = np.asarray(np.transpose(flow.u))[self.nodes_index]
+        v = np.asarray(np.transpose(flow.v))[self.nodes_index]
+        WD = np.asarray(np.transpose(flow.WD))[self.nodes_index]
+
+        self.nodes, self.u, self.v, self.WD = nodes_on_land(nodes,u,v,WD)
+
+        self.tria = Delaunay(self.nodes)
+        self.t = flow.t
+        self.mask = np.full(self.u.shape, False)
+        self.WD_min = WD_min
+        clear_output(wait= True)
+        print('2/4')
+
+        'Calculate edges'
+        self.vship = vship
+        graph0 = Graph()
+        for from_node in range(len(self.nodes)):       
+            to_nodes = find_neighbors2(from_node, self.tria, number_of_neighbor_layers)
+            for to_node in to_nodes:
+                L = haversine(self.nodes[from_node], self.nodes[int(to_node)])
+                graph0.add_edge(from_node, int(to_node), L)
+        clear_output(wait= True)
+
+        self.graph = Graph()
+        vship1 = vship[0]
+        for edge in graph0.weights:
+            for i in range(len(vship1)):
+                    for j in range(len(vship1)):
+                        from_node = edge[0]
+                        to_node = edge[1]
+                        self.graph.add_edge((from_node, i), (to_node, j), 1)
+        
+        print('3/4')
+
+        'Calculate Weights'
+        self.weight_space = []
+        self.weight_time = []
+        self.weight_cost = []
+        
+        for vv in range(len(self.vship)):
+            graph_time = Graph()
+            graph_space = Graph()
+            graph_cost = Graph()
+            vship = self.vship[vv]
+            WD_min = self.WD_min[vv]
+            for edge in graph0.weights:
+                for i in range(len(vship)):
+                        for j in range(len(vship)):
+                            from_node = edge[0]
+                            to_node = edge[1]
+                            W = Functions.costfunction_timeseries(edge, vship[j],WD_min, self) + self.t
+                            W = FIFO_maker2(W, self.mask[from_node]) - self.t
+                                            
+                            L = Functions.costfunction_spaceseries(edge, vship[j],WD_min, self)
+                            L = L + np.arange(len(L))* (1/len(L))
+                            L = FIFO_maker2(L, self.mask[from_node]) - np.arange(len(L))* (1/len(L))
+                            euros = compute_cost(W,  vship[j] )
+
+                            graph_time.add_edge((from_node, i), (to_node, j), W)
+                            graph_space.add_edge((from_node, i), (to_node,j), L)
+                            graph_cost.add_edge((from_node, i), (to_node, j), euros)
+            
+            self.weight_space.append(graph_space)
+            self.weight_time.append(graph_time)
+            self.weight_cost.append(graph_cost)
+            
+            clear_output(wait= True)
+            print(np.round((vv+1)/len(self.vship)*100,2), '%')
+           
+            
+        clear_output(wait= True)
+        print("4/4") 
+
 class Graph():
     def __init__(self):
         """
@@ -178,185 +381,4 @@ def Get_nodes(flow, nl, dx_min, blend):
 
     LS = ma.array(LS, fill_value= np.nan)
     
-    return new_nodes, LS
-
-class Graph_flow_model():
-    def __init__(self, name_textfile_flow, dx_min, blend, nl, number_of_neighbor_layers, vship, Load_flow, WD_min, compute_cost, nodes_on_land, WWL, ukc):
-        self.WWL = WWL
-        self.ukc = ukc
-        
-        'Load Flow'
-        flow = Load_flow(name_textfile_flow)
-        print('1/4')
-
-        'Calculate nodes and flow conditions in nodes'
-        self.nodes_index, self.LS = Get_nodes(flow, nl, dx_min, blend)
-
-        nodes = flow.nodes[self.nodes_index]
-        u = np.asarray(np.transpose(flow.u))[self.nodes_index]
-        v = np.asarray(np.transpose(flow.v))[self.nodes_index]
-        WD = np.asarray(np.transpose(flow.WD))[self.nodes_index]
-
-        self.nodes, self.u, self.v, self.WD = nodes_on_land(nodes,u,v,WD)
-
-        self.tria = Delaunay(self.nodes)
-        self.t = flow.t
-        self.mask = np.full(self.u.shape, False)
-        self.WD_min = WD_min
-        clear_output(wait= True)
-        print('2/4')
-
-        'Calculate edges'
-        self.vship = vship
-        graph0 = Graph()
-        for from_node in range(len(self.nodes)):       
-            to_nodes = find_neighbors2(from_node, self.tria, number_of_neighbor_layers)
-            for to_node in to_nodes:
-                L = haversine(self.nodes[from_node], self.nodes[int(to_node)])
-                graph0.add_edge(from_node, int(to_node), L)
-        clear_output(wait= True)
-
-        self.graph = Graph()
-        vship1 = vship[0]
-        for edge in graph0.weights:
-            for i in range(len(vship1)):
-                    for j in range(len(vship1)):
-                        from_node = edge[0]
-                        to_node = edge[1]
-                        self.graph.add_edge((from_node, i), (to_node, j), 1)
-        
-        print('3/4')
-
-        'Calculate Weights'
-        self.weight_space = []
-        self.weight_time = []
-        self.weight_cost = []
-        
-        for vv in range(len(self.vship)):
-            graph_time = Graph()
-            graph_space = Graph()
-            graph_cost = Graph()
-            vship = self.vship[vv]
-            WD_min = self.WD_min[vv]
-            for edge in graph0.weights:
-                for i in range(len(vship)):
-                        for j in range(len(vship)):
-                            from_node = edge[0]
-                            to_node = edge[1]
-                            W = Functions.costfunction_timeseries(edge, vship[j],WD_min, self) + self.t
-                            W = FIFO_maker2(W, self.mask[from_node]) - self.t
-                                            
-                            L = Functions.costfunction_spaceseries(edge, vship[j],WD_min, self)
-                            L = L + np.arange(len(L))* (1/len(L))
-                            L = FIFO_maker2(L, self.mask[from_node]) - np.arange(len(L))* (1/len(L))
-                            euros = compute_cost(W,  vship[j] )
-
-                            graph_time.add_edge((from_node, i), (to_node, j), W)
-                            graph_space.add_edge((from_node, i), (to_node,j), L)
-                            graph_cost.add_edge((from_node, i), (to_node, j), euros)
-            
-            self.weight_space.append(graph_space)
-            self.weight_time.append(graph_time)
-            self.weight_cost.append(graph_cost)
-            
-            clear_output(wait= True)
-            print(np.round((vv+1)/len(self.vship)*100,2), '%')
-           
-            
-        clear_output(wait= True)
-        print("4/4") 
-                     
-class Graph_flow_model_with_indices():
-    def __init__(self, name_textfile_flow, nodes_index, number_of_neighbor_layers, vship, Load_flow, WD_min, compute_cost, nodes_on_land,WWL,ukc):
-        self.WWL = WWL
-        self.ukc = ukc
-
-        'Load Flow'
-        flow = Load_flow(name_textfile_flow)
-        print('1/4')
-
-        'Calculate nodes and flow conditions in nodes'
-        self.nodes_index = nodes_index
-
-        nodes = flow.nodes[self.nodes_index]
-        u = np.asarray(np.transpose(flow.u))[self.nodes_index]
-        v = np.asarray(np.transpose(flow.v))[self.nodes_index]
-        WD = np.asarray(np.transpose(flow.WD))[self.nodes_index]
-
-        self.nodes, self.u, self.v, self.WD = nodes_on_land(nodes,u,v,WD)
-
-        nodes = flow.nodes[self.nodes_index]
-        u = np.asarray(np.transpose(flow.u))[self.nodes_index]
-        v = np.asarray(np.transpose(flow.v))[self.nodes_index]
-        WD = np.asarray(np.transpose(flow.WD))[self.nodes_index]
-
-        self.nodes, self.u, self.v, self.WD = nodes_on_land(nodes,u,v,WD)
-
-        self.tria = Delaunay(self.nodes)
-        self.t = flow.t
-        self.mask = np.full(self.u.shape, False)
-        self.WD_min = WD_min
-        clear_output(wait= True)
-        print('2/4')
-
-        'Calculate edges'
-        self.vship = vship
-        graph0 = Graph()
-        for from_node in range(len(self.nodes)):       
-            to_nodes = find_neighbors2(from_node, self.tria, number_of_neighbor_layers)
-            for to_node in to_nodes:
-                L = haversine(self.nodes[from_node], self.nodes[int(to_node)])
-                graph0.add_edge(from_node, int(to_node), L)
-        clear_output(wait= True)
-
-        self.graph = Graph()
-        vship1 = vship[0]
-        for edge in graph0.weights:
-            for i in range(len(vship1)):
-                    for j in range(len(vship1)):
-                        from_node = edge[0]
-                        to_node = edge[1]
-                        self.graph.add_edge((from_node, i), (to_node, j), 1)
-        
-        print('3/4')
-
-        'Calculate Weights'
-        self.weight_space = []
-        self.weight_time = []
-        self.weight_cost = []
-        
-        for vv in range(len(self.vship)):
-            graph_time = Graph()
-            graph_space = Graph()
-            graph_cost = Graph()
-            vship = self.vship[vv]
-            WD_min = self.WD_min[vv]
-            for edge in graph0.weights:
-                for i in range(len(vship)):
-                        for j in range(len(vship)):
-                            from_node = edge[0]
-                            to_node = edge[1]
-                            W = Functions.costfunction_timeseries(edge, vship[j],WD_min, self) + self.t
-                            W = FIFO_maker2(W, self.mask[from_node]) - self.t
-                                            
-                            L = Functions.costfunction_spaceseries(edge, vship[j],WD_min, self)
-                            L = L + np.arange(len(L))* (1/len(L))
-                            L = FIFO_maker2(L, self.mask[from_node]) - np.arange(len(L))* (1/len(L))
-                            euros = compute_cost(W,  vship[j] )
-
-                            graph_time.add_edge((from_node, i), (to_node, j), W)
-                            graph_space.add_edge((from_node, i), (to_node,j), L)
-                            graph_cost.add_edge((from_node, i), (to_node, j), euros)
-            
-            self.weight_space.append(graph_space)
-            self.weight_time.append(graph_time)
-            self.weight_cost.append(graph_cost)
-            
-            clear_output(wait= True)
-            print(np.round((vv+1)/len(self.vship)*100,2), '%')
-           
-            
-        clear_output(wait= True)
-        print("4/4") 
-
-        
+    return new_nodes, LS      
