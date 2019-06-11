@@ -46,6 +46,7 @@ class Graph_flow_model():
         self.tria = Delaunay(self.nodes)
         self.t = flow.t
         self.mask = np.full(self.u.shape, False)
+        self.mask[self.WD < WD_min + ukc] = True
         self.WD_min = WD_min
         clear_output(wait= True)
         print('2/4')
@@ -256,7 +257,7 @@ def find_neighbors2(index, triang, depth):
     buren = np.delete(buren, 0)
     return buren
 
-def FIFO_maker(y):
+def FIFO_maker(y, N):
     y[y == np.inf ] = 10000000000
     arg = np.squeeze(argrelextrema(y, np.less))
     y_FIFO = y

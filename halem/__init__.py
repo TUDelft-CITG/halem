@@ -63,9 +63,8 @@ def plot_timeseries2(path, time, Roadmap, Color = 'r'):
                 T = Roadmap.mask[idx]
                 TT.append(T)
         TT = np.array(TT)
-        dist = np.array(dist)
-        
-        if Roadmap.t[0] == 0:
+        dist = np.array(dist)        
+        if Roadmap.repeat == True:
                 k = Calc_path.find_k_repeat(time[0], Roadmap.t)
                 plt.plot(dist,(time[:-1] - time[0])/3600, 'o', color = Color)            
                 cval = np.arange(0,1.1, 0.5)

@@ -50,8 +50,9 @@ def costfunction_timeseries(edge,V_max, WD_min ,flow):
     U_t = (u_t**2 + v_t**2)**0.5
     t = L/U_t
     
-    t[flow.WD[edge[0]] + flow.ukc < WD_min] = np.inf
-    t[flow.WD[edge[1]] + flow.ukc < WD_min] = np.inf
+    t[np.isnan(t)] = np.inf
+    t[flow.WD[edge[0]] < WD_min + flow.ukc ] = np.inf
+    t[flow.WD[edge[1]] < WD_min + flow.ukc] = np.inf
     t[(U_w * np.sin(alpha2))**2 > vship ** 2] = np.inf
     t[s_t < 0] = np.inf  
     return np.array(t)
@@ -81,8 +82,9 @@ def costfunction_spaceseries(edge,V_max, WD_min ,flow):
     U_t = (u_t**2 + v_t**2)**0.5
     t = L/U_t
     
-    t[flow.WD[edge[0]] + flow.ukc < WD_min] = np.inf
-    t[flow.WD[edge[1]] + flow.ukc < WD_min] = np.inf
+    t[np.isnan(t)] = np.inf
+    t[flow.WD[edge[0]] < WD_min + flow.ukc] = np.inf
+    t[flow.WD[edge[1]] < WD_min + flow.ukc] = np.inf
     t[(U_w * np.sin(alpha2))**2 > vship ** 2] = np.inf
     t[s_t < 0] = np.inf
     t[t!= np.inf] = L 
