@@ -66,23 +66,28 @@ def plot_timeseries2(path, time, Roadmap, Color = 'r'):
         dist = np.array(dist)        
         if Roadmap.repeat == True:
                 k = Calc_path.find_k_repeat(time[0], Roadmap.t)
-                plt.plot(dist,(time[:-1] - time[0])/3600, 'o', color = Color)            
+                plt.plot(dist,(time[:-1] - time[0])/3600, 'o', color = Color, label = 's/t route')            
                 cval = np.arange(0,1.1, 0.5)
                 plt.contourf(dist,( Roadmap.t - Roadmap.t[k])/3600, np.transpose(TT), cval, colors=('cornflowerblue', 'sandybrown'))
                 plt.contourf(dist,( Roadmap.t - Roadmap.t[k]+Roadmap.t[-1])/3600, np.transpose(TT), cval, colors=('cornflowerblue', 'sandybrown'))
 
-                plt.colorbar()
+                plt.colorbar(label = 'maks file, 0 = False, 1 = True')
                 plt.xlabel('traveled distance [m]')
                 plt.ylabel('time [h]')
                 plt.ylim(0, (time[-1] - time[0])/3600*1.2)
+                plt.legend(loc = 'best')
+
         else:
-                plt.plot(dist,(time[:-1]-time[0])/3600, 'o', color = Color)            
+                plt.plot(dist,(time[:-1]-time[0])/3600, 'o', color = Color, label = 's/t route')            
                 cval = np.arange(0,1.1, 0.5)
                 plt.contourf(dist,(Roadmap.t- time[0])/3600, np.transpose(TT), cval, colors=('cornflowerblue', 'sandybrown'))
-                plt.colorbar()
+                plt.colorbar(label = 'maks file, 0 = False, 1 = True')
                 plt.ylim(0, (time[-1]-time[0])/3600*1.2)
                 plt.xlabel('traveled distance [m]')
                 plt.ylabel('time [h]')
+                plt.legend(loc = 'best')
+
+
 
 def HALEM_time(start, stop, t0, vmax, Roadmap):
         start = start[::-1]
@@ -172,7 +177,7 @@ def HALEM_co2(start, stop, t0, vmax, Roadmap):
         arg_vship = int(np.argwhere(vv == vv.min())[0])
         class graph_functions_time:
             function_type = "time optimalisation"
-            weights = Roadmap.weight_cost[arg_vship].weights
+            weights = Roadmap.weight_co2[arg_vship].weights
             time = Roadmap.weight_time[arg_vship].weights
             vship = Roadmap.vship[arg_vship]
 

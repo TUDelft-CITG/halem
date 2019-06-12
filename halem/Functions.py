@@ -5,10 +5,12 @@ from numpy import ma
 
 def Squat_in_sea(h,T,V_max, WWL,ukc):
     ghv2 = 9.81*h/(V_max**2)
+    squat_max = T + ukc
     VhV1 = 1.002 + 0.005*(np.sqrt(WWL*T)/h)-0.1159*(np.sqrt(WWL*T)/h)**2+0.0191*(np.sqrt(WWL*T)/h)**3
     V1Vinf = ((np.exp(ghv2) - np.exp(-ghv2))/(np.exp(ghv2)+np.exp(-ghv2)))**0.5
     V = V_max * V1Vinf * VhV1
-    
+    for i in range(len(V)):
+        V[i] = V[i] if h[i] > squat_max else np.inf
     return V
 
 def haversine(coord1, coord2):
