@@ -34,7 +34,7 @@ def find_k_repeat(t, ts):
     k = np.argwhere(QQ == QQ.min())[0][0]
     return k
 
-def dijsktra(graph, initial, end, t0, graph_functions):
+def dijsktra(graph, initial, end, t0, graph_functions):           # Typefout
 
     shortest_paths = {initial: (None, 0)}
     time_paths = {initial: (None, t0)}
@@ -103,7 +103,7 @@ class Has_route:
         
         self.sailing_time = self.t_route[-1]
 
-        for i in range(100):
+        for i in range(100):    # Moet verwijderd worden in de clean-up
            self.x_route = np.append(self.x_route, self.x_route[-1])
            self.y_route = np.append(self.y_route, self.y_route[-1])
            self.t_route = np.append(self.t_route, (self.t_route[-1] + 10*60))

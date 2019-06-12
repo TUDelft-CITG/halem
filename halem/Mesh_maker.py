@@ -46,12 +46,12 @@ class Graph_flow_model():
         self.WWL = WWL
         self.ukc = ukc
         self.repeat = repeat
-        
-        'Load Flow'
-        flow = Load_flow(name_textfile_flow)
+
+        # 'Load Flow'
+        flow = Load_flow(name_textfile_flow)                        #ABC van maken
         print('1/4')
 
-        'Calculate nodes and flow conditions in nodes'
+        # 'Calculate nodes and flow conditions in nodes'
         if nodes_index == None:
             self.nodes_index, self.LS = Get_nodes(flow, nl, dx_min, blend)
         else:
@@ -72,7 +72,7 @@ class Graph_flow_model():
         clear_output(wait= True)
         print('2/4')
 
-        'Calculate edges'
+        # 'Calculate edges'
         self.vship = vship
         graph0 = Graph()
         for from_node in range(len(self.nodes)):       
@@ -93,9 +93,9 @@ class Graph_flow_model():
         
         print('3/4')
 
-        'Calculate Weights'
+        # 'Calculate Weights'
 
-        self.weight_space = []
+        self.weight_space = []                 # Moet een Dict worden
         self.weight_time = []
         self.weight_cost = []
         self.weight_co2 = []
@@ -162,12 +162,12 @@ def haversine(coord1, coord2):
     dist = Functions.haversine(coord1, coord2)
     return dist
 
-def find_neighbors(pindex, triang):
+def find_neighbors(pindex, triang):                                                         # zou recursief moeten kunne
     return triang.vertex_neighbor_vertices[1]\
            [triang.vertex_neighbor_vertices[0][pindex]:triang.vertex_neighbor_vertices[0][pindex+1]]
 
-def find_neighbors2(index, triang, depth):
-    buren = np.array([index])
+def find_neighbors2(index, triang, depth):             # Controleren of die buren niet twee keer toevoegd
+    buren = np.array([index])                          # list van een set -> verzamelt de unieke
     for _ in range(depth):
         for buur in buren:
             buren_temp = np.array([])
@@ -182,7 +182,7 @@ def find_neighbors2(index, triang, depth):
     return buren
 
 def FIFO_maker(y, N):
-    y[y == np.inf ] = 10000000000
+    y[y == np.inf ] = 10000000000 # realmax (10^32)
     arg = np.squeeze(argrelextrema(y, np.less))
     y_FIFO = y
     if arg.shape == ():
