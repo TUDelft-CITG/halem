@@ -66,7 +66,7 @@ def plot_timeseries2(path, time, Roadmap, Color = 'r'):
         dist = np.array(dist)        
         if Roadmap.repeat == True:
                 k = Calc_path.find_k_repeat(time[0], Roadmap.t)
-                plt.plot(dist,(time[:-1] - time[0])/3600, 'o', color = Color, label = 's/t route')            
+                plt.plot(dist,(time[:-1] - time[0])/3600, color = Color, label = 's/t route')            
                 cval = np.arange(0,1.1, 0.5)
                 plt.contourf(dist,( Roadmap.t - Roadmap.t[k])/3600, np.transpose(TT), cval, colors=('cornflowerblue', 'sandybrown'))
                 plt.contourf(dist,( Roadmap.t - Roadmap.t[k]+Roadmap.t[-1])/3600, np.transpose(TT), cval, colors=('cornflowerblue', 'sandybrown'))
@@ -78,7 +78,7 @@ def plot_timeseries2(path, time, Roadmap, Color = 'r'):
                 plt.legend(loc = 'best')
 
         else:
-                plt.plot(dist,(time[:-1]-time[0])/3600, 'o', color = Color, label = 's/t route')            
+                plt.plot(dist,(time[:-1]-time[0])/3600, color = Color, label = 's/t route')            
                 cval = np.arange(0,1.1, 0.5)
                 plt.contourf(dist,(Roadmap.t- time[0])/3600, np.transpose(TT), cval, colors=('cornflowerblue', 'sandybrown'))
                 plt.colorbar(label = 'maks file, 0 = False, 1 = True')
