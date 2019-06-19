@@ -23,14 +23,17 @@ class Graph_flow_model():
                  number_of_neighbor_layers, 
                  vship, 
                  Load_flow, 
-                 WD_min, 
+                 WD_min,
+                 WVPI, 
                  compute_cost = None,
                  compute_co2 = None,  
-                 WWL = 20, ukc = 1.5,
+                 WWL = 20,
+                 LWL = 80,
+                 ukc = 1.5,
                  nodes_on_land = Flow_class.nodes_on_land_None, 
                  repeat = False,
                  optimization_type = ['time', 'space', 'cost', 'co2'],
-                 nodes_index = None, 
+                 nodes_index = np.array([None]), 
                 ):
         def compute_cost_f(week_rate, fuel_rate):
             second_rate = week_rate/7/24/60/60
@@ -44,15 +47,18 @@ class Graph_flow_model():
             compute_co2 = compute_co2_f(1)
 
         self.WWL = WWL
+        self.LWL = LWL
         self.ukc = ukc
+        self.WVPI = WVPI
         self.repeat = repeat
+        self.vship = vship
 
         # 'Load Flow'
         flow = Load_flow(name_textfile_flow)                        #ABC van maken
         print('1/4')
 
         # 'Calculate nodes and flow conditions in nodes'
-        if nodes_index == None:
+        if nodes_index.all() == None:
             self.nodes_index, self.LS = Get_nodes(flow, nl, dx_min, blend)
         else:
             self.nodes_index = nodes_index
@@ -73,7 +79,6 @@ class Graph_flow_model():
         print('2/4')
 
         # 'Calculate edges'
-        self.vship = vship
         graph0 = Graph()
         for from_node in range(len(self.nodes)):       
             to_nodes = find_neighbors2(from_node, self.tria, number_of_neighbor_layers)
@@ -107,12 +112,13 @@ class Graph_flow_model():
             graph_co2 = Graph()
             vship = self.vship[vv]
             WD_min = self.WD_min[vv]
+            WVPI = self.WVPI[vv]
             for edge in graph0.weights:
                 for i in range(len(vship)):
                         for j in range(len(vship)):
                             from_node = edge[0]
                             to_node = edge[1]
-                            W = Functions.costfunction_timeseries(edge, vship[j],WD_min, self) + self.t
+                            W = Functions.costfunction_timeseries(edge, vship[j],WD_min, self, WVPI) + self.t
                             W = FIFO_maker2(W, self.mask[from_node]) - self.t
                                             
                             L = Functions.costfunction_spaceseries(edge, vship[j],WD_min, self)
@@ -237,8 +243,6 @@ def slope(xs,ys,zs):
     b = np.matrix(tmp_b).T
     A = np.matrix(tmp_A)
     fit = (A.T * A).I * A.T * b
-    errors = b - A * fit
-    residual = np.linalg.norm(errors)
     
     return fit[0], fit[1]
 
