@@ -100,6 +100,12 @@ class Graph_flow_model():
 
         # 'Calculate Weights'
 
+
+        if self.repeat == True:
+            calc_weights = calc_weights_time
+        else:
+            calc_weights = calc_weights_time
+
         self.weight_space = []                 # Moet een Dict worden
         self.weight_time = []
         self.weight_cost = []
@@ -118,20 +124,14 @@ class Graph_flow_model():
                         for j in range(len(vship)):
                             from_node = edge[0]
                             to_node = edge[1]
-                            W = Functions.costfunction_timeseries(edge, vship[j],WD_min, self, WVPI) + self.t
-                            W = FIFO_maker2(W, self.mask[from_node]) - self.t
-                                            
-                            L = Functions.costfunction_spaceseries(edge, vship[j],WD_min, self)
-                            L = L + np.arange(len(L))* (1/len(L))
-                            L = FIFO_maker2(L, self.mask[from_node]) - np.arange(len(L))* (1/len(L))
-                            euros = compute_cost(W,  vship[j] )
-                            co2 = compute_co2(W,  vship[j])
+                            
+                            L, W, euros, co2 = calc_weights(edge, i, j,  vship, WD_min, WVPI, self, compute_cost, compute_co2)
 
                             graph_time.add_edge((from_node, i), (to_node, j), W)
                             graph_space.add_edge((from_node, i), (to_node,j), L)
                             graph_cost.add_edge((from_node, i), (to_node, j), euros)
                             graph_co2.add_edge((from_node, i), (to_node, j), co2)
-            
+        
             if 'space' in optimization_type:
                 self.weight_space.append(graph_space)
             if 'time' in optimization_type:
@@ -163,6 +163,37 @@ class Graph():
         # Note: assumes edges are directional
         self.edges[from_node].append(to_node)
         self.weights[(from_node, to_node)] = weight
+
+def calc_weights_time(edge, i, j,  vship, WD_min, WVPI, self_f, compute_cost, compute_co2):
+    from_node = edge[0]
+    W = Functions.costfunction_timeseries(edge, vship[j],WD_min, self_f, WVPI) + self_f.t
+    W = FIFO_maker2(W, self_f.mask[from_node]) - self_f.t
+                    
+    L = Functions.costfunction_spaceseries(edge, vship[j],WD_min, self_f)
+    L = L + np.arange(len(L))* (1/len(L))
+    L = FIFO_maker2(L, self_f.mask[from_node]) - np.arange(len(L))* (1/len(L))
+    euros = compute_cost(W,  vship[j] )
+    co2 = compute_co2(W,  vship[j])
+
+    return L, W, euros, co2
+
+def calc_weights_repeat(edge, i, j,  vship, WD_min, WVPI, self_f, compute_cost, compute_co2):
+    from_node = edge[0]
+    W = Functions.costfunction_timeseries(edge, vship[j],WD_min, self_f, WVPI) + self_f.t
+    W = np.concatenate((W,W))
+    W = FIFO_maker2(W, self_f.mask[from_node]) 
+    W = W[:int(len(W)/2)] - self_f.t
+                    
+    L = Functions.costfunction_spaceseries(edge, vship[j],WD_min, self_f)
+    L = L + np.arange(len(L))* (1/len(L))
+    L = np.concatenate((L,L))
+    L = FIFO_maker2(L, self_f.mask[from_node])
+    L = L[:int(len(L)/2)]- np.arange(int(len(L)/2))* (1/int(len(L)/2))
+
+    euros = compute_cost(W,  vship[j] )
+    co2 = compute_co2(W,  vship[j])
+
+    return L, W, euros, co2
 
 def haversine(coord1, coord2):
     dist = Functions.haversine(coord1, coord2)
