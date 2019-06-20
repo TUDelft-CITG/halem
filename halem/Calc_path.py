@@ -25,14 +25,17 @@ def find_k_time(t, ts):
     return k
 
 def find_k_repeat(t, ts):
-    ts = ts - ts[0]
-    t = t - ts[0]
-    N = int(t/ts[-1])
-    t = t - N * ts[-1]
-    
-    QQ = abs(ts - t)
-    k = np.argwhere(QQ == QQ.min())[0][0]
-    return k
+    if t == np.inf:
+        return len(ts) -1
+    else:
+        ts = ts - ts[0]
+        t = t - ts[0]
+        N = int(t/ts[-1])
+        t = t - N * ts[-1]
+        
+        QQ = abs(ts - t)
+        k = np.argwhere(QQ == QQ.min())[0][0]
+        return k
 
 def dijsktra(graph, initial, end, t0, graph_functions):           # Typefout
 
