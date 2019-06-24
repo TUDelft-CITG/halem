@@ -37,7 +37,6 @@ requires = [
     "nose",
     "Flask",
     "Flask-cors",
-    "Dill>=0.2.8",
 ]
 
 setup_requirements = [
