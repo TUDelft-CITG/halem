@@ -8,18 +8,23 @@ Route optimization in dynamic flow fields
 
 ## Features
 This package contains route optimization for given currents. The following features are taken into account in this version:
-* Spatial varing currents
+* Spatial varying currents
 * Temporal changing currents
 * Variable shipping velocity
 * minimal water depth
-
-
-Does not (yet) take into account:
 * Squad
-* Inertial behaviour of the ship
+
+Does not take into account:
+* Inertial behavior of the ship
+
+Different routes that can be optimized are:
+* Shortest route (halem.HALEM_time)
+* Fastest route (halem.HALEM_space)
+* Cheapest route route (halem.HALEM_cost)
+* Cleanest route (halem.HALEM_co2)
 
 ## Implementation
-This package is build for implementation into the Open CL-Sim package (currently under development). 
+This package is built for implementation into the Open CL-Sim package (see https://github.com/TUDelft-CITG/OpenCLSim). 
 
 
 ## Installation
