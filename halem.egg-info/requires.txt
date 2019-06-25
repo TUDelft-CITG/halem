@@ -15,7 +15,6 @@ simplekml
 nose
 Flask
 Flask-cors
-Dill>=0.2.8
 
 [testing]
 pytest

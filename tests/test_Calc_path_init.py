@@ -25,32 +25,30 @@ class flow_class():
         self.u = np.ones((len(self.t), len(self.nodes)))*0
         self.v = np.ones((len(self.t), len(self.nodes)))*0
         self.u[:,2] = 10
+        
 name_textfile_flow = 'maaktnietuit'
 Load_flow = flow_class
 blend = 0
 nl = (1,1)
 dx_min = 0.0000001
 vship = np.array([[3,4],[4,5]])
-WD_min = 1
+WD_min = np.array([1, 1])
+WVPI = np.array([5000, 7000])
+ukc = 0
 
-def compute_cost(week_rate, fuel_rate):
-    second_rate = week_rate/7/24/60/60
-    return lambda travel_time, speed: (travel_time*second_rate + fuel_rate*travel_time * speed**3)
-
-QQ = compute_cost(700_000, 0.0008)
 
 nodes_on_land = Flow_class.nodes_on_land_None
 number_of_neighbor_layers = 1
 
 Roadmap = Mesh_maker.Graph_flow_model(name_textfile_flow, 
-                            dx_min, blend, 
-                            nl, 
-                            number_of_neighbor_layers, 
-                            vship, 
-                            Load_flow, 
-                            WD_min, 
-                            QQ, 
-                            nodes_on_land
+                                    dx_min, 
+                                    blend, 
+                                    nl, 
+                                    number_of_neighbor_layers, 
+                                    vship, 
+                                    Load_flow, 
+                                    WD_min,
+                                    WVPI,
                            )
 
 clear_output()

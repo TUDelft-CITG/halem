@@ -60,7 +60,7 @@ def costfunction_timeseries(edge,V_max, WD_min ,flow, WVPI):
     yto = flow.nodes[edge[1]][0]
 
     # vship = Squat_in_sea(flow.WD[edge[0]], WD_min, V_max, flow.WWL, flow.ukc)
-    vship =        Squat(flow.WD[edge[0]], WD_min ,V_max, flow.LWL, flow.WWL, flow.ukc, WVPI)
+    vship = Squat(flow.WD[edge[0]], WD_min ,V_max, flow.LWL, flow.WWL, flow.ukc, WVPI)
 
     v_w = (flow.v[edge[0]] + flow.v[edge[1]])/2
     u_w = (flow.u[edge[0]] + flow.u[edge[1]])/2

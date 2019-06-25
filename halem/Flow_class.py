@@ -239,10 +239,10 @@ class flow_3D_FM_05nm():
 class flow_NOOS():
     def __init__(self, name):
         nc = Dataset(name)
-        # x_domain = (250,380)                      # general-waddden sea
-        # y_domain = (530,760)
-        x_domain = (300,390)                      # Texel-case
-        y_domain = (650,760)
+        x_domain = (250,400)                        # general-waddden sea (250, 380)
+        y_domain = (450,760)                        # (530,760)
+        # x_domain = (300,390)                      # Texel-case
+        # y_domain = (650,760)
 
         v = nc.variables['VELV'][:,:,:]
         u = nc.variables['VELU'][:,:,:]

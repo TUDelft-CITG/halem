@@ -218,25 +218,6 @@ def find_neighbors2(index, triang, depth):             # Controleren of die bure
     buren = np.delete(buren, 0)
     return buren
 
-def FIFO_maker(y, N):
-    y[y == np.inf ] = 10000000000 # realmax (10^32)
-    arg = np.squeeze(argrelextrema(y, np.less))
-    y_FIFO = y
-    if arg.shape == ():
-        loc = np.argwhere(y <= y[arg])[-2:]
-        if loc.shape == (2,1):
-            y_FIFO[int(loc[0]):int(loc[1])] = y[arg]
-        else:
-            None
-    else:
-        for a in arg:
-            loc = np.argwhere(y <= y[a])[-2:] 
-            if loc.shape == (2,1):
-                y_FIFO[int(loc[0]):int(loc[1])] = y[a]
-            else:
-                None
-    return(y_FIFO)
-
 def FIFO_maker2(y, N1):
     arg = np.squeeze(argrelextrema(y, np.less))
     if arg.shape == ():

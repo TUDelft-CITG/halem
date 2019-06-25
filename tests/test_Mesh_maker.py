@@ -182,19 +182,6 @@ def test_FIFO_maker2():
     y = Mesh_maker.FIFO_maker2(y, N1)
     loc_min = argrelextrema(y, np.less)
     assert len(loc_min[0]) == 0
-
-def test_FIFO_maker():
-    x = np.arange(0,2*np.pi,0.01)
-    y = 2*np.sin(x)+x
-    y = Mesh_maker.FIFO_maker(y)
-    loc_min = argrelextrema(y, np.less)
-    assert len(loc_min[0]) == 0
-    
-    x = np.arange(0,4*np.pi,0.01)
-    y = 2*np.sin(x)+x
-    y = Mesh_maker.FIFO_maker(y)
-    loc_min = argrelextrema(y, np.less)
-    assert len(loc_min[0]) == 0
     
 def test_closest_node():
     nodes = np.array([(0,0),(-1,-1),(-2,2),(-2,-2),(2,2),(2,-2),(0,1)])
@@ -281,27 +268,20 @@ def test_Graph_flow_model():
     nl = (1,1)
     dx_min = 0.5
     vship = np.array([[4],[5]])
-    WD_min = 1
-
-    def compute_cost(week_rate, fuel_rate):
-        second_rate = week_rate/7/24/60/60
-        return lambda travel_time, speed: (travel_time*second_rate + fuel_rate*travel_time * speed**3)
-
-    QQ = compute_cost(700_000, 0.0008)
-
-    nodes_on_land = Flow_class.nodes_on_land_None
+    WD_min = np.array([1,1])
+    WVPI = np.array([5000,6000])
     number_of_neighbor_layers = 1
 
     Roadmap = Mesh_maker.Graph_flow_model(name_textfile_flow, 
-                                dx_min, blend, 
-                                nl, 
-                                number_of_neighbor_layers, 
-                                vship, 
-                                Load_flow, 
-                                WD_min, 
-                                QQ, 
-                                nodes_on_land
-                               )
+                                          dx_min, blend, 
+                                          nl, 
+                                          number_of_neighbor_layers, 
+                                          vship, 
+                                          Load_flow, 
+                                          WD_min, 
+                                          WVPI
+
+                                           )
     
     clear_output()
     
@@ -309,28 +289,29 @@ def test_Graph_flow_model():
     assert Roadmap.t.shape[0] == 10
     
 def test_Graph_flow_model_with_indices():
+    nodes_index = np.loadtxt('tests/Data/idx.csv', dtype=int)
     name_textfile_flow = 'maaktnietuit'
     Load_flow = flow_class
-    nodes_index = np.loadtxt('tests/Data/idx.csv', dtype=int)
+    blend = 0
+    nl = (1,1)
+    dx_min = 0.5
     vship = np.array([[4],[5]])
-    WD_min = 1
-
-    def compute_cost(week_rate, fuel_rate):
-        second_rate = week_rate/7/24/60/60
-        return lambda travel_time, speed: (travel_time*second_rate + fuel_rate*travel_time * speed**3)
-
-    QQ = compute_cost(700_000, 0.0008)
-
-    nodes_on_land = Flow_class.nodes_on_land_None
+    WD_min = np.array([1,1])
+    WVPI = np.array([5000,6000])
     number_of_neighbor_layers = 1
 
-    Roadmap = Mesh_maker.Graph_flow_model_with_indices(name_textfile_flow, 
-                                          nodes_index, 
+    Roadmap = Mesh_maker.Graph_flow_model(name_textfile_flow, 
+                                          dx_min, blend, 
+                                          nl, 
                                           number_of_neighbor_layers, 
-                                          vship, Load_flow, 
+                                          vship, 
+                                          Load_flow, 
                                           WD_min, 
-                                          compute_cost, 
-                                          nodes_on_land)
+                                          WVPI,
+                                          nodes_index = nodes_index
+                                         )
+    
+    clear_output()
     
     assert Roadmap.v.shape == (400,10)
     assert Roadmap.t.shape[0] == 10
