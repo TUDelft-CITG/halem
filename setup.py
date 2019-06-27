@@ -64,11 +64,6 @@ setup(
         "Operating System :: OS Independent",
     ],
     description="The Route optimization for dynamic flow field searches the optimal route for a given flow field.",
-    entry_points={
-        'console_scripts': [
-            'halem=halem.cli:cli',
-        ],
-    },
     install_requires=requires,
     long_description=long_description,
     long_description_content_type="text/markdown",
