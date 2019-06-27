@@ -223,8 +223,8 @@ class flow_3D_FM_05nm():
         t0 = d.timestamp()
         self.t = t+t0
         
-        x = nc.variables['mesh2d_face_x'][:8000]
-        y = nc.variables['mesh2d_face_y'][:8000]
+        x = nc.variables['mesh2d_face_x'][:7000]
+        y = nc.variables['mesh2d_face_y'][:7000]
 
         self.nodes = np.zeros((len(x),2))
         self.nodes[:,0] = y
@@ -239,8 +239,8 @@ class flow_3D_FM_05nm():
 class flow_NOOS():
     def __init__(self, name):
         nc = Dataset(name)
-        x_domain = (250,380)                      # general-waddden sea
-        y_domain = (530,760)
+        x_domain = (250,400)                        # general-waddden sea (250, 380)
+        y_domain = (450,760)                        # (530,760)
         # x_domain = (300,390)                      # Texel-case
         # y_domain = (650,760)
 
@@ -266,7 +266,7 @@ class flow_NOOS():
         print('1/3')
 
         bat, nodesb = self.bat()
-        Db_new = griddata((nodesb[:,1],nodesb[:,0]), bat, (x,y), method='linear')
+        Db_new = griddata((nodesb[:,1],nodesb[:,0]), bat, (x,y), method='cubic')
 
         WD = d * 0
         for i in range(d.shape[0]):

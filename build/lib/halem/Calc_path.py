@@ -19,12 +19,25 @@ def find_startstop(start, nodes):
 
     return pt
 
-def find_k(t, ts):
+def find_k_time(t, ts):
     QQ = abs(ts - t)
     k = np.argwhere(QQ == QQ.min())[0][0]
     return k
 
-def dijsktra(graph, initial, end, t0, graph_functions):
+def find_k_repeat(t, ts):
+    if t == np.inf:
+        return len(ts) -1
+    else:
+        ts = ts - ts[0]
+        t = t - ts[0]
+        N = int(t/ts[-1])
+        t = t - N * ts[-1]
+        
+        QQ = abs(ts - t)
+        k = np.argwhere(QQ == QQ.min())[0][0]
+        return k
+
+def dijsktra(graph, initial, end, t0, graph_functions):           # Typefout
 
     shortest_paths = {initial: (None, 0)}
     time_paths = {initial: (None, t0)}
@@ -32,7 +45,9 @@ def dijsktra(graph, initial, end, t0, graph_functions):
     visited = set()
     Graph_data = graph
     graph = graph.graph
-    
+
+    find_k = find_k_time if Graph_data.repeat == False else find_k_repeat
+
     while current_node != end:
         visited.add(current_node)
         destinations = graph.edges[current_node]
@@ -91,7 +106,7 @@ class Has_route:
         
         self.sailing_time = self.t_route[-1]
 
-        for i in range(100):
+        for i in range(100):    # Moet verwijderd worden in de clean-up
            self.x_route = np.append(self.x_route, self.x_route[-1])
            self.y_route = np.append(self.y_route, self.y_route[-1])
            self.t_route = np.append(self.t_route, (self.t_route[-1] + 10*60))

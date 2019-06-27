@@ -32,8 +32,6 @@ requires = [
     "geopy",
     "pint",
     "pyproj",
-    "plotly",
-    "simplekml",
     "nose",
     "Flask",
     "Flask-cors",

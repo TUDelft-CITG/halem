@@ -1,3 +1,0 @@
-[console_scripts]
-halem = halem.cli:cli
-
