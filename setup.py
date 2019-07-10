@@ -32,7 +32,6 @@ requires = [
     "geopy",
     "pint",
     "pyproj",
-    "nose",
     "Flask",
     "Flask-cors",
 ]
