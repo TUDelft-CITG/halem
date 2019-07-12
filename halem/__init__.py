@@ -94,10 +94,9 @@ def HALEM_time(start, stop, t0, vmax, Roadmap):
         stop = stop[::-1]
 
         vvmax = Roadmap.vship[:,-1]
-
         vv= np.abs(vvmax - vmax)
         arg_vship = int(np.argwhere(vv == vv.min())[0])
-        arg_vship = arg_vship if arg_vship == 0 or vmax < vvmax[-1]  else arg_vship - 1
+        # arg_vship = arg_vship if arg_vship == 0 or vmax < vvmax[-1]  else arg_vship - 1
 
         class graph_functions_time:
             function_type = "time optimalisation"
@@ -125,7 +124,7 @@ def HALEM_space(start, stop, t0, vmax, Roadmap):
 
         vv= np.abs(vvmax - vmax)
         arg_vship = int(np.argwhere(vv == vv.min())[0])
-        arg_vship = arg_vship if arg_vship == 0 or vmax < vvmax[-1]  else arg_vship - 1
+        # arg_vship = arg_vship if arg_vship == 0 or vmax < vvmax[-1]  else arg_vship - 1
 
         class graph_functions_time:
             function_type = "time optimalisation"
@@ -153,7 +152,7 @@ def HALEM_cost(start, stop, t0, vmax, Roadmap):
 
         vv= np.abs(vvmax - vmax)
         arg_vship = int(np.argwhere(vv == vv.min())[0])
-        arg_vship = arg_vship if arg_vship == 0 or vmax < vvmax[-1]  else arg_vship - 1
+        # arg_vship = arg_vship if arg_vship == 0 or vmax < vvmax[-1]  else arg_vship - 1
 
         class graph_functions_time:
             function_type = "time optimalisation"
@@ -181,7 +180,7 @@ def HALEM_co2(start, stop, t0, vmax, Roadmap):
 
         vv= np.abs(vvmax - vmax)
         arg_vship = int(np.argwhere(vv == vv.min())[0])
-        arg_vship = arg_vship if arg_vship == 0 or vmax < vvmax[-1]  else arg_vship - 1
+        # arg_vship = arg_vship if arg_vship == 0 or vmax < vvmax[-1]  else arg_vship - 1
         
         class graph_functions_time:
             function_type = "time optimalisation"
