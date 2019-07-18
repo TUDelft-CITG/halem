@@ -125,7 +125,7 @@ class Graph_flow_model():
                             from_node = edge[0]
                             to_node = edge[1]
                             
-                            L, W, euros, co2 = calc_weights(edge, i, j,  vship, WD_min, WVPI, self, compute_cost, compute_co2)
+                            L, W, euros, co2 = calc_weights(edge, i, j,  vship, WD_min, WVPI, self, compute_cost, compute_co2, number_of_neighbor_layers)
 
                             graph_time.add_edge((from_node, i), (to_node, j), W)
                             graph_space.add_edge((from_node, i), (to_node,j), L)
@@ -164,9 +164,9 @@ class Graph():
         self.edges[from_node].append(to_node)
         self.weights[(from_node, to_node)] = weight
 
-def calc_weights_time(edge, i, j,  vship, WD_min, WVPI, self_f, compute_cost, compute_co2):
+def calc_weights_time(edge, i, j,  vship, WD_min, WVPI, self_f, compute_cost, compute_co2, number_of_neighbor_layers):
     from_node = edge[0]
-    W = Functions.costfunction_timeseries(edge, vship[j],WD_min, self_f, WVPI) + self_f.t
+    W = Functions.costfunction_timeseries(edge, vship[j],WD_min, self_f, WVPI, number_of_neighbor_layers, self_f.tria) + self_f.t
     W = FIFO_maker2(W, self_f.mask[from_node]) - self_f.t
                     
     L = Functions.costfunction_spaceseries(edge, vship[j],WD_min, self_f)
@@ -177,9 +177,9 @@ def calc_weights_time(edge, i, j,  vship, WD_min, WVPI, self_f, compute_cost, co
 
     return L, W, euros, co2
 
-def calc_weights_repeat(edge, i, j,  vship, WD_min, WVPI, self_f, compute_cost, compute_co2):
+def calc_weights_repeat(edge, i, j,  vship, WD_min, WVPI, self_f, compute_cost, compute_co2, number_of_neighbor_layers):
     from_node = edge[0]
-    W = Functions.costfunction_timeseries(edge, vship[j],WD_min, self_f, WVPI) + self_f.t
+    W = Functions.costfunction_timeseries(edge, vship[j],WD_min, self_f, WVPI, number_of_neighbor_layers) + self_f.t
     W = np.concatenate((W,W))
     W = FIFO_maker2(W, self_f.mask[from_node]) 
     W = W[:int(len(W)/2)] - self_f.t

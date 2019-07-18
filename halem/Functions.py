@@ -3,6 +3,25 @@ import math
 import numpy as np
 from numpy import ma
 
+def find_neighbors(pindex, triang):                                                         # zou recursief moeten kunne
+    return triang.vertex_neighbor_vertices[1]\
+           [triang.vertex_neighbor_vertices[0][pindex]:triang.vertex_neighbor_vertices[0][pindex+1]]
+
+def find_neighbors2(index, triang, depth):             # Controleren of die buren niet twee keer toevoegd
+    buren = np.array([index])                          # list van een set -> verzamelt de unieke
+    for _ in range(depth):
+        for buur in buren:
+            buren_temp = np.array([])
+            temp = find_neighbors(int(buur), triang)
+            for j in temp:
+                if j in buren:
+                    None
+                else:
+                    buren_temp = np.append(buren_temp, int(j))
+            buren = np.append(buren, buren_temp)
+    buren = np.delete(buren, 0)
+    return buren
+
 def Squat_in_sea(h,T,V_max, WWL,ukc):
     ghv2 = 9.81*h/(V_max**2)
     squat_max = T + ukc
@@ -36,7 +55,16 @@ def Squat(h,T,V_max, LWL, WWL, ukc, WVPI):
     
     return V
 
-
+def inbetweenpoints(start, stop, LL, tria):
+    nodes = [start, stop]
+    for L in range(1,LL):
+        L = L+1
+        NB = np.array(find_neighbors2(start,tria,L-1), dtype= int)
+        if stop not in NB:
+            add_nodes = set(find_neighbors2(stop, tria, L-1)) & set(find_neighbors2(start, tria, L-1))
+            add_nodes = np.array(list(add_nodes), dtype=int)
+            nodes  = np.concatenate((nodes, add_nodes))
+    return nodes
 
 
 def haversine(coord1, coord2):
@@ -53,23 +81,35 @@ def haversine(coord1, coord2):
     
     return 2*R*math.atan2(math.sqrt(a), math.sqrt(1 - a))
 
-def costfunction_timeseries(edge,V_max, WD_min ,flow, WVPI):
+def costfunction_timeseries(edge,V_max, WD_min ,flow, WVPI, L, tria):
     xfrom = flow.nodes[edge[0]][1]
     yfrom = flow.nodes[edge[0]][0]
     xto = flow.nodes[edge[1]][1]
     yto = flow.nodes[edge[1]][0]
-
-    # vship = Squat_in_sea(flow.WD[edge[0]], WD_min, V_max, flow.WWL, flow.ukc)
-    vship = Squat(flow.WD[edge[0]], WD_min ,V_max, flow.LWL, flow.WWL, flow.ukc, WVPI)
-
-    v_w = (flow.v[edge[0]] + flow.v[edge[1]])/2
-    u_w = (flow.u[edge[0]] + flow.u[edge[1]])/2
-    U_w = (u_w**2 + v_w**2)**0.5
     
+
+
+    IB = inbetweenpoints(edge[0], edge[1], L, tria)
+    
+    v_w = flow.v[IB[0]]
+    u_w = flow.u[IB[0]]
+    WD_W = flow.WD[IB[0]]
+    for i in range(1, len(IB)):
+        v_w += flow.v[IB[i]]
+        u_w += flow.u[IB[i]]
+        WD_W += flow.WD[IB[i]]
+       
+    v_w = (v_w / len(IB))
+    u_w = (u_w / len(IB))
+    WD_W = (WD_W / len(IB))
+    U_w = (u_w**2 + v_w**2)**0.5
+
+    vship = Squat(WD_W , WD_min ,V_max, flow.LWL, flow.WWL, flow.ukc, WVPI)
+   
     alpha1 = np.arctan2((yto - yfrom),(xto - xfrom))
     alpha2 = np.arctan2(v_w , u_w) - alpha1
     
-    s_t = (U_w * np.cos(alpha2)) + (vship ** 2 -  (U_w * np.sin(alpha2))**2) ** 0.5     # velocity in the direction on the course
+    s_t = (U_w * np.cos(alpha2)) + (vship ** 2 -  (U_w * np.sin(alpha2))**2) ** 0.5
 
     u_t = np.cos(alpha1)*( s_t)
     v_t = np.sin(alpha1)*( s_t)
@@ -80,8 +120,8 @@ def costfunction_timeseries(edge,V_max, WD_min ,flow, WVPI):
 
     t[U_t == np.inf] = np.inf 
     t[np.isnan(t)] = np.inf
-    t[flow.WD[edge[0]] < WD_min + flow.ukc ] = np.inf
-    t[flow.WD[edge[1]] < WD_min + flow.ukc] = np.inf
+    t[WD_W  < WD_min + flow.ukc ] = np.inf
+    t[WD_W  < WD_min + flow.ukc] = np.inf
     t[(U_w * np.sin(alpha2))**2 > vship ** 2] = np.inf
     t[s_t < 0] = np.inf  
     return np.array(t)
