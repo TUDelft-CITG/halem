@@ -169,7 +169,7 @@ def calc_weights_time(edge, i, j,  vship, WD_min, WVPI, self_f, compute_cost, co
     W = Functions.costfunction_timeseries(edge, vship[j],WD_min, self_f, WVPI, number_of_neighbor_layers, self_f.tria) + self_f.t
     W = FIFO_maker2(W, self_f.mask[from_node]) - self_f.t
                     
-    L = Functions.costfunction_spaceseries(edge, vship[j],WD_min, self_f)
+    L = Functions.costfunction_spaceseries(edge, vship[j],WD_min, self_f, WVPI, number_of_neighbor_layers, self_f.tria)
     L = L + np.arange(len(L))* (1/len(L))
     L = FIFO_maker2(L, self_f.mask[from_node]) - np.arange(len(L))* (1/len(L))
     euros = compute_cost(W,  vship[j] )
@@ -179,12 +179,12 @@ def calc_weights_time(edge, i, j,  vship, WD_min, WVPI, self_f, compute_cost, co
 
 def calc_weights_repeat(edge, i, j,  vship, WD_min, WVPI, self_f, compute_cost, compute_co2, number_of_neighbor_layers):
     from_node = edge[0]
-    W = Functions.costfunction_timeseries(edge, vship[j],WD_min, self_f, WVPI, number_of_neighbor_layers) + self_f.t
+    W = Functions.costfunction_timeseries(edge, vship[j],WD_min, self_f, WVPI, number_of_neighbor_layers, self_f.tria) + self_f.t
     W = np.concatenate((W,W))
     W = FIFO_maker2(W, self_f.mask[from_node]) 
     W = W[:int(len(W)/2)] - self_f.t
                     
-    L = Functions.costfunction_spaceseries(edge, vship[j],WD_min, self_f)
+    L = Functions.costfunction_spaceseries(edge, vship[j],WD_min, self_f, WVPI, number_of_neighbor_layers, self_f.tria)
     L = L + np.arange(len(L))* (1/len(L))
     L = np.concatenate((L,L))
     L = FIFO_maker2(L, self_f.mask[from_node])

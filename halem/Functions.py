@@ -66,7 +66,6 @@ def inbetweenpoints(start, stop, LL, tria):
             nodes  = np.concatenate((nodes, add_nodes))
     return nodes
 
-
 def haversine(coord1, coord2):
     R = 6372800                                      # https://janakiev.com/blog/gps-points-distance-python/
     lat1, lon1 = coord1
@@ -86,11 +85,47 @@ def costfunction_timeseries(edge,V_max, WD_min ,flow, WVPI, L, tria):
     yfrom = flow.nodes[edge[0]][0]
     xto = flow.nodes[edge[1]][1]
     yto = flow.nodes[edge[1]][0]
-    
-
-
     IB = inbetweenpoints(edge[0], edge[1], L, tria)
+    v_w = flow.v[IB[0]]
+    u_w = flow.u[IB[0]]
+    WD_W = flow.WD[IB[0]]
+    for i in range(1, len(IB)):
+        v_w =v_w +  flow.v[IB[i]]
+        u_w = u_w +  flow.u[IB[i]]
+        WD_W = np.minimum(WD_W, flow.WD[IB[i]])
+       
+    v_w = (v_w / len(IB))
+    u_w = (u_w / len(IB))
+    U_w = (u_w**2 + v_w**2)**0.5
+
+    vship = Squat(WD_W , WD_min ,V_max, flow.LWL, flow.WWL, flow.ukc, WVPI)
+   
+    alpha1 = np.arctan2((yto - yfrom),(xto - xfrom))
+    alpha2 = np.arctan2(v_w , u_w) - alpha1
     
+    s_t = (U_w * np.cos(alpha2)) + (vship ** 2 -  (U_w * np.sin(alpha2))**2) ** 0.5
+
+    u_t = np.cos(alpha1)*( s_t)
+    v_t = np.sin(alpha1)*( s_t)
+    
+    L = haversine((yfrom,xfrom), (yto,xto))
+    U_t = (u_t**2 + v_t**2)**0.5
+    t = L/U_t
+
+    t[U_t == np.inf] = np.inf 
+    t[np.isnan(t)] = np.inf
+    t[WD_W  < WD_min + flow.ukc ] = np.inf
+    t[WD_W  < WD_min + flow.ukc] = np.inf
+    t[(U_w * np.sin(alpha2))**2 > vship ** 2] = np.inf
+    t[s_t < 0] = np.inf  
+    return np.array(t)
+
+def costfunction_spaceseries(edge,V_max, WD_min ,flow, WVPI, L, tria):
+    xfrom = flow.nodes[edge[0]][1]
+    yfrom = flow.nodes[edge[0]][0]
+    xto = flow.nodes[edge[1]][1]
+    yto = flow.nodes[edge[1]][0]
+    IB = inbetweenpoints(edge[0], edge[1], L, tria)
     v_w = flow.v[IB[0]]
     u_w = flow.u[IB[0]]
     WD_W = flow.WD[IB[0]]
@@ -124,39 +159,6 @@ def costfunction_timeseries(edge,V_max, WD_min ,flow, WVPI, L, tria):
     t[WD_W  < WD_min + flow.ukc] = np.inf
     t[(U_w * np.sin(alpha2))**2 > vship ** 2] = np.inf
     t[s_t < 0] = np.inf  
-    return np.array(t)
-
-def costfunction_spaceseries(edge,V_max, WD_min ,flow):
-    xfrom = flow.nodes[edge[0]][1]
-    yfrom = flow.nodes[edge[0]][0]
-    xto = flow.nodes[edge[1]][1]
-    yto = flow.nodes[edge[1]][0]
-
-    vship = Squat_in_sea(flow.WD[edge[0]], WD_min, V_max, flow.WWL, flow.ukc)
-
-    v_w = (flow.v[edge[0]] + flow.v[edge[1]])/2
-    u_w = (flow.u[edge[0]] + flow.u[edge[1]])/2
-    U_w = (u_w**2 + v_w**2)**0.5
-    
-    alpha1 = np.arctan2((yto - yfrom),(xto - xfrom))
-    alpha2 = np.arctan2(v_w , u_w) - alpha1
-    
-    s_t = (U_w * np.cos(alpha2)) + (vship ** 2 -  (U_w * np.sin(alpha2))**2) ** 0.5     # velocity in the direction on the course
-
-    u_t = np.cos(alpha1)*( s_t)
-    v_t = np.sin(alpha1)*( s_t)
-    
-    L = haversine((yfrom,xfrom), (yto,xto))
-
-    U_t = (u_t**2 + v_t**2)**0.5
-    t = L/U_t
-    
-    t[U_t == np.inf] = np.inf 
-    t[np.isnan(t)] = np.inf
-    t[flow.WD[edge[0]] < WD_min + flow.ukc] = np.inf
-    t[flow.WD[edge[1]] < WD_min + flow.ukc] = np.inf
-    t[(U_w * np.sin(alpha2))**2 > vship ** 2] = np.inf
-    t[s_t < 0] = np.inf
     t[t!= np.inf] = L 
 
     return np.array(t)
