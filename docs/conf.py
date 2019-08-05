@@ -48,8 +48,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'halem'
-copyright = u"2019, TU Delft"
-author = u"Mark van Koningsveld"
+copyright = u"2019, Pieter van Halem"
+author = u"Pieter van Halem"
 
 # The version info for the project you're documenting, acts as replacement
 # for |version| and |release|, also used in various other places throughout
@@ -82,7 +82,7 @@ todo_include_todos = False
 # -- Options for HTML output -------------------------------------------
 
 # Add a logo
-html_logo = "HALEM.png"
+html_logo = "HALEM.PNG"
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
@@ -134,7 +134,7 @@ latex_elements = {
 latex_documents = [
     (master_doc, 'halem.tex',
      u'halem Documentation',
-     u'Mark van Koningsveld', 'manual'),
+     u'Pieter van Halem', 'manual'),
 ]
 
 
