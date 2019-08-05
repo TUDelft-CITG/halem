@@ -11,7 +11,6 @@ Welcome to HALEM documentation! Please check the contents below for information 
 
    readme
    installation
-   usage
    examples
    openclsim
    contributing

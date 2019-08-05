@@ -13,7 +13,7 @@ Collaboratuion
 
 This package is created to work in cooperation with 'OpenCLSim'_. A special thanks to the developers of OpenCLSim for their help with creating this repository. 
 
-* 'Gerben de Boer'_
+* `Gerben de Boer`_
 * `Mark van Koningsveld`_
 * `Joris den Uijl`_
 * `Fedor Baart`_

@@ -1,5 +1,5 @@
 =========
-OpenCLSim
+HALEM
 =========
 
 Submodules
@@ -8,4 +8,4 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
-   openclsim
+   halem

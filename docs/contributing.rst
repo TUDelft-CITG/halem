@@ -15,7 +15,7 @@ Types of Contributions
 Report Bugs
 ~~~~~~~~~~~
 
-Report bugs at https://github.com/TUDelft-CITG/OpenCLSim/issues.
+Report bugs at https://github.com/TUDelft-CITG/Route_optimization_in_dynamic_currents/issues.
 
 If you are reporting a bug, please include:
 
@@ -45,7 +45,7 @@ articles, and such.
 Submit Feedback
 ~~~~~~~~~~~~~~~
 
-The best way to send feedback is to file an issue at https://github.com/TUDelft-CITG/OpenCLSim/issues.
+The best way to send feedback is to file an issue at https://github.com/TUDelft-CITG/Route_optimization_in_dynamic_currents/issues.
 
 If you are proposing a feature:
 
@@ -59,18 +59,18 @@ Get Started!
 
 Ready to contribute? Here's how to set up `OpenClSim` for local development.
 
-1. Fork the `OpenClSim` repository on GitHub.
+1. Fork the `HALEM` repository on GitHub.
 
 
 2. Clone your fork locally::
 
-    $ git clone git@github.com:your_name_here/OpenClSim.git
+    $ git clone git@github.com:your_name_here/Route_optimization_in_dynamic_currents.git
 
 
 3. Install your local copy into a virtualenv. Assuming you have virtualenvwrapper installed, this is how you set up your fork for local development::
 
-    $ mkvirtualenv openclsim
-    $ cd openclsim/
+    $ mkvirtualenv halem
+    $ cd halem/
     $ python setup.py develop
 
 
@@ -82,18 +82,12 @@ Ready to contribute? Here's how to set up `OpenClSim` for local development.
    Now you can make your changes locally.
 
 
-5. When you're done making changes, check that your changes pass flake8 and the
-   tests, including testing other Python versions with tox::
+5. When you're done making changes, check that your changes pass the tests::
 
-    $ flake8 openclsim tests
     $ python setup.py test or py.test
-    $ tox
 
 
-   To get flake8 and tox, just pip install them into your virtualenv.
-
-
-6. The style of OpenClSim is according to Black. Format your code using 
+6. The style of HALEM is according to Black. Format your code using 
    Black witht the following lines of code::
 
     $ black openclsim
@@ -131,13 +125,14 @@ To run a subset of tests::
 
 $ py.test tests.test_openclsim
 
-To make the documentation pages
+To make the documentation pages::
+
 $ make docs # for linux/osx
 
 For windows
-$ del docs\openclsim.rst
+$ del docs\halem.rst
 $ del docs\modules.rst
-$ sphinx-apidoc -o docs/ openclsim
+$ sphinx-apidoc -o docs/ halem
 $ cd docs
 $ make html
 $ start explorer _build\html\index.html
