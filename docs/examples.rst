@@ -17,6 +17,7 @@ Load dependencies
 The First step is to load the dependencies.
 
 .. code:: python3
+
     from collections import defaultdict
     import math
     import numpy as np
@@ -53,6 +54,7 @@ this is a fictive case the hydrodynamic conditions are made up.
 For real use cases the output of a CFD model can be used. 
 
 .. code:: python3
+
     class flow_potentiaalveld():
         def __init__(self, name):
             d = datetime.strptime("23/03/2019 00:00:00", "%d/%m/%Y %H:%M:%S")
@@ -99,6 +101,7 @@ Define project parameters
 The third step is to describe the project parameters, and the vessel parameters. 
 
 .. code:: python3
+
     nl = (3,2.5)
     dx_min = 0.01
     blend = 1
@@ -123,6 +126,7 @@ Generate the Roadmap
 This step is the pre-processing step.
 
 .. code:: python3
+
     start_time = time.time()
 
     Roadmap_t = Mesh_maker.Graph_flow_model(name_textfile_flow, 
@@ -157,6 +161,7 @@ Calculate the optimal route
 In this step the four routes are calculated. 
 
 .. code:: python3
+
     t0 = "23/03/2019 03:00:00"          #Departure time
 
     start = (0.2, 0.2)
@@ -182,6 +187,7 @@ Plot the results
 In this step the results are plotted. The results are according to the expectations. 
 
 .. code:: python3
+
     fig = plt.figure(figsize=(23, 17))
 
     ax = plt.subplot(3,2,1)
