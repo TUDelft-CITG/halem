@@ -129,7 +129,8 @@ To make the documentation pages::
 
 $ make docs # for linux/osx
 
-For windows
+For windows::
+
 $ del docs\halem.rst
 $ del docs\modules.rst
 $ sphinx-apidoc -o docs/ halem
