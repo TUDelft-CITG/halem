@@ -387,6 +387,7 @@ Define the hydrodynamic conditions
 Define the project parameters.
 
 .. code:: python3
+
     nl = (3,2.5)
     dx_min = 0.01
     blend = 1
@@ -406,6 +407,7 @@ Define the project parameters.
 Define the Roadmaps
 
 .. code:: python3
+
     Load_flow = flow_potentiaalveld
     number_of_neighbor_layers = 3
 
@@ -598,12 +600,80 @@ Plot the results:
 
 
 
+Flow class for dd Zuno-v4 hirlam-kf (DCSMv6 zunov4)
+--------------------------------------------------
 
+Data available at
 
+'http://noos.matroos.rws.nl'_ 
 
+.. _http://noos.matroos.rws.nl: http://noos.matroos.rws.nl
 
+With this class real hydrodynamic data can be used to optimize real shipping routes. 
 
+.. code:: python3
 
+    class flow_NOOS():
+        def __init__(self, name):
+            nc = Dataset(name)
+            x_domain = (250,400)                        # general-waddden sea (250, 380)
+            y_domain = (450,760)                        # (530,760)
+            # x_domain = (300,390)                      # Texel-case
+            # y_domain = (650,760)
 
+            v = nc.variables['VELV'][:,:,:]
+            u = nc.variables['VELU'][:,:,:]
+            d = nc.variables['SEP'][:,:,:]
+            x = nc.variables['x'][:,:]
+            y = nc.variables['y'][:,:]
+            t = nc.variables['time'][:]
+            t = t *60
+            x = x[x_domain[0]:x_domain[1], y_domain[0]:y_domain[1]]
+            y = y[x_domain[0]:x_domain[1], y_domain[0]:y_domain[1]]
+            u = u[:,x_domain[0]:x_domain[1], y_domain[0]:y_domain[1]]
+            v = v[:,x_domain[0]:x_domain[1], y_domain[0]:y_domain[1]]
+            d = d[:,x_domain[0]:x_domain[1], y_domain[0]:y_domain[1]]
+
+            x_temp = ma.array(x.reshape(x.size))
+            y_temp = ma.array(y.reshape(x.size))
+
+            nodes = np.zeros((y_temp[y_temp.mask == False].size,2))
+            nodes[:,0] = y_temp[y_temp.mask == False]
+            nodes[:,1] = x_temp[y_temp.mask == False]
+            print('1/3')
+
+            bat, nodesb = self.bat()
+            Db_new = griddata((nodesb[:,1],nodesb[:,0]), bat, (x,y), method='cubic')
+
+            WD = d * 0
+            for i in range(d.shape[0]):
+                WD[i,:,:] = d[i,:,:] - Db_new
+
+            print('2/3')
+
+            u_n = []
+            v_n = []
+            d_n = []
+
+            for node in nodes:
+                xloc = np.argwhere(x == node[1])[0,1]
+                yloc = np.argwhere(y == node[0])[0,0]
+                u_n.append(u[:,yloc,xloc])
+                v_n.append(v[:,yloc,xloc])
+                d_n.append(WD[:,yloc,xloc])
+
+            d_n = np.array(d_n)
+            d_n[d_n < -600] = 0
+            v_n = np.array(v_n)
+            v_n[v_n < -600] = 0
+            u_n = np.array(u_n)
+            u_n[u_n < -600] = 0
+            
+            self.nodes = nodes
+            self.u = np.transpose(u_n)
+            self.v = np.transpose(v_n)
+            self.WD = np.transpose(d_n)
+            self.tria = Delaunay(nodes)
+            self.t = t
 
 	

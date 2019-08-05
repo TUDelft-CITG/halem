@@ -12,7 +12,7 @@ Welcome to HALEM documentation! Please check the contents below for information 
    readme
    installation
    examples
-   openclsim
+   halem
    contributing
    authors
    history
