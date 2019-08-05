@@ -7,8 +7,6 @@ This page lists all functions and classes available in the halem, halem.Mesh_mak
 Submodules
 ----------
 
-
-
 halem\.Base_functions module
 --------------------------
 
