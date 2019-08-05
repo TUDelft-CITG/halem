@@ -34,6 +34,7 @@ requires = [
     "pyproj",
     "Flask",
     "Flask-cors",
+    "sphinx_rtd_theme",
 ]
 
 setup_requirements = [
