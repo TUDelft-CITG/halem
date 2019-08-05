@@ -11,8 +11,6 @@ The First example is a fictive Explanation example.In this example
 the shortest, fastest, cheapest, and least pollutant route is 
 determind for a simple rotating flow with a random bathymetry. 
 
-Load dependencies
-~~~~~~~~~~~~~~~~~
 
 The First step is to load the dependencies.
 
@@ -45,9 +43,6 @@ The First step is to load the dependencies.
     from cartopy import config
     import cartopy.crs as ccrs
     import cartopy.feature as cfeature
-
-Define Flow Class
-~~~~~~~~~~~~~~~~~
 
 The second step is to determine the hydrodynamic conditions. Since
 this is a fictive case the hydrodynamic conditions are made up. 
@@ -95,9 +90,6 @@ For real use cases the output of a CFD model can be used.
         return lambda travel_time, speed: (fuel_rate*travel_time * speed**3)
 
 
-Define project parameters 
-~~~~~~~~~~~~~~~~~~~~~~~~~
-
 The third step is to describe the project parameters, and the vessel parameters. 
 
 .. code:: python3
@@ -120,10 +112,7 @@ The third step is to describe the project parameters, and the vessel parameters.
     Q_co2 = compute_co2(1)
 
 
-Generate the Roadmap
-~~~~~~~~~~~~~~~~~~~~
-
-This step is the pre-processing step.
+The Fourth step is to generate the Roadmap. This step is the pre-processing step.
 
 .. code:: python3
 
@@ -155,10 +144,8 @@ This step is the pre-processing step.
 the computational time is: 448.21 sec
 
 
-Calculate the optimal route
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-In this step the four routes are calculated. 
+The Fift step is the calculate the optimal shipping route. In this step the four routes are calculated. 
 
 .. code:: python3
 
@@ -181,10 +168,8 @@ In this step the four routes are calculated.
 
 the computational time is: 14.31 sec
 
-Plot the results
-~~~~~~~~~~~~~~~~
 
-In this step the results are plotted. The results are according to the expectations. 
+The last step is to plot the results. The results are according to the expectations. 
 
 .. code:: python3
 
@@ -251,6 +236,366 @@ In this step the results are plotted. The results are according to the expectati
     plt.show()
 
 .. image:: Results1.PNG
+
+
+Validation based on trival test cases
+-------------------------------------
+
+In this example the python code for the validation cases is displayed. 
+
+Import the required libaries
+
+.. code:: python3
+
+    from collections import defaultdict
+    import math
+    import numpy as np
+    from numpy import ma
+    import datetime, time
+    from datetime import datetime
+    import netCDF4
+    from netCDF4 import Dataset, num2date
+    from scipy.interpolate import griddata
+    from scipy.spatial import Delaunay
+
+
+    import halem.Base_functions as halem
+    import halem.Mesh_maker as Mesh_maker
+    import halem.Functions as Functions
+    import halem.Calc_path as Calc_path
+    import halem.Flow_class as Flow_class
+
+
+    import matplotlib.pyplot as plt
+    plt.style.use('ggplot')
+    % matplotlib inline
+
+    import os
+    from cartopy import config
+    import cartopy.crs as ccrs
+    import cartopy.feature as cfeature
+
+Define the hydrodynamic conditions
+
+.. code:: python3
+
+    class flow_potentiaalveld():
+        def __init__(self, name):
+            d = datetime.strptime("23/03/2019 00:00:00", "%d/%m/%Y %H:%M:%S")
+            t0 = d.timestamp() 
+            x = np.arange(0,1,0.025)
+            y = np.arange(0,1,0.025)
+            t = np.arange(t0, (t0+30*60*30),30*60)
+
+            y, x = np.meshgrid(y, x)
+            y = y.reshape(y.size)
+            x = x.reshape(y.size)
+
+            nodes = np.zeros((len(x),2))
+            nodes[:,0] = y
+            nodes[:,1] = x
+            tria = Delaunay(nodes)
+
+            u = []
+            v = []
+            for node in nodes:
+                ut = 0*t + 2 * np.cos(np.pi*(node[0]))
+                vt = 0*t - 2 * np.cos(np.pi*(node[1]))
+                u.append(ut)
+                v.append(vt)
+
+            self.v = np.transpose(np.array(v))
+            self.u = np.transpose(np.array(u))
+            self.WD = self.u*0 + 20
+            self.t = t
+            self.nodes = nodes
+            self.tria = Delaunay(nodes)
+
+    class flow_dyn_cur():
+        def __init__(self, name):
+            d = datetime.strptime("23/03/2019 00:00:00", "%d/%m/%Y %H:%M:%S")
+            t0 = d.timestamp() 
+            x = np.arange(0,1,0.01)
+            y = np.arange(0,1,0.01)
+            t = np.arange(t0, (t0+30*60*30),30*60)
+
+            y, x = np.meshgrid(y, x)
+            y = y.reshape(y.size)
+            x = x.reshape(y.size)
+
+            nodes = np.zeros((len(x),2))
+            nodes[:,0] = y
+            nodes[:,1] = x
+            tria = Delaunay(nodes)
+
+            u = []
+            v = []
+            for node in nodes:
+                ut =   2 * np.cos(np.pi*(node[0])) * np.cos(2*np.pi * (t - t0)/24000)
+                vt = - 2 * np.cos(np.pi*(node[1]))* np.cos(2*np.pi * (t - t0)/24000)
+                u.append(ut)
+                v.append(vt)
+
+            self.v = np.transpose(np.array(v))
+            self.u = np.transpose(np.array(u))
+            self.WD = self.u*0 + 20
+            self.t = t
+            self.nodes = nodes
+            self.tria = Delaunay(nodes)
+
+
+    class flow_wait():
+        def __init__(self, name):
+            d = datetime.strptime("23/03/2019 00:00:00", "%d/%m/%Y %H:%M:%S") 
+            t0 = d.timestamp() 
+            x = np.arange(0,1,0.025)
+            y = np.arange(0,1,0.025)
+            t = np.arange(t0, (t0+30*60*30),10*60)
+
+            y, x = np.meshgrid(y, x)
+            y = y.reshape(y.size)
+            x = x.reshape(y.size)
+
+            nodes = np.zeros((len(x),2))
+            nodes[:,0] = y
+            nodes[:,1] = x
+            tria = Delaunay(nodes)
+
+            u = []
+            v = []
+            for node in nodes:
+                ut = 0*t + 0
+                vt = 0*t + 0
+                u.append(ut)
+                v.append(vt)
+
+            self.v = np.transpose(np.array(v))
+            self.u = np.transpose(np.array(u))
+            self.t = t
+            self.nodes = nodes
+            self.tria = Delaunay(nodes)
+
+            WD = self.u*0 + 20
+            for i in range(len(nodes)):
+                node = nodes[i]
+                if node[0] > 0.4 and node[0] < 0.6:
+                    if node[1] > 0.1 and node[1] < 0.9:
+                        WD[5:50,i] = 0
+                        WD[75:-1,i] = 0
+            self.WD = WD
+
+Define the project parameters.
+
+.. code:: python3
+    nl = (3,2.5)
+    dx_min = 0.01
+    blend = 1
+    vship = np.array([[4]])
+    WD_min = np.array([[5]])
+    ukc = 1.5
+    WWL = 40
+    WVPI = [10000]
+    name_textfile_flow = 'maaktnietuit'
+
+    def compute_cost(week_rate, fuel_rate):
+        second_rate = week_rate/7/24/60/60
+        return lambda travel_time, speed: (travel_time*second_rate + fuel_rate*travel_time * speed**3)
+
+    QQ = compute_cost(700_000, 0.0008)
+
+Define the Roadmaps
+
+.. code:: python3
+    Load_flow = flow_potentiaalveld
+    number_of_neighbor_layers = 3
+
+    Roadmap_t = Mesh_maker.Graph_flow_model(name_textfile_flow, 
+                                            dx_min, 
+                                            blend, 
+                                            nl, 
+                                            number_of_neighbor_layers, 
+                                            vship, 
+                                            Load_flow, 
+                                            WD_min,
+                                            WVPI,
+                                            WWL = WWL,
+                                            ukc = ukc,
+                                            optimization_type = ['time']
+                                       )
+    Load_flow = flow_dyn_cur
+    number_of_neighbor_layers = 3
+    Roadmap_d = Mesh_maker.Graph_flow_model(name_textfile_flow, 
+                                            dx_min, 
+                                            blend, 
+                                            nl, 
+                                            number_of_neighbor_layers, 
+                                            vship, 
+                                            Load_flow, 
+                                            WD_min,
+                                            WVPI,
+                                            WWL = WWL,
+                                            ukc = ukc,
+                                            optimization_type = ['time']
+                                       )
+
+    Load_flow = flow_wait
+    number_of_neighbor_layers = 1
+    Roadmap = Mesh_maker.Graph_flow_model(name_textfile_flow, 
+                                            dx_min, 
+                                            blend, 
+                                            nl, 
+                                            number_of_neighbor_layers, 
+                                            vship, 
+                                            Load_flow, 
+                                            WD_min,
+                                            WVPI,
+                                            WWL = WWL,
+                                            ukc = ukc,
+                                            optimization_type = ['time']
+                                       )
+
+
+Calulate the optimized routes
+
+.. code:: python3
+
+	path_t, time_t, dist_t = halem.HALEM_time(start, stop, t0, 4, Roadmap_t)
+	path_d, time_d, dist_d = halem.HALEM_time(start, stop, t0, 4, Roadmap_d)
+	path_w, time_w, dist_w = halem.HALEM_time(start, stop, t0, 4, Roadmap)
+
+Plot the results:
+
+.. code:: python3
+
+    fig = plt.figure(figsize=(23, 17))
+
+    ax = plt.subplot(2,3,1)
+    plt.axis('square')
+    a = 1
+
+    x_r = np.arange(0,1, 0.075)
+    y_r = np.arange(0,1, 0.075)
+    y_r, x_r = np.meshgrid(y_r,x_r)
+
+    WD_r = griddata((Roadmap_t.nodes[:,1], Roadmap_t.nodes[:,0]), Roadmap_t.WD[:,0], (x_r, y_r), method= 'linear')
+    u_r = griddata((Roadmap_t.nodes[:,1], Roadmap_t.nodes[:,0]), Roadmap_t.u[:,0], (x_r, y_r), method= 'linear')
+    v_r = griddata((Roadmap_t.nodes[:,1], Roadmap_t.nodes[:,0]), Roadmap_t.v[:,0], (x_r, y_r), method= 'linear')
+
+    cval = np.arange(0,21,0.5)
+    im = plt.contourf(x_r,y_r,WD_r, cval)
+    fig.colorbar(im, ax=ax, label = 'Waterdepth in meters')
+
+    plt.quiver(x_r[::a,::a],
+               y_r[::a,::a],
+               u_r[::a,::a],
+               v_r[::a,::a],
+               label = 'flow directions'
+              )
+    plt.plot(path_t[:,0], path_t[:,1], 'm', label = 'Route')
+    plt.plot(Roadmap_t.nodes[:,1], Roadmap_t.nodes[:,0], 'k.', label = 'Nodes of the graph', markersize = 1)
+    plt.plot(path_t[0, 0], path_t[0, 1], 'go', label = 'start')
+    plt.plot(path_t[-1, 0 ], path_t[-1, 1], 'ro', label = 'target')
+
+
+    plt.xlim(0,1)
+    plt.ylim(0,1)
+    plt.title(r'x/y diagram of the simple rotating flow')
+    ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.15),
+              ncol=2, fancybox=True, shadow=True)
+    plt.xlabel('lat')
+    plt.ylabel('lon')
+
+    plt.subplot(2,3,4)
+    halem.plot_timeseries2(path_t, time_t, Roadmap_t)
+    plt.title('s/t diagram of the simple rotating flow')
+
+    ax = plt.subplot(2,3,2)
+    plt.axis('square')
+    a = 1
+
+    x_r = np.arange(0,1, 0.075)
+    y_r = np.arange(0,1, 0.075)
+    y_r, x_r = np.meshgrid(y_r,x_r)
+
+    WD_r = griddata((Roadmap_d.nodes[:,1], Roadmap_d.nodes[:,0]), Roadmap_d.WD[:,0], (x_r, y_r), method= 'linear')
+    u_r = griddata((Roadmap_d.nodes[:,1], Roadmap_d.nodes[:,0]), Roadmap_d.u[:,0], (x_r, y_r), method= 'linear')
+    v_r = griddata((Roadmap_d.nodes[:,1], Roadmap_d.nodes[:,0]), Roadmap_d.v[:,0], (x_r, y_r), method= 'linear')
+
+
+    im = plt.contourf(x_r,y_r,WD_r, cval)
+    fig.colorbar(im, ax=ax, label = 'Waterdepth in meters')
+
+    plt.quiver(x_r[::a,::a],
+               y_r[::a,::a],
+               u_r[::a,::a],
+               v_r[::a,::a],
+               label = 'flow directions'
+              )
+    plt.plot(path_d[:,0], path_d[:,1], 'm', label = 'Route')
+    plt.plot(Roadmap_d.nodes[:,1], Roadmap_d.nodes[:,0], 'k.', label = 'Nodes of the graph', markersize = 0.8)
+    plt.plot(path_d[0, 0], path_d[0, 1], 'go', label = 'start')
+    plt.plot(path_d[-1, 0 ], path_d[-1, 1], 'ro', label = 'target')
+
+
+    plt.xlim(0,1)
+    plt.ylim(0,1)
+    plt.title(r'x/y diagram of the time dependent rotating flow')
+    ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.15),
+              ncol=2, fancybox=True, shadow=True)
+    plt.xlabel('lat')
+    plt.ylabel('lon')
+
+    plt.subplot(2,3,5)
+    halem.plot_timeseries2(path_d, time_d, Roadmap_d)
+    plt.title('s/t diagram of the time dependent rotating flow')
+
+    ax = plt.subplot(2,3,3)
+    plt.axis('square')
+    a = 1
+
+    x_r = np.arange(0,1, 0.075)
+    y_r = np.arange(0,1, 0.075)
+    y_r, x_r = np.meshgrid(y_r,x_r)
+
+    WD_r = griddata((Roadmap.nodes[:,1], Roadmap.nodes[:,0]), Roadmap.WD[:,10], (x_r, y_r), method= 'linear')
+    u_r = griddata((Roadmap.nodes[:,1], Roadmap.nodes[:,0]), Roadmap.u[:,0], (x_r, y_r), method= 'linear')
+    v_r = griddata((Roadmap.nodes[:,1], Roadmap.nodes[:,0]), Roadmap.v[:,0], (x_r, y_r), method= 'linear')
+
+    im = plt.contourf(x_r,y_r,WD_r, cval)
+    fig.colorbar(im, ax=ax, label = 'Waterdepth in meters')
+
+
+    plt.quiver(x_r[::a,::a],
+               y_r[::a,::a],
+               u_r[::a,::a],
+               v_r[::a,::a],
+               label = 'flow directions'
+              )
+    plt.plot(path_w[:,0], path_w[:,1], 'm', label = 'Route')
+    plt.plot(Roadmap.nodes[:,1], Roadmap.nodes[:,0], 'k.', label = 'Nodes of the graph', markersize = 1)
+    plt.plot(path_w[0, 0], path_w[0, 1], 'go', label = 'start')
+    plt.plot(path_w[-1, 0 ], path_w[-1, 1], 'ro', label = 'target')
+
+
+    plt.xlim(0,1)
+    plt.ylim(0,1)
+    plt.title(r"x/y diagram of the flooding and drying flow")
+    ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.15),
+              ncol=2, fancybox=True, shadow=True)
+    plt.xlabel('lat')
+    plt.ylabel('lon')
+
+    ax = plt.subplot(2,3,6)
+    halem.plot_timeseries2(path_w, time_w, Roadmap)
+    plt.title('s/t diagram of the flooding and drying flow')
+
+
+    plt.savefig('D:testcases', dpi = 200)
+    plt.show()
+
+
+.. image:: Results2.PNG
+
 
 
 
