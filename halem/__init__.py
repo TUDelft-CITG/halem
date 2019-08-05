@@ -1,11 +1,11 @@
-"""Top-level package for OpenCLSim."""
+"""Top-level package for Halem."""
 
 __author__ = """Pieter van Halem"""
 __email__ = "pieter.vanhalem@vanoord.com"
 __version__ = "0.2.1"
 
 
-# from halem.Base_functions import *
+from halem.Base_functions import *
 from pkg_resources import get_distribution, DistributionNotFound
 
 try:
