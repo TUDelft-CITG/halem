@@ -85,6 +85,8 @@ def dijsktra(graph, initial, end, t0, graph_functions):           # Typefout
     return path
 
 class Has_route:
+    """ This class contains the code for calculating the optimal route
+    """
     def __init__(self,start, stop, graph, t0, graph_functions):
         d = datetime.strptime(t0, "%d/%m/%Y %H:%M:%S")
         t0 = d.timestamp()
