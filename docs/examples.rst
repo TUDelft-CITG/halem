@@ -594,7 +594,7 @@ Plot the results:
     plt.show()
 
 
-.. image:: Results2.PNG
+.. image:: Results2.png
 
 
 
