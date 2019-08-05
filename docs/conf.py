@@ -82,7 +82,7 @@ todo_include_todos = False
 # -- Options for HTML output -------------------------------------------
 
 # Add a logo
-html_logo = "OpenCLSim.png"
+html_logo = "HALEM.png"
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
