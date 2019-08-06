@@ -1,4 +1,4 @@
-import halem
+import halem.Base_functions as halem
 import halem.Mesh_maker as Mesh_maker
 import halem.Functions as Functions
 import halem.Calc_path as Calc_path
@@ -158,6 +158,6 @@ def test_HALEM_time():
         vship = Roadmap.vship[arg_vship]
 
     route_time = Calc_path.Has_route(start, stop, Roadmap, t0, graph_functions_time)
-    path, time, dist = halem.HALEM_time(start[::-1],stop[::-1],t0,vmax, Roadmap)
+    path, _, _ = halem.HALEM_time(start[::-1],stop[::-1],t0,vmax, Roadmap)
 
     np.testing.assert_array_equal(Roadmap.nodes[np.array(route_time.route[:,0], dtype=int)], path[:,::-1])
