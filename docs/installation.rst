@@ -34,7 +34,7 @@ You can either clone the public repository:
 .. code-block:: bash
 
     # Use git to clone HALEM
-    git clone git://github.com/TUDelft-CITG/Route_optimization_in_dynamic_currents
+    git clone git://github.com/TUDelft-CITG/HALEM
 
 
 Once you have a copy of the source, you can install it with:
@@ -45,4 +45,4 @@ Once you have a copy of the source, you can install it with:
     python setup.py install
 
 
-.. _Github repo: https://github.com/TUDelft-CITG/Route_optimization_in_dynamic_currents
+.. _Github repo: https://github.com/TUDelft-CITG/HALEM

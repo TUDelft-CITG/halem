@@ -17,4 +17,4 @@ Welcome to HALEM documentation! Please check the contents below for information 
    authors
    history
 
-.. _GitHub: https://github.com/TUDelft-CITG/Route_optimization_in_dynamic_currents
+.. _GitHub: https://github.com/TUDelft-CITG/HALEM

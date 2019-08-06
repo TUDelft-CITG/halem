@@ -1,9 +1,5 @@
+halem
 =========
-HALEM
-=========
-
-Submodules
-----------
 
 .. toctree::
    :maxdepth: 4

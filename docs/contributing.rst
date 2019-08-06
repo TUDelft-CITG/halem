@@ -15,7 +15,7 @@ Types of Contributions
 Report Bugs
 ~~~~~~~~~~~
 
-Report bugs at https://github.com/TUDelft-CITG/Route_optimization_in_dynamic_currents/issues.
+Report bugs at https://github.com/TUDelft-CITG/HALEM/issues.
 
 If you are reporting a bug, please include:
 
@@ -45,7 +45,7 @@ articles, and such.
 Submit Feedback
 ~~~~~~~~~~~~~~~
 
-The best way to send feedback is to file an issue at https://github.com/TUDelft-CITG/Route_optimization_in_dynamic_currents/issues.
+The best way to send feedback is to file an issue at https://github.com/TUDelft-CITG/HALEM/issues.
 
 If you are proposing a feature:
 
@@ -64,7 +64,7 @@ Ready to contribute? Here's how to set up `OpenClSim` for local development.
 
 2. Clone your fork locally::
 
-    $ git clone git@github.com:your_name_here/Route_optimization_in_dynamic_currents.git
+    $ git clone git@github.com:your_name_here/HALEM.git
 
 
 3. Install your local copy into a virtualenv. Assuming you have virtualenvwrapper installed, this is how you set up your fork for local development::
