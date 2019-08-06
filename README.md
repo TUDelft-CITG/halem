@@ -1,7 +1,7 @@
-[![CircleCI](https://circleci.com/gh/TUDelft-CITG/Route_optimization_in_dynamic_currents.svg?style=svg&circle-token=64796bff34a56507bad599a6cec980b7b8be0bb9)](https://circleci.com/gh/TUDelft-CITG/Route_optimization_in_dynamic_currents)
+[![CircleCI](https://circleci.com/gh/TUDelft-CITG/HALEM.svg?style=svg&circle-token=64796bff34a56507bad599a6cec980b7b8be0bb9)](https://circleci.com/gh/TUDelft-CITG/HALEM)
 
-[![Coverage](https://oedm.vanoord.com/proxy/circleci_no_redirect/github/TUDelft-CITG/Route_optimization_in_dynamic_currents/master/latest/ddf5d3b409fbb3e3aa368be6b0b0907c53c40a87/tmp/artifacts/coverage.svg)](https://oedm.vanoord.com/proxy/circleci_no_redirect/github/TUDelft-CITG/Route_optimization_in_dynamic_currents/master/latest/ddf5d3b409fbb3e3aa368be6b0b0907c53c40a87/tmp/artifacts/index.html)
-[ ![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)](https://github.com/TUDelft-CITG/Route_optimization_in_dynamic_currents/blob/master/LICENSE.txt)
+[![Coverage](https://oedm.vanoord.com/proxy/circleci_no_redirect/github/TUDelft-CITG/HALEM/master/latest/ddf5d3b409fbb3e3aa368be6b0b0907c53c40a87/tmp/artifacts/coverage.svg)](https://oedm.vanoord.com/proxy/circleci_no_redirect/github/TUDelft-CITG/HALEM/master/latest/ddf5d3b409fbb3e3aa368be6b0b0907c53c40a87/tmp/artifacts/index.html)
+[ ![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)](https://github.com/TUDelft-CITG/HALEM/blob/master/LICENSE.txt)
 
 Route optimization in dynamic flow fields
 ====================================
