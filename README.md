@@ -1,6 +1,6 @@
 [ ![Documentation](https://img.shields.io/badge/sphinx-documentation-informational.svg)](https://halem.readthedocs.io)
 [ ![License: MIT](https://img.shields.io/badge/License-MIT-informational.svg)](https://github.com/TUDelft-CITG/HALEM/blob/master/LICENSE.txt)
-[ ![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3251545.svg)](https://doi.org/10.5281/zenodo.3251545)
+[ ![DOI](https://zenodo.org/badge/184024759.svg)](https://zenodo.org/badge/latestdoi/184024759)
 
 [![CircleCI](https://circleci.com/gh/TUDelft-CITG/HALEM.svg?style=svg&circle-token=64796bff34a56507bad599a6cec980b7b8be0bb9)](https://circleci.com/gh/TUDelft-CITG/HALEM)
 
