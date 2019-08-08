@@ -28,6 +28,7 @@ requires = [
     "netCDF4",
     "matplotlib",
     "IPython",
+    "geopy",
     "pyproj",
     "sphinx_rtd_theme",
 ]
