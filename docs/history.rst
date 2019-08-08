@@ -2,10 +2,11 @@
 History
 =======
 
-1.0.0 (2019-07-10)
+0.3.0 (2019-08-08)
 ------------------
 * Seventh tag on GitHub
-* The official graduation version (version used for thesis)
+* Released to Zenodo
+* Documentation available on halem.readthedocs.io
 
 0.2.0 (2019-06-27)
 ------------------

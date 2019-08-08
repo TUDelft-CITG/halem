@@ -2,7 +2,7 @@
 
 __author__ = """Pieter van Halem"""
 __email__ = "pieter.vanhalem@vanoord.com"
-__version__ = "0.2.1"
+__version__ = "0.3.0"
 
 
 # from halem.Base_functions import *
