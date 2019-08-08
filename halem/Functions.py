@@ -12,9 +12,7 @@ def find_neighbors(pindex, triang):  # zou recursief moeten kunne
     ]
 
 
-def find_neighbors2(
-    index, triang, depth
-): 
+def find_neighbors2(index, triang, depth):
     buren = np.array([index])  # list van een set -> verzamelt de unieke
     for _ in range(depth):
         for buur in buren:
@@ -124,7 +122,7 @@ def costfunction_timeseries(edge, V_max, WD_min, flow, WVPI, L, tria):
     for i in range(1, len(IB)):
         v_w = v_w + flow.v[IB[i]]
         u_w = u_w + flow.u[IB[i]]
-        
+
         # WD_W = WD_W + flow.WD[IB[i]]
         WD_W = np.minimum(WD_W, flow.WD[IB[i]])
 
@@ -168,7 +166,7 @@ def costfunction_spaceseries(edge, V_max, WD_min, flow, WVPI, L, tria):
     for i in range(1, len(IB)):
         v_w = v_w + flow.v[IB[i]]
         u_w = u_w + flow.u[IB[i]]
-                
+
         # WD_W = WD_W + flow.WD_W[IB[i]]
         WD_W = np.minimum(WD_W, flow.WD[IB[i]])
 
