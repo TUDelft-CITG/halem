@@ -8,10 +8,10 @@ Development Lead
 
 .. _Pieter van Halem: https://github.com/Pietervanhalem
 
-Collaboratuion
+Collaboration
 ------------
 
-This package is created to work in cooperation with 'OpenCLSim'_. A special thanks to the developers of OpenCLSim for their help with creating this repository. 
+This package is created to work in cooperation with 'OpenCLSim'_ . A special thanks to the developers of OpenCLSim for their help with creating this repository. 
 
 * `Gerben de Boer`_
 * `Mark van Koningsveld`_

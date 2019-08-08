@@ -26,14 +26,9 @@ requires = [
     "shapely",
     "scipy",
     "netCDF4",
-    "click",
     "matplotlib",
     "IPython",
-    "geopy",
-    "pint",
     "pyproj",
-    "Flask",
-    "Flask-cors",
     "sphinx_rtd_theme",
 ]
 
