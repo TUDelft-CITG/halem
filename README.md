@@ -1,4 +1,5 @@
 [ ![Documentation](https://img.shields.io/badge/sphinx-documentation-informational.svg)](https://halem.readthedocs.io)
+[ ![Coverage](https://oedm.vanoord.com/proxy/circleci_no_redirect/github/TUDelft-CITG/HALEM/master/latest/ddf5d3b409fbb3e3aa368be6b0b0907c53c40a87/tmp/artifacts/coverage.svg)](https://oedm.vanoord.com/proxy/circleci_no_redirect/github/TUDelft-CITG/HALEM/master/latest/ddf5d3b409fbb3e3aa368be6b0b0907c53c40a87/tmp/artifacts/index.html)
 [ ![License: MIT](https://img.shields.io/badge/License-MIT-informational.svg)](https://github.com/TUDelft-CITG/HALEM/blob/master/LICENSE.txt)
 [ ![DOI](https://zenodo.org/badge/184024759.svg)](https://zenodo.org/badge/latestdoi/184024759)
 

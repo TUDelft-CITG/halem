@@ -186,3 +186,6 @@ def costfunction_spaceseries(edge, V_max, WD_min, flow, WVPI, L, tria):
     t[t != np.inf] = L
 
     return np.array(t)
+
+def nodes_on_land_None(nodes, u, v, WD):
+    return nodes, u, v, WD

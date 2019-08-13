@@ -12,7 +12,6 @@ import datetime, time
 from datetime import datetime
 import pickle
 from IPython.display import clear_output
-import halem.Flow_class as Flow_class
 
 
 class Graph_flow_model:
@@ -32,7 +31,7 @@ class Graph_flow_model:
         WWL=20,
         LWL=80,
         ukc=1.5,
-        nodes_on_land=Flow_class.nodes_on_land_None,
+        nodes_on_land = Functions.nodes_on_land_None,
         repeat=False,
         optimization_type=["time", "space", "cost", "co2"],
         nodes_index=np.array([None]),
