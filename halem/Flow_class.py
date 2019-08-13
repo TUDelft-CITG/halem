@@ -1,16 +1,13 @@
-from collections import defaultdict
 import math
 import numpy as np
 from numpy import ma
 import netCDF4
-from netCDF4 import Dataset, num2date
+from netCDF4 import Dataset
 from scipy.spatial import Delaunay
 import halem.Functions as Functions
-from scipy.signal import argrelextrema
 from scipy.interpolate import griddata
 import datetime, time
 from datetime import datetime
-import pickle
 from IPython.display import clear_output
 
 

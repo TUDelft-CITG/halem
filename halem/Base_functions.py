@@ -83,7 +83,7 @@ def HALEM_func(start, stop, t0, vmax, Roadmap, costfunction):
     arg_vship = int(np.argwhere(vv == vv.min())[0])
 
     class graph_functions_time:
-        weights = type[arg_vship].weights
+        weights = costfunction[arg_vship].weights
         time = Roadmap.weight_time[arg_vship].weights
         vship = Roadmap.vship[arg_vship]
 
@@ -106,7 +106,7 @@ def HALEM_time(start, stop, t0, vmax, Roadmap):
     costfunction = Roadmap.weight_time
     return HALEM_func(start, stop, t0, vmax, Roadmap, costfunction)
 
-    
+
 def HALEM_space(start, stop, t0, vmax, Roadmap):
     costfunction = Roadmap.weight_space
     return HALEM_func(start, stop, t0, vmax, Roadmap, costfunction)

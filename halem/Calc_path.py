@@ -1,11 +1,7 @@
-from collections import defaultdict
-import math
 import numpy as np
-from numpy import ma
 import datetime, time
 from datetime import datetime
 import halem.Functions as Functions
-import halem.Mesh_maker as Mesh_maker
 
 
 def find_startstop(start, nodes):
