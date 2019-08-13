@@ -38,7 +38,7 @@ class Graph_flow_model:
                                     For the optimization type cost and co2 N must be larger or equal to 2.
     WD_min:                         numpy array with the draft of the vessel. Numpy array has the shape of 
                                     the number of discretisations in the dynamic sailing velocity
-    WVPI                            Numpy array with the total weight of the 
+    WVPI:                            Numpy array with the total weight of the 
     Load_flow:                      Class that contains the output of the hydrodynamic model. An example is
                                     is provided on https://halem.readthedocs.io/en/latest/examples.html
                                     class must have the following instances. 
@@ -216,6 +216,11 @@ class Graph_flow_model:
 
 
 class Graph:
+    """class that contains the nodes, arcs, and weights for the time-dependent, 
+    directional, weighted, and Non-FIFO graph of the route optimization problem.
+    This class is used multiple times in the halem.Mesh_maker.Graph_flow_model() 
+    function"""
+
     def __init__(self):
         """
         self.edges is a dict of all possible next nodes
@@ -245,6 +250,7 @@ def calc_weights_time(
     compute_co2,
     number_of_neighbor_layers,
 ):
+    """Function that retruns the weight of an arc"""
     from_node = edge[0]
     W = (
         Functions.costfunction_timeseries(
@@ -265,44 +271,8 @@ def calc_weights_time(
     return L, W, euros, co2
 
 
-def calc_weights_repeat(
-    edge,
-    i,
-    j,
-    vship,
-    WD_min,
-    WVPI,
-    self_f,
-    compute_cost,
-    compute_co2,
-    number_of_neighbor_layers,
-):
-    from_node = edge[0]
-    W = (
-        Functions.costfunction_timeseries(
-            edge, vship[j], WD_min, self_f, WVPI, number_of_neighbor_layers, self_f.tria
-        )
-        + self_f.t
-    )
-    W = np.concatenate((W, W))
-    W = FIFO_maker2(W, self_f.mask[from_node])
-    W = W[: int(len(W) / 2)] - self_f.t
-
-    L = Functions.costfunction_spaceseries(
-        edge, vship[j], WD_min, self_f, WVPI, number_of_neighbor_layers, self_f.tria
-    )
-    L = L + np.arange(len(L)) * (1 / len(L))
-    L = np.concatenate((L, L))
-    L = FIFO_maker2(L, self_f.mask[from_node])
-    L = L[: int(len(L) / 2)] - np.arange(int(len(L) / 2)) * (1 / int(len(L) / 2))
-
-    euros = compute_cost(W, vship[j])
-    co2 = compute_co2(W, vship[j])
-
-    return L, W, euros, co2
-
-
-def find_neighbors(pindex, triang):  # zou recursief moeten kunne
+def find_neighbors(pindex, triang):
+    """Finds the neightbours of a node in the triangulation """
     return triang.vertex_neighbor_vertices[1][
         triang.vertex_neighbor_vertices[0][pindex] : triang.vertex_neighbor_vertices[0][
             pindex + 1
@@ -312,8 +282,9 @@ def find_neighbors(pindex, triang):  # zou recursief moeten kunne
 
 def find_neighbors2(
     index, triang, depth
-):  # Controleren of die buren niet twee keer toevoegd
-    buren = np.array([index])  # list van een set -> verzamelt de unieke
+):
+    """Finds the neightbours up to  the nb'th order of a node in the triangulation """
+    buren = np.array([index])
     for _ in range(depth):
         for buur in buren:
             buren_temp = np.array([])
@@ -329,6 +300,10 @@ def find_neighbors2(
 
 
 def FIFO_maker2(y, N1):
+    """Makes a FIFO time series from a Non-FIFO time series
+    y:             Time series
+    N1:            Mask file of the time series
+    """
     arg = np.squeeze(argrelextrema(y, np.less))
     if arg.shape == ():
         arg = np.array([arg])
@@ -346,6 +321,13 @@ def FIFO_maker2(y, N1):
 
 
 def closest_node(node, nodes, node_list):
+    """Finds the closest node for a subset of nodes in a set of node, based on WGS84 coordinates.
+
+    node:           considered node
+    nodes:          indices of the subset
+    node_list:      total list of the nodes
+    """
+
     node_x = node_list[node][1]
     node_y = node_list[node][0]
 
