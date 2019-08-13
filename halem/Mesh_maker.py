@@ -15,6 +15,31 @@ from IPython.display import clear_output
 
 
 class Graph_flow_model:
+    """Pre-processing function fir the HALEM optimizations. In this fucntion the hydrodynamic
+    model and the vessel properties are transformed into weights for the Time dependend Dijkstra
+    function.
+    
+    name_textfile_flow:             string that gives the location of the hydrodynamic model 
+                                    in the directory.
+    dx_min:                         float, minimal spatial resolution. Parameter of the lengt scale
+                                    function concerning the node reduction
+    blend:                          blend factor between the verticity and magnitude of the flow.
+                                    Parameter of the lengt scale function concerning the node reduction
+    nl:                             float (nl_c, nl_m) Non linearity factor consisting out of two numbers
+                                    nl_c non-linearity factor for the corticity, nl_m non-linearity factor
+                                    for the magnitude of the flow. Parameter of the lengt scale function 
+                                    concerning the node reduction
+
+    number_of_neighbor_layers:
+    vmax:                           (N (rows) * M (columns)) numpy array that indicates the sailing 
+                                    velocity in deep water. For which N is the number of discretisations
+                                    in the load factor, and M is the number of discretisations in the 
+                                    dynamic sailing velocity
+
+                                    For the optimization type cost and co2 N must be larger or equal to 2.
+    """
+
+
     def __init__(
         self,
         name_textfile_flow,
@@ -87,7 +112,7 @@ class Graph_flow_model:
         for from_node in range(len(self.nodes)):
             to_nodes = find_neighbors2(from_node, self.tria, number_of_neighbor_layers)
             for to_node in to_nodes:
-                L = haversine(self.nodes[from_node], self.nodes[int(to_node)])
+                L = Functions.haversine(self.nodes[from_node], self.nodes[int(to_node)])
                 graph0.add_edge(from_node, int(to_node), L)
         clear_output(wait=True)
 
@@ -247,11 +272,6 @@ def calc_weights_repeat(
     co2 = compute_co2(W, vship[j])
 
     return L, W, euros, co2
-
-
-def haversine(coord1, coord2):
-    dist = Functions.haversine(coord1, coord2)
-    return dist
 
 
 def find_neighbors(pindex, triang):  # zou recursief moeten kunne
