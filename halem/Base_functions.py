@@ -73,6 +73,7 @@ def plot_timeseries2(path, time, Roadmap, Color="r"):
         plt.ylabel("time [h]")
         plt.legend(loc="best")
 
+
 def HALEM_func(start, stop, t0, vmax, Roadmap, costfunction):
     start = start[::-1]
     stop = stop[::-1]
@@ -100,6 +101,7 @@ def HALEM_func(start, stop, t0, vmax, Roadmap, costfunction):
         dist.append(D)
     dist = np.array(dist)
     return path[:, ::-1], time, dist
+
 
 def HALEM_time(start, stop, t0, vmax, Roadmap):
     costfunction = Roadmap.weight_time

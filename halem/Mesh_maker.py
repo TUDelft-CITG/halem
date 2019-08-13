@@ -31,7 +31,7 @@ class Graph_flow_model:
         WWL=20,
         LWL=80,
         ukc=1.5,
-        nodes_on_land = Functions.nodes_on_land_None,
+        nodes_on_land=Functions.nodes_on_land_None,
         repeat=False,
         optimization_type=["time", "space", "cost", "co2"],
         nodes_index=np.array([None]),
