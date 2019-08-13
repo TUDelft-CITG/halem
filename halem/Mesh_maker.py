@@ -70,7 +70,6 @@ class Graph_flow_model:
                                     node reduction step if this is already done.                                                           
     """
 
-
     def __init__(
         self,
         name_textfile_flow,
