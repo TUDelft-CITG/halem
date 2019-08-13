@@ -117,12 +117,10 @@ def costfunction_timeseries(edge, V_max, WD_min, flow, WVPI, L, tria):
 
     alpha1 = np.arctan2((yto - yfrom), (xto - xfrom))
     alpha2 = np.arctan2(v_w, u_w) - alpha1
-
-    # s_t1 = (U_w * np.cos(alpha2)) + (vship ** 2 - (U_w * np.sin(alpha2)) ** 2)
-    # s_t = (s_t1) ** 0.5
-
-    # s_t = np.array([(s_t2 ** 0.5) if s_t2 > 0 else np.nan for s_t2 in s_t1]) 
-    s_t = (U_w * np.cos(alpha2)) + (vship ** 2 - (U_w * np.sin(alpha2)) ** 2) ** 0.5
+    
+    s_t1 = (U_w * np.cos(alpha2))
+    s_t2 = (vship ** 2 - (U_w * np.sin(alpha2)) ** 2)
+    s_t = np.array([ s_t1[i] + s_t2[i] ** 0.5 if s_t2[i] > 0 else 0 for i in range(len(s_t1))]) 
 
     u_t = np.cos(alpha1) * (s_t)
     v_t = np.sin(alpha1) * (s_t)
@@ -166,8 +164,10 @@ def costfunction_spaceseries(edge, V_max, WD_min, flow, WVPI, L, tria):
 
     alpha1 = np.arctan2((yto - yfrom), (xto - xfrom))
     alpha2 = np.arctan2(v_w, u_w) - alpha1
-
-    s_t = (U_w * np.cos(alpha2)) + (vship ** 2 - (U_w * np.sin(alpha2)) ** 2) ** 0.5
+    
+    s_t1 = (U_w * np.cos(alpha2))
+    s_t2 = (vship ** 2 - (U_w * np.sin(alpha2)) ** 2)
+    s_t = np.array([ s_t1[i] + s_t2[i] ** 0.5 if s_t2[i] > 0 else 0 for i in range(len(s_t1))]) 
 
     u_t = np.cos(alpha1) * (s_t)
     v_t = np.sin(alpha1) * (s_t)
