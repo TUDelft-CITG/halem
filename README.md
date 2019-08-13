@@ -2,8 +2,9 @@
 [ ![License: MIT](https://img.shields.io/badge/License-MIT-informational.svg)](https://github.com/TUDelft-CITG/HALEM/blob/master/LICENSE.txt)
 [ ![DOI](https://zenodo.org/badge/184024759.svg)](https://zenodo.org/badge/latestdoi/184024759)
 
-[![CircleCI](https://circleci.com/gh/TUDelft-CITG/HALEM.svg?style=svg&circle-token=64796bff34a56507bad599a6cec980b7b8be0bb9)](https://circleci.com/gh/TUDelft-CITG/HALEM)
-
+[ ![CircleCI](https://circleci.com/gh/TUDelft-CITG/HALEM.svg?style=svg&circle-token=64796bff34a56507bad599a6cec980b7b8be0bb9)](https://circleci.com/gh/TUDelft-CITG/HALEM)
+[ ![Coverage](https://oedm.vanoord.com/proxy/circleci_no_redirect/github/TUDelft-CITG/HALEM/master/latest/ddf5d3b409fbb3e3aa368be6b0b0907c53c40a87/tmp/artifacts/coverage.svg)](https://oedm.vanoord.com/proxy/circleci_no_redirect/github/TUDelft-CITG/HALEM/master/latest/ddf5d3b409fbb3e3aa368be6b0b0907c53c40a87/tmp/artifacts/index.html)
+<a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg">
 
 Route optimization in dynamic flow fields
 ====================================

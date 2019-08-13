@@ -1,7 +1,6 @@
 import halem.Mesh_maker as Mesh_maker
 import halem.Functions as Functions
 import halem.Calc_path as Calc_path
-import halem.Flow_class as Flow_class
 from scipy.spatial import Delaunay
 
 import pytest

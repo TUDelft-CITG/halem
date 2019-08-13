@@ -2,7 +2,6 @@ import halem.Base_functions as halem
 import halem.Mesh_maker as Mesh_maker
 import halem.Functions as Functions
 import halem.Calc_path as Calc_path
-import halem.Flow_class as Flow_class
 
 import pytest
 import numpy as np
@@ -36,7 +35,7 @@ WVPI = np.array([5000, 7000])
 ukc = 0
 
 
-nodes_on_land = Flow_class.nodes_on_land_None
+nodes_on_land = Functions.nodes_on_land_None
 number_of_neighbor_layers = 1
 
 Roadmap = Mesh_maker.Graph_flow_model(

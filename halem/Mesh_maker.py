@@ -12,10 +12,62 @@ import datetime, time
 from datetime import datetime
 import pickle
 from IPython.display import clear_output
-import halem.Flow_class as Flow_class
 
 
 class Graph_flow_model:
+    """Pre-processing function fir the HALEM optimizations. In this fucntion the hydrodynamic
+    model and the vessel properties are transformed into weights for the Time dependend Dijkstra
+    function.
+    
+    name_textfile_flow:             string that gives the location of the hydrodynamic model 
+                                    in the directory.
+    dx_min:                         float, minimal spatial resolution. Parameter of the lengt scale
+                                    function concerning the node reduction
+    blend:                          blend factor between the verticity and magnitude of the flow.
+                                    Parameter of the lengt scale function concerning the node reduction
+    nl:                             float (nl_c, nl_m) Non linearity factor consisting out of two numbers
+                                    nl_c non-linearity factor for the corticity, nl_m non-linearity factor
+                                    for the magnitude of the flow. Parameter of the lengt scale function 
+                                    concerning the node reduction
+    number_of_neighbor_layers:      number of neigbouring layers for which edges are created. increasing this
+                                    number results in a higher directional resolution. 
+    vship:                           (N (rows) * M (columns)) numpy array that indicates the sailing 
+                                    velocity in deep water. For which N is the number of discretisations
+                                    in the load factor, and M is the number of discretisations in the 
+                                    dynamic sailing velocity
+                                    For the optimization type cost and co2 N must be larger or equal to 2.
+    WD_min:                         numpy array with the draft of the vessel. Numpy array has the shape of 
+                                    the number of discretisations in the dynamic sailing velocity
+    WVPI                            Numpy array with the total weight of the 
+    Load_flow:                      Class that contains the output of the hydrodynamic model. An example is
+                                    is provided on https://halem.readthedocs.io/en/latest/examples.html
+                                    class must have the following instances. 
+                                    u: numpy array with shape (N, M)
+                                    v: numpy array with shape (N, M)
+                                    WD: numpy array with shape (N, M)
+                                    nodes: numpy array with shape (N, 2) (lat, lon)
+                                    t: numpy array with shape M (seconds since 01-01-1970 00:00:00)
+                                    tria: triangulation of the nodes (output of scipy.spatial.Delaunay(nodes))
+                                    in which N is the number of nodes of the hydrodynamic model, and 
+                                    M is the number of time steps of the hydrodynamic model
+    compute_cost:                   Lambda function that returns the cost for sailing based on the travel
+                                    time and the travel velocity.
+    compute_co2:                    Lambda function that returns the emmision for sailing based on the travel
+                                    time and the travel velocity.      
+    WWL:                            Width over Water Line of the vessel in meters 
+    LWL:                            Length over Water Line of the vessel in meters   
+    ukc:                            Minimal needed under keel clearance in  meters. 
+    nodes_on_land:                  Function that adds hydrodynamic conditions on land to if nodes on land are 
+                                    not included in the hydrodynamic model
+    repeat:                         Indicator if the roadmap can be repeated (True / False) True for 
+                                    hydrodynamic models based on a tidal analysis
+    optimization_type:              list of optimization types. Excluding one or more not needed optimization 
+                                    types can significantly decrease the size of the preprocessing file   
+    nodes_index:                    Numpy array that contains the indices of the nodes of the reduced hydrodynamic model.
+                                    nodes_index is the output of Roadmap.nodes_index. This option allows you to skip the 
+                                    node reduction step if this is already done.                                                           
+    """
+
     def __init__(
         self,
         name_textfile_flow,
@@ -32,7 +84,7 @@ class Graph_flow_model:
         WWL=20,
         LWL=80,
         ukc=1.5,
-        nodes_on_land=Flow_class.nodes_on_land_None,
+        nodes_on_land=Functions.nodes_on_land_None,
         repeat=False,
         optimization_type=["time", "space", "cost", "co2"],
         nodes_index=np.array([None]),
@@ -88,7 +140,7 @@ class Graph_flow_model:
         for from_node in range(len(self.nodes)):
             to_nodes = find_neighbors2(from_node, self.tria, number_of_neighbor_layers)
             for to_node in to_nodes:
-                L = haversine(self.nodes[from_node], self.nodes[int(to_node)])
+                L = Functions.haversine(self.nodes[from_node], self.nodes[int(to_node)])
                 graph0.add_edge(from_node, int(to_node), L)
         clear_output(wait=True)
 
@@ -248,11 +300,6 @@ def calc_weights_repeat(
     co2 = compute_co2(W, vship[j])
 
     return L, W, euros, co2
-
-
-def haversine(coord1, coord2):
-    dist = Functions.haversine(coord1, coord2)
-    return dist
 
 
 def find_neighbors(pindex, triang):  # zou recursief moeten kunne

@@ -1,4 +1,3 @@
-from collections import defaultdict
 import math
 import numpy as np
 from numpy import ma
@@ -26,23 +25,6 @@ def find_neighbors2(index, triang, depth):
             buren = np.append(buren, buren_temp)
     buren = np.delete(buren, 0)
     return buren
-
-
-def Squat_in_sea(h, T, V_max, WWL, ukc):
-    ghv2 = 9.81 * h / (V_max ** 2)
-    squat_max = T + ukc
-    VhV1 = (
-        1.002
-        + 0.005 * (np.sqrt(WWL * T) / h)
-        - 0.1159 * (np.sqrt(WWL * T) / h) ** 2
-        + 0.0191 * (np.sqrt(WWL * T) / h) ** 3
-    )
-    V1Vinf = ((np.exp(ghv2) - np.exp(-ghv2)) / (np.exp(ghv2) + np.exp(-ghv2))) ** 0.5
-    V = V_max * V1Vinf * VhV1
-    for i in range(len(V)):
-        V[i] = V[i] if h[i] > squat_max else 0
-
-    return V
 
 
 def Squat(h, T, V_max, LWL, WWL, ukc, WVPI):
@@ -136,20 +118,25 @@ def costfunction_timeseries(edge, V_max, WD_min, flow, WVPI, L, tria):
     alpha1 = np.arctan2((yto - yfrom), (xto - xfrom))
     alpha2 = np.arctan2(v_w, u_w) - alpha1
 
-    s_t = (U_w * np.cos(alpha2)) + (vship ** 2 - (U_w * np.sin(alpha2)) ** 2) ** 0.5
+    s_t1 = U_w * np.cos(alpha2)
+    s_t2 = vship ** 2 - (U_w * np.sin(alpha2)) ** 2
+    s_t = np.array(
+        [s_t1[i] + s_t2[i] ** 0.5 if s_t2[i] > 0 else 0 for i in range(len(s_t1))]
+    )
 
     u_t = np.cos(alpha1) * (s_t)
     v_t = np.sin(alpha1) * (s_t)
 
     L = haversine((yfrom, xfrom), (yto, xto))
     U_t = (u_t ** 2 + v_t ** 2) ** 0.5
-    t = L / U_t
+    t = np.array([L / U_t1 if U_t1 > 0 else np.inf for U_t1 in U_t])
 
     t[U_t == np.inf] = np.inf
     t[np.isnan(t)] = np.inf
     t[WD_W < WD_min + flow.ukc] = np.inf
     t[WD_W < WD_min + flow.ukc] = np.inf
     t[(U_w * np.sin(alpha2)) ** 2 > vship ** 2] = np.inf
+    t[np.isnan(s_t)] = np.inf
     t[s_t < 0] = np.inf
     return np.array(t)
 
@@ -167,7 +154,7 @@ def costfunction_spaceseries(edge, V_max, WD_min, flow, WVPI, L, tria):
         v_w = v_w + flow.v[IB[i]]
         u_w = u_w + flow.u[IB[i]]
 
-        # WD_W = WD_W + flow.WD_W[IB[i]]
+        # WD_W = WD_W + flow.WD[IB[i]]
         WD_W = np.minimum(WD_W, flow.WD[IB[i]])
 
     # WD_W= WD_W / len(IB)
@@ -180,21 +167,30 @@ def costfunction_spaceseries(edge, V_max, WD_min, flow, WVPI, L, tria):
     alpha1 = np.arctan2((yto - yfrom), (xto - xfrom))
     alpha2 = np.arctan2(v_w, u_w) - alpha1
 
-    s_t = (U_w * np.cos(alpha2)) + (vship ** 2 - (U_w * np.sin(alpha2)) ** 2) ** 0.5
+    s_t1 = U_w * np.cos(alpha2)
+    s_t2 = vship ** 2 - (U_w * np.sin(alpha2)) ** 2
+    s_t = np.array(
+        [s_t1[i] + s_t2[i] ** 0.5 if s_t2[i] > 0 else 0 for i in range(len(s_t1))]
+    )
 
     u_t = np.cos(alpha1) * (s_t)
     v_t = np.sin(alpha1) * (s_t)
 
     L = haversine((yfrom, xfrom), (yto, xto))
     U_t = (u_t ** 2 + v_t ** 2) ** 0.5
-    t = L / U_t
+    t = np.array([L / U_t1 if U_t1 > 0 else np.inf for U_t1 in U_t])
 
     t[U_t == np.inf] = np.inf
     t[np.isnan(t)] = np.inf
     t[WD_W < WD_min + flow.ukc] = np.inf
     t[WD_W < WD_min + flow.ukc] = np.inf
     t[(U_w * np.sin(alpha2)) ** 2 > vship ** 2] = np.inf
+    t[np.isnan(s_t)] = np.inf
     t[s_t < 0] = np.inf
     t[t != np.inf] = L
 
     return np.array(t)
+
+
+def nodes_on_land_None(nodes, u, v, WD):
+    return nodes, u, v, WD
