@@ -23,6 +23,7 @@ class flow_class:
         self.v = np.ones((len(self.t), len(self.nodes))) * 0
         self.u[:, 2] = 10
 
+
 name_textfile_flow = "maaktnietuit"
 Load_flow = flow_class
 blend = 0
@@ -59,7 +60,7 @@ Roadmap2 = Mesh_maker.Graph_flow_model(
     Load_flow,
     WD_min,
     WVPI,
-    repeat=True
+    repeat=True,
 )
 clear_output()
 

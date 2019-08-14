@@ -29,7 +29,7 @@ class flow_class:
         u = self.u
         v = self.v
 
-        for i in range(len(self.t) - 1):
+        for _ in range(len(self.t) - 1):
             self.u = np.concatenate((self.u, u))
             self.v = np.concatenate((self.v, v))
 
@@ -54,7 +54,7 @@ class flow_class2:
         u = self.u
         v = self.v
 
-        for i in range(len(self.t) - 1):
+        for _ in range(len(self.t) - 1):
             self.u = np.concatenate((self.u, u))
             self.v = np.concatenate((self.v, v))
 
@@ -88,8 +88,8 @@ class flow_class4:
     def __init__(self, name="maaktnietuit"):
         self.t = np.arange(0, 5)
 
-        x = np.linspace(0,100, 1100)
-        y = np.linspace(0,100, 1100)
+        x = np.linspace(0, 100, 1100)
+        y = np.linspace(0, 100, 1100)
         yy, xx = np.meshgrid(y, x)
         xx = xx.reshape(xx.size)
         yy = yy.reshape(yy.size)
@@ -104,7 +104,7 @@ class flow_class4:
         u = self.u
         v = self.v
 
-        for i in range(len(self.t) - 1):
+        for _ in range(len(self.t) - 1):
             self.u = np.concatenate((self.u, u))
             self.v = np.concatenate((self.v, v))
 
@@ -180,7 +180,9 @@ def test_closest_node():
     node = 0
     node_list = np.arange(1, 5, dtype=int)
 
-    cn = Mesh_maker.node_reduction.closest_node(Mesh_maker.node_reduction, node, node_list, nodes)
+    cn = Mesh_maker.node_reduction.closest_node(
+        Mesh_maker.node_reduction, node, node_list, nodes
+    )
     assert cn == 1
 
 
@@ -188,8 +190,7 @@ def test_Length_scale():
     flow = flow_class()
     blend = 0
     nl = (1, 1)
-    NR = Mesh_maker.node_reduction(flow, nl,0.1,blend)
-
+    NR = Mesh_maker.node_reduction(flow, nl, 0.1, blend)
 
     for i in range(len(flow.nodes)):
         ls = NR.Length_scale(i, flow, blend, nl)
@@ -198,7 +199,7 @@ def test_Length_scale():
     blend = 1
     nl = (1, 1)
     error = 0
-    NR = Mesh_maker.node_reduction(flow, nl,0.1,blend)
+    NR = Mesh_maker.node_reduction(flow, nl, 0.1, blend)
 
     for i in range(len(flow.nodes)):
         ls = NR.Length_scale(i, flow, blend, nl)
@@ -214,8 +215,8 @@ def test_Length_scale():
     blend = 1
     nl = (1, 1)
     error = 0
-    NR = Mesh_maker.node_reduction(flow, nl,0.1,blend)
-    
+    NR = Mesh_maker.node_reduction(flow, nl, 0.1, blend)
+
     for i in range(len(flow.nodes)):
         ls = NR.Length_scale(i, flow, blend, nl)
         C = np.pi / 5 * np.cos(2 * np.pi * flow.nodes[i, 0] / 10)
@@ -230,8 +231,7 @@ def test_Length_scale():
     blend = 1
     nl = (1, 1)
     error = 0
-    NR = Mesh_maker.node_reduction(flow, nl,0.1,blend)
-
+    NR = Mesh_maker.node_reduction(flow, nl, 0.1, blend)
 
     for i in range(len(flow.nodes)):
         ls = NR.Length_scale(i, flow, blend, nl)
@@ -269,7 +269,7 @@ def test_node_reduction():
     reduced_nodes = Mesh_maker.node_reduction(flow, nl, dx_min, blend)
 
     assert len(reduced_nodes.new_nodes) == 200
-    assert reduced_nodes.LS.shape == (400, )
+    assert reduced_nodes.LS.shape == (400,)
 
     # flow = flow_class4()
     # blend = 0
@@ -279,7 +279,7 @@ def test_node_reduction():
     # reduced_nodes = Mesh_maker.node_reduction(flow, nl, dx_min, blend)
 
     # assert len(reduced_nodes.new_nodes) == 200
-    
+
 
 def test_Graph_flow_model():
     name_textfile_flow = "maaktnietuit"
@@ -362,10 +362,33 @@ def test_Graph_flow_model_repeat():
         Load_flow,
         WD_min,
         WVPI,
-        repeat= True
+        repeat=True,
     )
 
     clear_output()
 
     assert Roadmap.v.shape == (400, 10)
     assert Roadmap.t.shape[0] == 10
+
+
+def test_percentageprinter():
+    class flow_class:
+        def __init__(self):
+            x = np.arange(0, 1100)
+            y = 0 * np.arange(0, 1100)
+            y[::2] = 5
+
+            nodes = np.zeros((x.size, 2))
+            nodes[:, 1] = x.reshape(x.size)
+            nodes[:, 0] = y.reshape(x.size)
+            tria = Delaunay(nodes)
+            self.t = np.arange(3)
+            self.nodes = nodes
+            blank = np.zeros((len(self.t), len(nodes)))
+            self.tria = tria
+            self.u = blank
+            self.v = blank
+            self.WD = blank
+
+    f = flow_class()
+    Q = Mesh_maker.node_reduction(f, (0, 0), 1, 0)

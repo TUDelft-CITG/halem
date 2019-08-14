@@ -180,14 +180,14 @@ def test_find_neighbor2():
 
 
 def test_inbetweenpoints():
-    x = range(0,5)
-    y = range(0,5)
-    x,y = np.meshgrid(x,y)
+    x = range(0, 5)
+    y = range(0, 5)
+    x, y = np.meshgrid(x, y)
 
-    nodes = np.zeros((x.size,2))
-    nodes[:,1] = x.reshape(x.size)
-    nodes[:,0] = y.reshape(x.size)
+    nodes = np.zeros((x.size, 2))
+    nodes[:, 1] = x.reshape(x.size)
+    nodes[:, 0] = y.reshape(x.size)
     tria = Delaunay(nodes)
-    IB = Functions.inbetweenpoints(5,18,3,tria)
+    IB = Functions.inbetweenpoints(5, 18, 3, tria)
 
-    np.testing.assert_array_equal(IB, np.array([ 5, 18,  7, 11, 12, 16, 17]))
+    np.testing.assert_array_equal(IB, np.array([5, 18, 7, 11, 12, 16, 17]))

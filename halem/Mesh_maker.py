@@ -13,6 +13,7 @@ from datetime import datetime
 import pickle
 from IPython.display import clear_output
 
+
 class Graph_flow_model:
     """Pre-processing function fir the HALEM optimizations. In this fucntion the hydrodynamic
     model and the vessel properties are transformed into weights for the Time dependend Dijkstra
@@ -139,7 +140,9 @@ class Graph_flow_model:
         # 'Calculate edges'
         graph0 = Graph()
         for from_node in range(len(self.nodes)):
-            to_nodes = Functions.find_neighbors2(from_node, self.tria, number_of_neighbor_layers)
+            to_nodes = Functions.find_neighbors2(
+                from_node, self.tria, number_of_neighbor_layers
+            )
             for to_node in to_nodes:
                 L = Functions.haversine(self.nodes[from_node], self.nodes[int(to_node)])
                 graph0.add_edge(from_node, int(to_node), L)
@@ -232,7 +235,13 @@ class Graph_flow_model:
         from_node = edge[0]
         W = (
             Functions.costfunction_timeseries(
-                edge, vship[j], WD_min, self_f, WVPI, number_of_neighbor_layers, self_f.tria
+                edge,
+                vship[j],
+                WD_min,
+                self_f,
+                WVPI,
+                number_of_neighbor_layers,
+                self_f.tria,
             )
             + self_f.t
         )
@@ -242,7 +251,9 @@ class Graph_flow_model:
             edge, vship[j], WD_min, self_f, WVPI, number_of_neighbor_layers, self_f.tria
         )
         L = L + np.arange(len(L)) * (1 / len(L))
-        L = self.FIFO_maker2(L, self_f.mask[from_node]) - np.arange(len(L)) * (1 / len(L))
+        L = self.FIFO_maker2(L, self_f.mask[from_node]) - np.arange(len(L)) * (
+            1 / len(L)
+        )
         euros = compute_cost(W, vship[j])
         co2 = compute_co2(W, vship[j])
 
@@ -296,7 +307,7 @@ class node_reduction:
     def __init__(self, flow, nl, dx_min, blend):
         self.new_nodes, self.LS = self.Get_nodes(flow, nl, dx_min, blend)
 
-    def Get_nodes(self,flow, nl, dx_min, blend):
+    def Get_nodes(self, flow, nl, dx_min, blend):
         nodes = flow.nodes
         new_nodes = [0]
         LS = []
@@ -317,11 +328,8 @@ class node_reduction:
             x_dist = nodes[closest_nod][1] - nodes[i][1]
             distu = (y_dist ** 2 + x_dist ** 2) ** 0.5
 
-
             if distu > dx_min * LS_node:
                 new_nodes.append(i)
-            else:
-                None
 
         LS = ma.array(LS, fill_value=np.nan)
 
@@ -331,13 +339,7 @@ class node_reduction:
         nb = Functions.find_neighbors(node, flow.tria)
         mag = (flow.u[:, node] ** 2 + flow.v[:, node] ** 2) ** 0.5
         mag = mag.max()
-
-        if len(nb) < 2:
-            return 1
-
-        curl = self.curl_func(node, flow)
-        curl = abs(curl)
-
+        curl = abs(self.curl_func(node, flow))
         LS_c = ma.array(1 / (1 + curl) ** nl[0])
         LS_m = ma.array(1 / (1 + mag) ** nl[1])
         LS = ma.array(blend * LS_c + (1 - blend) * LS_m)
