@@ -16,7 +16,6 @@ class particle_tracking():
     https://en.wikipedia.org/wiki/Geographic_coordinate_system
     
     the class flow should contain:
-    - x,y,t as a numpy meshgrid (y, x, t = np.meshgrid(y, x, t))
     - u, v
     - u.shape = v.shape = x.shape = y.shape = t.shape
     """
