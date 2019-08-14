@@ -13,7 +13,6 @@ from datetime import datetime
 import pickle
 from IPython.display import clear_output
 
-
 class Graph_flow_model:
     """Pre-processing function fir the HALEM optimizations. In this fucntion the hydrodynamic
     model and the vessel properties are transformed into weights for the Time dependend Dijkstra
@@ -116,7 +115,9 @@ class Graph_flow_model:
 
         # 'Calculate nodes and flow conditions in nodes'
         if nodes_index.all() == None:
-            self.nodes_index, self.LS = Get_nodes(flow, nl, dx_min, blend)
+            reduces_nodes = node_reduction(flow, nl, dx_min, blend)
+            self.nodes_index = reduces_nodes.new_nodes
+            self.LS = reduces_nodes.LS
         else:
             self.nodes_index = nodes_index
 
@@ -138,7 +139,7 @@ class Graph_flow_model:
         # 'Calculate edges'
         graph0 = Graph()
         for from_node in range(len(self.nodes)):
-            to_nodes = find_neighbors2(from_node, self.tria, number_of_neighbor_layers)
+            to_nodes = Functions.find_neighbors2(from_node, self.tria, number_of_neighbor_layers)
             for to_node in to_nodes:
                 L = Functions.haversine(self.nodes[from_node], self.nodes[int(to_node)])
                 graph0.add_edge(from_node, int(to_node), L)
@@ -291,146 +292,10 @@ class Graph:
         self.weights[(from_node, to_node)] = weight
 
 
-def find_neighbors(pindex, triang):
-    """Finds the neightbours of a node in the triangulation """
-    return triang.vertex_neighbor_vertices[1][
-        triang.vertex_neighbor_vertices[0][pindex] : triang.vertex_neighbor_vertices[0][
-            pindex + 1
-        ]
-    ]
-
-
-def find_neighbors2(
-    index, triang, depth
-):
-    """Finds the neightbours up to  the nb'th order of a node in the triangulation """
-    buren = np.array([index])
-    for _ in range(depth):
-        for buur in buren:
-            buren_temp = np.array([])
-            temp = find_neighbors(int(buur), triang)
-            for j in temp:
-                if j in buren:
-                    None
-                else:
-                    buren_temp = np.append(buren_temp, int(j))
-            buren = np.append(buren, buren_temp)
-    buren = np.delete(buren, 0)
-    return buren
-
-
-def closest_node(node, nodes, node_list):
-    """Finds the closest node for a subset of nodes in a set of node, based on WGS84 coordinates.
-
-    node:           considered node
-    nodes:          indices of the subset
-    node_list:      total list of the nodes
-    """
-
-    node_x = node_list[node][1]
-    node_y = node_list[node][0]
-
-    nodes_x = node_list[nodes][:, 1]
-    nodes_y = node_list[nodes][:, 0]
-
-    nx = ((nodes_x - node_x) ** 2 + (nodes_y - node_y) ** 2) ** 0.5
-    pt = np.argwhere(nx == nx.min())[0][0]
-    pt = nodes[pt]
-    return pt
-
-
-def slope(xs, ys, zs):
-    """Function for the slope of a plane in x and y direction. 
-    Used to calculate the  curl of the flow for the node reduction step"""
-
-    tmp_A = []
-    tmp_b = []
-    for i in range(len(xs)):
-        tmp_A.append([xs[i], ys[i], 1])
-        tmp_b.append(zs[i])
-    b = np.matrix(tmp_b).T
-    A = np.matrix(tmp_A)
-    fit = (A.T * A).I * A.T * b
-
-    return fit[0], fit[1]
-
-
-def curl_func(node, flow):
-    """"""
-
-    nb = find_neighbors(node, flow.tria)
-    nb = np.append(nb, node)
-    DUDY = []
-    DVDX = []
-    xs = flow.nodes[nb][:, 1]
-    ys = flow.nodes[nb][:, 0]
-    for i in range(len(flow.t)):
-        u = flow.u[i, nb]
-        v = flow.v[i, nb]
-        dudy = float(slope(xs, ys, u)[1])
-        dvdx = float(slope(xs, ys, v)[0])
-        DUDY.append(dudy)
-        DVDX.append(dvdx)
-    DUDY = np.array(DUDY)
-    DVDX = np.array(DVDX)
-    curl = (np.abs(DUDY - DVDX)).max()
-    return curl
-
-
-def Length_scale(node, flow, blend, nl):
-    nb = find_neighbors(node, flow.tria)
-    mag = (flow.u[:, node] ** 2 + flow.v[:, node] ** 2) ** 0.5
-    mag = mag.max()
-
-    if len(nb) < 2:
-        return 1
-
-    curl = abs(curl_func(node, flow))
-
-    LS_c = ma.array(1 / (1 + curl) ** nl[0])
-    LS_m = ma.array(1 / (1 + mag) ** nl[1])
-    LS = ma.array(blend * LS_c + (1 - blend) * LS_m)
-    return LS
-
-
-def Get_nodes(flow, nl, dx_min, blend):
-    nodes = flow.nodes
-    new_nodes = [0]
-    LS = []
-    q = int(0)
-    qq = 1
-    for i in range(len(nodes)):
-        q = q + int(1)
-        if q == 1000:
-            clear_output(wait=True)
-            print(np.round(qq / len(nodes) * 100000, 3), "%")
-            q = int(0)
-            qq += 1
-        LS_node = Length_scale(i, flow, blend, nl)
-        LS.append(LS_node)
-        closest_nod = closest_node(i, new_nodes, nodes)
-
-        y_dist = nodes[closest_nod][0] - nodes[i][0]
-        x_dist = nodes[closest_nod][1] - nodes[i][1]
-        distu = (y_dist ** 2 + x_dist ** 2) ** 0.5
-
-        if LS_node.mask == True:
-            None
-        elif distu > dx_min * LS_node:
-            new_nodes.append(i)
-        else:
-            None
-
-    LS = ma.array(LS, fill_value=np.nan)
-
-    return new_nodes, LS
-
-
 class node_reduction:
+    def __init__(self, flow, nl, dx_min, blend):
+        self.new_nodes, self.LS = self.Get_nodes(flow, nl, dx_min, blend)
 
-    def __init__(self):
-        self.goal = 'Node reduction'
-        
     def Get_nodes(self,flow, nl, dx_min, blend):
         nodes = flow.nodes
         new_nodes = [0]
@@ -444,17 +309,16 @@ class node_reduction:
                 print(np.round(qq / len(nodes) * 100000, 3), "%")
                 q = int(0)
                 qq += 1
-            LS_node = Length_scale(i, flow, blend, nl)
+            LS_node = self.Length_scale(i, flow, blend, nl)
             LS.append(LS_node)
-            closest_nod = closest_node(i, new_nodes, nodes)
+            closest_nod = self.closest_node(i, new_nodes, nodes)
 
             y_dist = nodes[closest_nod][0] - nodes[i][0]
             x_dist = nodes[closest_nod][1] - nodes[i][1]
             distu = (y_dist ** 2 + x_dist ** 2) ** 0.5
 
-            if LS_node.mask == True:
-                None
-            elif distu > dx_min * LS_node:
+
+            if distu > dx_min * LS_node:
                 new_nodes.append(i)
             else:
                 None
@@ -462,3 +326,75 @@ class node_reduction:
         LS = ma.array(LS, fill_value=np.nan)
 
         return new_nodes, LS
+
+    def Length_scale(self, node, flow, blend, nl):
+        nb = Functions.find_neighbors(node, flow.tria)
+        mag = (flow.u[:, node] ** 2 + flow.v[:, node] ** 2) ** 0.5
+        mag = mag.max()
+
+        if len(nb) < 2:
+            return 1
+
+        curl = self.curl_func(node, flow)
+        curl = abs(curl)
+
+        LS_c = ma.array(1 / (1 + curl) ** nl[0])
+        LS_m = ma.array(1 / (1 + mag) ** nl[1])
+        LS = ma.array(blend * LS_c + (1 - blend) * LS_m)
+        return LS
+
+    def curl_func(self, node, flow):
+        """"""
+
+        nb = Functions.find_neighbors(node, flow.tria)
+        nb = np.append(nb, node)
+        DUDY = []
+        DVDX = []
+        xs = flow.nodes[nb][:, 1]
+        ys = flow.nodes[nb][:, 0]
+        for i in range(len(flow.t)):
+            u = flow.u[i, nb]
+            v = flow.v[i, nb]
+            dudy = float(self.slope(xs, ys, u)[1])
+            dvdx = float(self.slope(xs, ys, v)[0])
+            DUDY.append(dudy)
+            DVDX.append(dvdx)
+        DUDY = np.array(DUDY)
+        DVDX = np.array(DVDX)
+        curl = (np.abs(DUDY - DVDX)).max()
+
+        return curl
+
+    def closest_node(self, node, nodes, node_list):
+        """Finds the closest node for a subset of nodes in a set of node, based on WGS84 coordinates.
+
+        node:           considered node
+        nodes:          indices of the subset
+        node_list:      total list of the nodes
+        """
+
+        node_x = node_list[node][1]
+        node_y = node_list[node][0]
+
+        nodes_x = node_list[nodes][:, 1]
+        nodes_y = node_list[nodes][:, 0]
+
+        nx = ((nodes_x - node_x) ** 2 + (nodes_y - node_y) ** 2) ** 0.5
+        pt = np.argwhere(nx == nx.min())[0][0]
+        pt = nodes[pt]
+        return pt
+
+    def slope(self, xs, ys, zs):
+        """Function for the slope of a plane in x and y direction. 
+        Used to calculate the  curl of the flow for the node reduction step"""
+
+        tmp_A = []
+        tmp_b = []
+        for i in range(len(xs)):
+            tmp_A.append([xs[i], ys[i], 1])
+            tmp_b.append(zs[i])
+        b = np.matrix(tmp_b).T
+        A = np.matrix(tmp_A)
+        fit = (A.T * A).I * A.T * b
+
+        return fit[0], fit[1]

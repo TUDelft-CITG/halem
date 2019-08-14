@@ -77,8 +77,6 @@ def dijsktra(graph, initial, end, t0, graph_functions):  # Typefout
         next_destinations = {
             node: shortest_paths[node] for node in shortest_paths if node not in visited
         }
-        if not next_destinations:
-            return "Route Not Possible"
         # next node is the destination with the lowest weight
         current_node = min(next_destinations, key=lambda k: next_destinations[k][1])
 
