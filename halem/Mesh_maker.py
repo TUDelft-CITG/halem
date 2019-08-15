@@ -38,9 +38,12 @@ class Graph_flow_model:
                 M is the number of time steps of the hydrodynamic model
     WD_min: numpy array with the draft of the vessel. 
             Numpy array has the shape of the number of discretisations in the dynamic sailing velocity
-    WVPI:   Numpy array with the total weight of the 
+    WVPI:   Numpy array with the total weight of the vessel.
+
     compute_cost:   Lambda function that returns the cost for sailing based on the travel time and the travel velocity.
-    compute_co2:    Lambda function that returns the emmision for sailing based on the travel time and the travel velocity.      
+
+    compute_co2:    Lambda function that returns the emmision for sailing based on the travel time and the travel velocity. 
+         
     WWL:    Width over Water Line of the vessel in meters 
     LWL:    Length over Water Line of the vessel in meters   
     ukc:    Minimal needed under keel clearance in  meters. 
