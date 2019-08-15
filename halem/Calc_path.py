@@ -71,7 +71,9 @@ class Has_route:
                         time_paths[next_node] = (current_node, time)
 
             next_destinations = {
-                node: shortest_paths[node] for node in shortest_paths if node not in visited
+                node: shortest_paths[node]
+                for node in shortest_paths
+                if node not in visited
             }
             current_node = min(next_destinations, key=lambda k: next_destinations[k][1])
 
@@ -102,12 +104,10 @@ class Has_route:
 
         return pt
 
-
     def find_k_time(self, t, ts):
         QQ = abs(ts - t)
         k = np.argwhere(QQ == QQ.min())[0][0]
         return k
-
 
     def find_k_repeat(self, t, ts):
         if t == np.inf:

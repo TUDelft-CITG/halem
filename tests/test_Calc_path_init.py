@@ -110,9 +110,8 @@ def test_dijstra():
         time = Roadmap.weight_time[arg_vship].weights
         vship = Roadmap.vship[arg_vship]
 
-    TT = Calc_path.Has_route((0,0), (0,3), Roadmap, t0, graph_functions_time )
-    SS = Calc_path.Has_route((0,0), (0,3), Roadmap, t0, graph_functions_space )
-
+    TT = Calc_path.Has_route((0, 0), (0, 3), Roadmap, t0, graph_functions_time)
+    SS = Calc_path.Has_route((0, 0), (0, 3), Roadmap, t0, graph_functions_space)
 
     time_path = TT.route
     space_path = SS.route

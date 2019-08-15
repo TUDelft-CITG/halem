@@ -2,6 +2,7 @@ from numpy import ma
 import numpy as np
 import math
 
+
 def find_neighbors(pindex, triang):
     """Function that can find the neighbours of a Delauney mesh.
 
@@ -119,9 +120,7 @@ def haversine(coord1, coord2):
     """
     R = 6372800
     lat1, lon1 = coord1
-    lat2, lon2 = (
-        coord2
-    )
+    lat2, lon2 = coord2
 
     phi1, phi2 = math.radians(lat1), math.radians(lat2)
     dphi = math.radians(lat2 - lat1)
@@ -147,8 +146,6 @@ def costfunction_timeseries(edge, V_max, WD_min, flow, WVPI, L, tria):
     L:         (int) number of neighbouring layers.         
     tria:       triangulation of the nodes (output of scipy.spatial.Delaunay(nodes)
     """
-
-
 
     xfrom = flow.nodes[edge[0]][1]
     yfrom = flow.nodes[edge[0]][0]
