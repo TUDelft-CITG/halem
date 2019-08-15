@@ -1,55 +1,57 @@
-import numpy as np
-import datetime, time
-from datetime import datetime
 import halem.Functions as Functions
+from datetime import datetime
+import datetime, time
+import numpy as np
 
 
 class Has_route:
-    """ This class contains the code for calculating the optimal route
+    """ This class contains the code for calculating the optimal route from the pre-proccessed Roadmap
+
+    start:              start location (lat, lon)
+    stop:               destination location (lat, lon)
+    Roadmap:            Preprocessing file
+    graph_functions:    class that selects the correct weights from the Roadmap.
     """
 
-    def __init__(self, start, stop, graph, t0, graph_functions):
-        d = datetime.strptime(t0, "%d/%m/%Y %H:%M:%S")
+    def __init__(self, start, stop, Roadmap, t0, graph_functions):
+        d = datetime.datetime.strptime(t0, "%d/%m/%Y %H:%M:%S")
         t0 = d.timestamp()
 
-        start = self.find_startstop(start, graph.nodes)
-        stop = self.find_startstop(stop, graph.nodes)
+        start = self.find_startstop(start, Roadmap.nodes)
+        stop = self.find_startstop(stop, Roadmap.nodes)
 
         self.start = (start, 0)
         self.stop = (stop, 0)
 
         self.route = np.array(
-            self.dijsktra(graph, self.start, self.stop, t0, graph_functions)
+            self.dijsktra(Roadmap, self.start, self.stop, t0, graph_functions)
         )
 
         self.x_route = np.zeros(len(self.route[:, 0]))
         self.y_route = np.zeros(len(self.x_route))
         self.t_route = self.route[:, 1]
         for i in range(len(self.x_route)):
-            self.x_route[i] = graph.nodes[int(self.route[i, 0])][1]
-            self.y_route[i] = graph.nodes[int(self.route[i, 0])][0]
+            self.x_route[i] = Roadmap.nodes[int(self.route[i, 0])][1]
+            self.y_route[i] = Roadmap.nodes[int(self.route[i, 0])][0]
 
         self.sailing_time = self.t_route[-1]
 
-    def dijsktra(self, graph, initial, end, t0, graph_functions):  # Typefout
+    def dijsktra(self, Roadmap, initial, end, t0, graph_functions):  # Typefout
 
         shortest_paths = {initial: (None, 0)}
         time_paths = {initial: (None, t0)}
         current_node = initial
         visited = set()
-        Graph_data = graph
-        graph = graph.graph
-
-        find_k = self.find_k_time if Graph_data.repeat == False else self.find_k_repeat
+        find_k = self.find_k_time if Roadmap.repeat == False else self.find_k_repeat
 
         while current_node != end:
             visited.add(current_node)
-            destinations = graph.edges[current_node]
+            destinations = Roadmap.graph.edges[current_node]
             weight_to_current_node = shortest_paths[current_node][1]
             time_to_current_node = time_paths[current_node][1]
 
             for next_node in destinations:
-                k = find_k(time_to_current_node, Graph_data.t)
+                k = find_k(time_to_current_node, Roadmap.t)
                 weight = (
                     weight_to_current_node
                     + graph_functions.weights[(current_node, next_node)][k]

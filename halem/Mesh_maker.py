@@ -1,17 +1,11 @@
-from collections import defaultdict
-import math
-import numpy as np
-from numpy import ma
-import netCDF4
-from netCDF4 import Dataset, num2date
-from scipy.spatial import Delaunay
-import halem.Functions as Functions
-from scipy.signal import argrelextrema
-from scipy.interpolate import griddata
-import datetime, time
-from datetime import datetime
-import pickle
 from IPython.display import clear_output
+from scipy.signal import argrelextrema
+import halem.Functions as Functions
+from collections import defaultdict
+import scipy.spatial
+from numpy import ma
+import numpy as np
+import time
 
 
 class Graph_flow_model:
@@ -47,7 +41,7 @@ class Graph_flow_model:
                                     WD: numpy array with shape (N, M)
                                     nodes: numpy array with shape (N, 2) (lat, lon)
                                     t: numpy array with shape M (seconds since 01-01-1970 00:00:00)
-                                    tria: triangulation of the nodes (output of scipy.spatial.Delaunay(nodes))
+                                    tria: triangulation of the nodes (output of scipy.spatial.Delaunay(nodes)
                                     in which N is the number of nodes of the hydrodynamic model, and 
                                     M is the number of time steps of the hydrodynamic model
     compute_cost:                   Lambda function that returns the cost for sailing based on the travel
@@ -129,7 +123,7 @@ class Graph_flow_model:
 
         self.nodes, self.u, self.v, self.WD = nodes_on_land(nodes, u, v, WD)
 
-        self.tria = Delaunay(self.nodes)
+        self.tria = scipy.spatial.Delaunay(self.nodes)
         self.t = flow.t
         self.mask = np.full(self.u.shape, False)
         self.mask[self.WD < WD_min.max() + ukc] = True

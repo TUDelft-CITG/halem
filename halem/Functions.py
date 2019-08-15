@@ -1,7 +1,6 @@
-import math
-import numpy as np
 from numpy import ma
-
+import numpy as np
+import math
 
 def find_neighbors(pindex, triang):
     """Function that can find the neighbours of a Delauney mesh.
@@ -85,6 +84,17 @@ def Squat(h, T, V_max, LWL, WWL, ukc, WVPI):
 
 
 def inbetweenpoints(start, stop, LL, tria):
+    """This node returns the nodes of influence for a specific arc. This function 
+    retruns the start and stop node plus the nodes in between the start and stop 
+    node. This function makes sure the route does not jump over hydrodynamic features
+    when the neightbouring layers are higher than one.
+
+    start:      (int) index of the start node
+    stop:       (int) index of the destination node
+    LL:         (int) number of neighbouring layers.
+    tria:       triangulation of the nodes (output of scipy.spatial.Delaunay(nodes)
+    """
+
     nodes = [start, stop]
     for L in range(1, LL):
         L = L + 1
@@ -99,11 +109,19 @@ def inbetweenpoints(start, stop, LL, tria):
 
 
 def haversine(coord1, coord2):
-    R = 6372800  # https://janakiev.com/blog/gps-points-distance-python/
+    """use the Haversine function to determine the distance between two points 
+    in the WGS84 coordinate system. Returns the distance between the two points 
+    in meters.
+    Source: https://janakiev.com/blog/gps-points-distance-python/
+
+    coord1:     (lat, lon) coordinates of first point
+    coord2:     (lat, lon) coordinates of second point
+    """
+    R = 6372800
     lat1, lon1 = coord1
     lat2, lon2 = (
         coord2
-    )  # use the Haversine function to determine the distance between two points in the WGS84 coordinate system
+    )
 
     phi1, phi2 = math.radians(lat1), math.radians(lat2)
     dphi = math.radians(lat2 - lat1)
@@ -118,6 +136,20 @@ def haversine(coord1, coord2):
 
 
 def costfunction_timeseries(edge, V_max, WD_min, flow, WVPI, L, tria):
+    """ Function that returns the time series of the weights of a specific edge.
+
+    edge:       (int) cosidered edge. edge: index of the location node 
+                in Roadmap.nodes
+    V_max:      Shipping velocity in deep water  in meters per second
+    WD_min:     minimal needed draft in meters
+    flow:       Class that contains the hydrodynamic conditions
+    WVPI:       Weight of the vessel in tf
+    L:         (int) number of neighbouring layers.         
+    tria:       triangulation of the nodes (output of scipy.spatial.Delaunay(nodes)
+    """
+
+
+
     xfrom = flow.nodes[edge[0]][1]
     yfrom = flow.nodes[edge[0]][0]
     xto = flow.nodes[edge[1]][1]
@@ -167,6 +199,18 @@ def costfunction_timeseries(edge, V_max, WD_min, flow, WVPI, L, tria):
 
 
 def costfunction_spaceseries(edge, V_max, WD_min, flow, WVPI, L, tria):
+    """ Function that returns the time series of the weights of a specifiv edge.
+
+    edge:       (int) cosidered edge. edge: index of the location node 
+                in Roadmap.nodes
+    V_max:      Shipping velocity in deep water  in meters per second
+    WD_min:     minimal needed draft in meters
+    flow:       Class that contains the hydrodynamic conditions
+    WVPI:       Weight of the vessel in tf
+    L:         (int) number of neighbouring layers.         
+    tria:       triangulation of the nodes (output of scipy.spatial.Delaunay(nodes)
+    """
+
     xfrom = flow.nodes[edge[0]][1]
     yfrom = flow.nodes[edge[0]][0]
     xto = flow.nodes[edge[1]][1]
@@ -218,4 +262,5 @@ def costfunction_spaceseries(edge, V_max, WD_min, flow, WVPI, L, tria):
 
 
 def nodes_on_land_None(nodes, u, v, WD):
+    """Standard function that returns itself"""
     return nodes, u, v, WD
