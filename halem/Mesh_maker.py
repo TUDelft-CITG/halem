@@ -25,9 +25,6 @@ class Graph_flow_model:
             For which N is the number of discretisations
             in the load factor, and M is the number of discretisations in the 
             dynamic sailing velocity. For the optimization type cost and co2 N must be larger or equal to 2.
-    WD_min: numpy array with the draft of the vessel. 
-            Numpy array has the shape of the number of discretisations in the dynamic sailing velocity
-    WVPI:   Numpy array with the total weight of the 
     Load_flow:  Class that contains the output of the hydrodynamic model. 
                 An example is provided on https://halem.readthedocs.io/en/latest/examples.html
                 class must have the following instances. 
@@ -39,6 +36,9 @@ class Graph_flow_model:
                 tria: triangulation of the nodes (output of scipy.spatial.Delaunay(nodes)
                 in which N is the number of nodes of the hydrodynamic model, and 
                 M is the number of time steps of the hydrodynamic model
+    WD_min: numpy array with the draft of the vessel. 
+            Numpy array has the shape of the number of discretisations in the dynamic sailing velocity
+    WVPI:   Numpy array with the total weight of the 
     compute_cost:   Lambda function that returns the cost for sailing based on the travel time and the travel velocity.
     compute_co2:    Lambda function that returns the emmision for sailing based on the travel time and the travel velocity.      
     WWL:    Width over Water Line of the vessel in meters 
@@ -248,8 +248,8 @@ class Graph_flow_model:
 
     def FIFO_maker2(self, y, N1):
         """Makes a FIFO time series from a Non-FIFO time series
-        y:             Time series
-        N1:            Mask file of the time series
+        y:  Time series
+        N1: Mask file of the time series
         """
         arg = np.squeeze(argrelextrema(y, np.less))
         if arg.shape == ():
