@@ -310,16 +310,17 @@ class node_reduction:
                                     tria: triangulation of the nodes (output of scipy.spatial.Delaunay(nodes))
                                     in which N is the number of nodes of the hydrodynamic model, and 
                                     M is the number of time steps of the hydrodynamic model
-    dx_min:                         float, minimal spatial resolution. Parameter of the lengt scale
-                                    function concerning the node reduction
+    dx_min:                         float, minimal spatial resolution. 
+                                    Parameter of the lengt scale function concerning the node reduction
     blend:                          blend factor between the verticity and magnitude of the flow.
                                     Parameter of the lengt scale function concerning the node reduction
-    nl:                             float (nl_c, nl_m) Non linearity factor consisting out of two numbers
+    nl:                             float (nl_c, nl_m) 
+                                    Non linearity factor consisting out of two numbers
                                     nl_c non-linearity factor for the corticity, nl_m non-linearity factor
                                     for the magnitude of the flow. Parameter of the lengt scale function 
                                     concerning the node reduction
-    number_of_neighbor_layers:      number of neigbouring layers for which edges are created. increasing this
-                                    number results in a higher directional resolution.  
+    number_of_neighbor_layers:      number of neigbouring layers for which edges are created. 
+                                    increasing this number results in a higher directional resolution.  
                                     """
 
     def __init__(self, flow, nl, dx_min, blend):
