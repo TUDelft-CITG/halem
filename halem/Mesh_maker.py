@@ -38,7 +38,7 @@ class Graph_flow_model:
                                     For the optimization type cost and co2 N must be larger or equal to 2.
     WD_min:                         numpy array with the draft of the vessel. Numpy array has the shape of 
                                     the number of discretisations in the dynamic sailing velocity
-    WVPI:                            Numpy array with the total weight of the 
+    WVPI:                           Numpy array with the total weight of the 
     Load_flow:                      Class that contains the output of the hydrodynamic model. An example is
                                     is provided on https://halem.readthedocs.io/en/latest/examples.html
                                     class must have the following instances. 
@@ -367,7 +367,6 @@ class node_reduction:
         return new_nodes, LS
 
     def Length_scale(self, node, flow, blend, nl):
-        nb = Functions.find_neighbors(node, flow.tria)
         mag = (flow.u[:, node] ** 2 + flow.v[:, node] ** 2) ** 0.5
         mag = mag.max()
         curl = abs(self.curl_func(node, flow))

@@ -40,7 +40,18 @@ def find_neighbors2(index, triang, depth):
 
 
 def Squat(h, T, V_max, LWL, WWL, ukc, WVPI):
-    """Function 
+    """Function for reducing the sailing velocity in deep water to the sailing velocity in shallow unconfined waters. 
+
+    h:                              Array of the water depth in meters
+    V_max:                          Sailing velocity in deep water in meters per second
+    WWL:                            Width over Water Line of the vessel in meters 
+    LWL:                            Length over Water Line of the vessel in meters   
+    ukc:                            Minimal needed under keel clearance in  meters. 
+    T:                              numpy array with the draft of the vessel. Numpy array has the shape of 
+                                    the number of discretisations in the dynamic sailing velocity in meters
+    WVPI:                           total weight of the the vessel in tf
+
+    V:                              Array of sailing velocities reduced for squat, corresponding to the input arrat h. 
     """
     Gamma_water = 1025
     b = 9 * WWL

@@ -45,7 +45,7 @@ def plot_timeseries2(path, time, Roadmap, Color="r"):
     TT = np.array(TT)
     dist = np.array(dist)
     if Roadmap.repeat == True:
-        k = Calc_path.find_k_repeat(time[0], Roadmap.t)
+        k = Calc_path.Has_route.find_k_repeat(Calc_path.Has_route,time[0], Roadmap.t)
         plt.plot(dist, (time[:-1] - time[0]) / 3600, color=Color, label="s/t route")
         cval = np.arange(0, 1.1, 0.5)
         plt.contourf(
