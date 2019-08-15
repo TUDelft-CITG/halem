@@ -3,7 +3,12 @@ import numpy as np
 from numpy import ma
 
 
-def find_neighbors(pindex, triang):  # zou recursief moeten kunne
+def find_neighbors(pindex, triang):
+    """Function that can find the neighbours of a Delauney mesh.
+
+    pindex:         Index of the considered node.
+    triang:         Triangulation generated with scipy.spatial.Delaunay()
+    """
     return triang.vertex_neighbor_vertices[1][
         triang.vertex_neighbor_vertices[0][pindex] : triang.vertex_neighbor_vertices[0][
             pindex + 1
@@ -12,7 +17,14 @@ def find_neighbors(pindex, triang):  # zou recursief moeten kunne
 
 
 def find_neighbors2(index, triang, depth):
-    buren = np.array([index])  # list van een set -> verzamelt de unieke
+    """Function that can find the neighbours of a Delauney mesh, for 
+    multiple layers of neighbours.
+
+    pindex:         Index of the considered node.
+    triang:         Triangulation generated with scipy.spatial.Delaunay()
+    Depth:          Number of neigbouring layers (nb)
+    """
+    buren = np.array([index])
     for _ in range(depth):
         for buur in buren:
             buren_temp = np.array([])
@@ -28,6 +40,8 @@ def find_neighbors2(index, triang, depth):
 
 
 def Squat(h, T, V_max, LWL, WWL, ukc, WVPI):
+    """Function 
+    """
     Gamma_water = 1025
     b = 9 * WWL
     g = 9.81

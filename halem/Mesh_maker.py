@@ -304,6 +304,37 @@ class Graph:
 
 
 class node_reduction:
+    """ This class can reduce the number of gridpoints of the hydrodynamic model. This is done 
+    Based on the vorticity and the magnitude of the flow. The nodes are pruned based on a length
+    scale. The formula for this length scale is: LS / ∆min = α(1+|∇×u|)^−βc+(1−α)(1+|u|)^−βm. 
+    With: LS = resulting length scale, α = blend factor between the curl and
+    the magnitude method, ∆min = minimal length scale, βc = non linearity 
+    parameter for the method with  the curl of the flow, βm = non linearity parameter for
+    the method with  the magnitude of the flow, and u = the velocity vector
+    of the flow.
+
+    flow:                           class that contains the hydrodynamic properties.
+                                    class must have the following instances. 
+                                    u: numpy array with shape (N, M)
+                                    v: numpy array with shape (N, M)
+                                    WD: numpy array with shape (N, M)
+                                    nodes: numpy array with shape (N, 2) (lat, lon)
+                                    t: numpy array with shape M (seconds since 01-01-1970 00:00:00)
+                                    tria: triangulation of the nodes (output of scipy.spatial.Delaunay(nodes))
+                                    in which N is the number of nodes of the hydrodynamic model, and 
+                                    M is the number of time steps of the hydrodynamic model
+    dx_min:                         float, minimal spatial resolution. Parameter of the lengt scale
+                                    function concerning the node reduction
+    blend:                          blend factor between the verticity and magnitude of the flow.
+                                    Parameter of the lengt scale function concerning the node reduction
+    nl:                             float (nl_c, nl_m) Non linearity factor consisting out of two numbers
+                                    nl_c non-linearity factor for the corticity, nl_m non-linearity factor
+                                    for the magnitude of the flow. Parameter of the lengt scale function 
+                                    concerning the node reduction
+    number_of_neighbor_layers:      number of neigbouring layers for which edges are created. increasing this
+                                    number results in a higher directional resolution.  
+                                    """
+
     def __init__(self, flow, nl, dx_min, blend):
         self.new_nodes, self.LS = self.Get_nodes(flow, nl, dx_min, blend)
 
@@ -346,8 +377,6 @@ class node_reduction:
         return LS
 
     def curl_func(self, node, flow):
-        """"""
-
         nb = Functions.find_neighbors(node, flow.tria)
         nb = np.append(nb, node)
         DUDY = []
