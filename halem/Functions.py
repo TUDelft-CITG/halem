@@ -1,9 +1,14 @@
-import math
-import numpy as np
 from numpy import ma
+import numpy as np
+import math
 
 
-def find_neighbors(pindex, triang):  # zou recursief moeten kunne
+def find_neighbors(pindex, triang):
+    """Function that can find the neighbours of a Delauney mesh.
+
+    pindex:         Index of the considered node.
+    triang:         Triangulation generated with scipy.spatial.Delaunay()
+    """
     return triang.vertex_neighbor_vertices[1][
         triang.vertex_neighbor_vertices[0][pindex] : triang.vertex_neighbor_vertices[0][
             pindex + 1
@@ -12,7 +17,14 @@ def find_neighbors(pindex, triang):  # zou recursief moeten kunne
 
 
 def find_neighbors2(index, triang, depth):
-    buren = np.array([index])  # list van een set -> verzamelt de unieke
+    """Function that can find the neighbours of a Delauney mesh, for 
+    multiple layers of neighbours.
+
+    pindex:         Index of the considered node.
+    triang:         Triangulation generated with scipy.spatial.Delaunay()
+    Depth:          Number of neigbouring layers (nb)
+    """
+    buren = np.array([index])
     for _ in range(depth):
         for buur in buren:
             buren_temp = np.array([])
@@ -28,6 +40,19 @@ def find_neighbors2(index, triang, depth):
 
 
 def Squat(h, T, V_max, LWL, WWL, ukc, WVPI):
+    """Function for reducing the sailing velocity in deep water to the sailing velocity in shallow unconfined waters. 
+
+    h:                              Array of the water depth in meters
+    V_max:                          Sailing velocity in deep water in meters per second
+    WWL:                            Width over Water Line of the vessel in meters 
+    LWL:                            Length over Water Line of the vessel in meters   
+    ukc:                            Minimal needed under keel clearance in  meters. 
+    T:                              numpy array with the draft of the vessel. Numpy array has the shape of 
+                                    the number of discretisations in the dynamic sailing velocity in meters
+    WVPI:                           total weight of the the vessel in tf
+
+    V:                              Array of sailing velocities reduced for squat, corresponding to the input arrat h. 
+    """
     Gamma_water = 1025
     b = 9 * WWL
     g = 9.81
@@ -60,6 +85,17 @@ def Squat(h, T, V_max, LWL, WWL, ukc, WVPI):
 
 
 def inbetweenpoints(start, stop, LL, tria):
+    """This node returns the nodes of influence for a specific arc. This function 
+    retruns the start and stop node plus the nodes in between the start and stop 
+    node. This function makes sure the route does not jump over hydrodynamic features
+    when the neightbouring layers are higher than one.
+
+    start:      (int) index of the start node
+    stop:       (int) index of the destination node
+    LL:         (int) number of neighbouring layers.
+    tria:       triangulation of the nodes (output of scipy.spatial.Delaunay(nodes)
+    """
+
     nodes = [start, stop]
     for L in range(1, LL):
         L = L + 1
@@ -74,11 +110,17 @@ def inbetweenpoints(start, stop, LL, tria):
 
 
 def haversine(coord1, coord2):
-    R = 6372800  # https://janakiev.com/blog/gps-points-distance-python/
+    """use the Haversine function to determine the distance between two points 
+    in the WGS84 coordinate system. Returns the distance between the two points 
+    in meters.
+    Source: https://janakiev.com/blog/gps-points-distance-python/
+
+    coord1:     (lat, lon) coordinates of first point
+    coord2:     (lat, lon) coordinates of second point
+    """
+    R = 6372800
     lat1, lon1 = coord1
-    lat2, lon2 = (
-        coord2
-    )  # use the Haversine function to determine the distance between two points in the WGS84 coordinate system
+    lat2, lon2 = coord2
 
     phi1, phi2 = math.radians(lat1), math.radians(lat2)
     dphi = math.radians(lat2 - lat1)
@@ -93,6 +135,18 @@ def haversine(coord1, coord2):
 
 
 def costfunction_timeseries(edge, V_max, WD_min, flow, WVPI, L, tria):
+    """ Function that returns the time series of the weights of a specific edge.
+
+    edge:       (int) cosidered edge. edge: index of the location node 
+                in Roadmap.nodes
+    V_max:      Shipping velocity in deep water  in meters per second
+    WD_min:     minimal needed draft in meters
+    flow:       Class that contains the hydrodynamic conditions
+    WVPI:       Weight of the vessel in tf
+    L:         (int) number of neighbouring layers.         
+    tria:       triangulation of the nodes (output of scipy.spatial.Delaunay(nodes)
+    """
+
     xfrom = flow.nodes[edge[0]][1]
     yfrom = flow.nodes[edge[0]][0]
     xto = flow.nodes[edge[1]][1]
@@ -142,6 +196,18 @@ def costfunction_timeseries(edge, V_max, WD_min, flow, WVPI, L, tria):
 
 
 def costfunction_spaceseries(edge, V_max, WD_min, flow, WVPI, L, tria):
+    """ Function that returns the time series of the weights of a specifiv edge.
+
+    edge:       (int) cosidered edge. edge: index of the location node 
+                in Roadmap.nodes
+    V_max:      Shipping velocity in deep water  in meters per second
+    WD_min:     minimal needed draft in meters
+    flow:       Class that contains the hydrodynamic conditions
+    WVPI:       Weight of the vessel in tf
+    L:         (int) number of neighbouring layers.         
+    tria:       triangulation of the nodes (output of scipy.spatial.Delaunay(nodes)
+    """
+
     xfrom = flow.nodes[edge[0]][1]
     yfrom = flow.nodes[edge[0]][0]
     xto = flow.nodes[edge[1]][1]
@@ -193,4 +259,5 @@ def costfunction_spaceseries(edge, V_max, WD_min, flow, WVPI, L, tria):
 
 
 def nodes_on_land_None(nodes, u, v, WD):
+    """Standard function that returns itself"""
     return nodes, u, v, WD

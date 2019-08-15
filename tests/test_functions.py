@@ -91,3 +91,103 @@ def test_costfunction_space():
     dist = dist1
 
     np.testing.assert_array_equal(L, dist)
+
+
+def test_find_neighbor():
+    nodes = [
+        (3, 3),
+        (2, 2),
+        (2, 4),
+        (4, 2),
+        (4, 4),
+        (1, 1),
+        (1, 3),
+        (1, 5),
+        (3, 1),
+        (3, 5),
+        (5, 1),
+        (5, 3),
+        (5, 5),
+        (0, 0),
+        (0, 2),
+        (0, 4),
+        (0, 6),
+        (2, 0),
+        (4, 0),
+        (2, 6),
+        (4, 6),
+        (6, 0),
+        (6, 2),
+        (6, 4),
+        (6, 6),
+    ]
+
+    tria = Delaunay(nodes)
+    nb = Functions.find_neighbors(0, tria)
+
+    assert len(nb) == 4
+    for i in range(1, 5):
+        assert i in nb
+
+
+def test_find_neighbor2():
+    nodes = [
+        (3, 3),
+        (2, 2),
+        (2, 4),
+        (4, 2),
+        (4, 4),
+        (1, 1),
+        (0.9, 3),
+        (1, 5),
+        (3, 1),
+        (3, 5.1),
+        (5, 1),
+        (5, 3),
+        (5, 5),
+        (0, 0),
+        (-0.1, 2),
+        (-0.1, 4),
+        (0, 6),
+        (2, 0),
+        (4, 0),
+        (2, 6.1),
+        (4, 6.1),
+        (6, 0),
+        (6, 2),
+        (6, 4.1),
+        (6, 6),
+    ]
+    tria = Delaunay(nodes)
+
+    nb = Functions.find_neighbors2(0, tria, 0)
+    assert len(nb) == 0
+
+    nb = Functions.find_neighbors2(0, tria, 1)
+    assert len(nb) == 4
+    for i in range(1, 5):
+        assert i in nb
+
+    nb = Functions.find_neighbors2(0, tria, 2)
+    assert len(nb) == 12
+    for i in range(1, 13):
+        assert i in nb
+
+    nb = Functions.find_neighbors2(0, tria, 3)
+    assert len(nb) == 24
+    for i in range(1, 25):
+        assert i in nb
+
+
+def test_inbetweenpoints():
+    x = range(0, 5)
+    y = range(0, 5)
+    x, y = np.meshgrid(x, y)
+
+    nodes = np.zeros((x.size, 2))
+    nodes[:, 1] = x.reshape(x.size)
+    nodes[:, 0] = y.reshape(x.size)
+    tria = Delaunay(nodes)
+    IB = Functions.inbetweenpoints(5, 18, 3, tria)
+
+    np.testing.assert_array_equal(IB, np.array([5, 18, 7, 11, 12, 16, 17]))
