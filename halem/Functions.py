@@ -70,7 +70,7 @@ def Squat(h, T, V_max, LWL, WWL, ukc, WVPI):
     )
     V1inf2 = (np.exp(ghv2) - np.exp(-ghv2)) / (np.exp(ghv2) + np.exp(-ghv2))
 
-    V1Vinf = 0*V1inf2
+    V1Vinf = 0 * V1inf2
     for i in range(len(V1inf2)):
         V1Vinf[i] = (V1inf2[i]) ** 0.5 if V1inf2[i] > 0 else np.inf
 
