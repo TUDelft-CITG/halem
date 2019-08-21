@@ -68,7 +68,9 @@ def Squat(h, T, V_max, LWL, WWL, ukc, WVPI):
         - 0.1159 * (np.sqrt(WWL * T) / RH) ** 2
         + 0.0191 * (np.sqrt(WWL * T) / RH) ** 3
     )
-    V1Vinf = ((np.exp(ghv2) - np.exp(-ghv2)) / (np.exp(ghv2) + np.exp(-ghv2))) ** 0.5
+
+    V1inf2 = (np.exp(ghv2) - np.exp(-ghv2)) / (np.exp(ghv2) + np.exp(-ghv2))
+    V1Vinf = (V1inf2) ** 0.5 if V1inf2 > 0 else np.inf
 
     V_grens = V_max * V1Vinf * VhV1
     V_squat_max = np.zeros(len(h))

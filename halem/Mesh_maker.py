@@ -45,9 +45,13 @@ class Graph_flow_model:
     compute_co2:    Lambda function that returns the emmision for sailing based on the travel time and the travel velocity. 
          
     WWL:    Width over Water Line of the vessel in meters 
+
     LWL:    Length over Water Line of the vessel in meters   
+
     ukc:    Minimal needed under keel clearance in  meters. 
+
     nodes_on_land:  Function that adds hydrodynamic conditions on land to if nodes on land are not included in the hydrodynamic model
+
     repeat: Indicator if the roadmap can be repeated (True / False) 
             True for hydrodynamic models based on a tidal analysis
     optimization_type:  list of optimization types. 
