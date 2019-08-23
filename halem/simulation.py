@@ -78,7 +78,7 @@ class Routeable(core.Movable):
                 orig = shapely.geometry.asShape(geom[route[i]])
                 dest = shapely.geometry.asShape(geom[route[i + 1]])
 
-                path, time, dist = self.optimization_func(
+                path, time, _ = self.optimization_func(
                     start = (orig.x, orig.y),
                     stop = (dest.x, dest.y),
                     t0 = datetime.datetime.fromtimestamp(self.env.now).strftime("%d/%m/%Y %H:%M:%S"),
@@ -87,7 +87,7 @@ class Routeable(core.Movable):
                 )
 
                 for i in range(path.shape[0]):
-                    if i != len(path.shape[0]) + 1 and if verbose:
+                    if i != len(path.shape[0]) + 1 and verbose:
                         self.log_entry(
                             "Sailing", 
                             time[i + 1], 

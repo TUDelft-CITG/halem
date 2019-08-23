@@ -1,27 +1,26 @@
-# # package(s) related to time, space and id
-# import datetime, time
-# import platform
+# package(s) related to time, space and id
+import datetime, time
+import platform
 
-# # you need these dependencies (you can get these from anaconda)
-# # package(s) related to the simulation
-# import simpy
+# you need these dependencies (you can get these from anaconda)
+# package(s) related to the simulation
+import simpy
 
-# # spatial libraries
-# import shapely.geometry
-# from simplekml import Kml, Style
+# spatial libraries
+import shapely.geometry
+from simplekml import Kml, Style
 
-# # digital twin package
-# import openclsim.core as core
-# import openclsim.model as model
-# import openclsim.plot as plot
+# digital twin package
+import openclsim.core as core
+import openclsim.model as model
 
-# # Additional import to save the initialization of the simulation
-# import openclsim.savesim as savesim
-# from halem import Base_functions as halem
-# import pickle
-# import networkx as nx
-# import numpy as np
-# from scipy.spatial import Delaunay
+# Additional import to save the initialization of the simulation
+import openclsim.savesim as savesim
+from halem import Base_functions as halem
+import pickle
+import networkx as nx
+import numpy as np
+from scipy.spatial import Delaunay
 
 
 # # Test if the path from HALEM is correctly implemented in the log files
