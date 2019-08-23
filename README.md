@@ -27,8 +27,7 @@ Different routes that can be optimized are:
 * Cleanest route (halem.HALEM_co2)
 
 ## Implementation
-This package is built for implementation into the Open CL-Sim package (see https://github.com/TUDelft-CITG/OpenCLSim). 
-
+This package can be used to find an optimal route in dynamic flowfields. For simulation purposes it can be implemented into [OpenCLSim](https://github.com/TUDelft-CITG/OpenCLSim). For an introduction on how to do so please check Jupyter Notebook [number 08](https://github.com/TUDelft-CITG/OpenCLSim-Notebooks/blob/master/notebooks/Example%2008%20-%20Basic%20hopper%20operation%20on%20route%20with%20halem.ipynb) of the OpenCLSim examples or the [tests](https://github.com/TUDelft-CITG/HALEM/blob/master/tests/test_openclsim.py).
 
 ## Installation
 The Package can be installed using pip. Type following code in the python command prompt:

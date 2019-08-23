@@ -17,6 +17,12 @@ import copy
 import numpy as np
 import pandas as pd
 
+# HALEM
+import halem.Base_functions as halem
+
+# OpenCLSim
+import openclsim.core as core
+
 class Routeable(core.Movable):
     """
     Movement travels trough a Graph. When optimize_route == True the halem package optimizes the route for different cost functions
@@ -28,7 +34,6 @@ class Routeable(core.Movable):
 
     def __init__(
         self,
-        route,
         optimize_route=False,
         optimization_type="time",
         loadfactors=None,
@@ -37,7 +42,6 @@ class Routeable(core.Movable):
     ):
         super().__init__(*args, **kwargs)
         """Initialization"""
-        self.route = route
         self.optimize_route = optimize_route
         self.optimization_type = optimization_type
         self.loadfactors = loadfactors
@@ -54,6 +58,47 @@ class Routeable(core.Movable):
                 self.optimization_func = halem.HALEM_co2
             else:
                 print("No known optimization method selected")
+    
+    def sailing_duration(self, origin, destination, engine_order, verbose=True):
+        """ Determine the sailing duration based on the properties of the sailing route """
+        
+        # If travelling on route is required, assert environment has a graph
+        assert hasattr(self.env, "FG")
+        assert hasattr(self.env, "Roadmap")
+        assert self.optimize_route == True
+
+        geom = nx.get_node_attributes(self.env.FG, "geometry")
+        route = self.determine_route(origin, destination)
+
+        # Determine the duration of the following the route
+        duration = 0
+
+        for i, _ in enumerate(route):
+            if i + 1 != len(route):
+                orig = shapely.geometry.asShape(geom[route[i]])
+                dest = shapely.geometry.asShape(geom[route[i + 1]])
+
+                path, time, dist = self.optimization_func(
+                    start = (orig.x, orig.y),
+                    stop = (dest.x, dest.y),
+                    t0 = datetime.datetime.fromtimestamp(self.env.now).strftime("%d/%m/%Y %H:%M:%S"),
+                    vmax = self.determine_speed(route[i], route[i + 1]), 
+                    Roadmap = self.env.Roadmap,
+                )
+
+                for i in range(path.shape[0]):
+                    if i != len(path.shape[0]) + 1 and if verbose:
+                        self.log_entry(
+                            "Sailing", 
+                            time[i + 1], 
+                            0, 
+                            shapely.geometry.Point(path[i]), 
+                            self.ActivityID,
+                        )
+
+                duration += time[-1] - time[0]
+
+        return duration
 
 class HasDepthRestriction:
     """HasDepthRestriction class
