@@ -1,7 +1,6 @@
 import halem.Mesh_maker as Mesh_maker
 import halem.Functions as Functions
 import halem.Calc_path as Calc_path
-import halem.simulation as Simulation
 import matplotlib.pyplot as plt
 from datetime import datetime
 import datetime, time
