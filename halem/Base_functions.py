@@ -14,7 +14,7 @@ def save_object(obj, filename):
         pickle.dump(obj, output, pickle.HIGHEST_PROTOCOL)
 
 
-def plot_timeseries2(path, time, Roadmap, Color="r", range_CP = 5):
+def plot_timeseries2(path, time, Roadmap, Color="r", range_CP=5):
     """ This function can plot the time series for the route 
     and shows a contourplot of the unsaiable areas of that route 
     
@@ -53,7 +53,7 @@ def plot_timeseries2(path, time, Roadmap, Color="r", range_CP = 5):
         for J in range(range_CP):
             plt.contourf(
                 dist,
-                (Roadmap.t - Roadmap.t[k] + (Roadmap.t[-1] - Roadmap.t[0])*J)/ 3600,
+                (Roadmap.t - Roadmap.t[k] + (Roadmap.t[-1] - Roadmap.t[0]) * J) / 3600,
                 np.transpose(TT),
                 cval,
                 colors=("cornflowerblue", "sandybrown"),
