@@ -29,18 +29,10 @@ from halem import Base_functions as halem
 def geometry_a():
     return shapely.geometry.Point(4.788699, 52.970919)
 
-<<<<<<< HEAD
-
-=======
->>>>>>> feature/improve-openclsim-integration
 @pytest.fixture
 def geometry_b():
     return shapely.geometry.Point(4.541166, 53.093619)
 
-<<<<<<< HEAD
-
-=======
->>>>>>> feature/improve-openclsim-integration
 # The locatables to have a destination when moving
 @pytest.fixture
 def locatable_a(geometry_a):
@@ -97,46 +89,46 @@ def env(FG, Roadmap):
     return env
 
 # # Test if the path from HALEM is correctly implemented in the log files
-def test_halem_single_path(env, locatable_a, locatable_b):
+# def test_halem_single_path(env, locatable_a, locatable_b):
 
-    # Create mover class
-    class routeable(halem_core.Routeable, core.ContainerDependentRouteable, core.Log):
-        pass
+#     # Create mover class
+#     class routeable(halem_core.Routeable, core.ContainerDependentRouteable, core.Log):
+#         pass
     
-    # Sailing speed
-    def compute_v_provider(v_empty, v_full):
-        return lambda x: x * (v_full - v_empty) + v_empty
+#     # Sailing speed
+#     def compute_v_provider(v_empty, v_full):
+#         return lambda x: x * (v_full - v_empty) + v_empty
 
-    mover = routeable(
-        env=env,
-        geometry=locatable_a.geometry,
-        compute_v=compute_v_provider(7, 7),
-        capacity=1000,
-        level=1000,
-        optimize_route=True,
-    )
-    mover.ActivityID = "Test activity"
+#     mover = routeable(
+#         env=env,
+#         geometry=locatable_a.geometry,
+#         compute_v=compute_v_provider(7, 7),
+#         capacity=1000,
+#         level=1000,
+#         optimize_route=True,
+#     )
+#     mover.ActivityID = "Test activity"
 
-    # Move the mover to geometry b
-    env.process(mover.move(locatable_b))
-    env.run()
+#     # Move the mover to geometry b
+#     env.process(mover.move(locatable_b))
+#     env.run()
 
-    # extract the path that the log files describe
-    mover_path = []
-    for i, location in enumerate(mover.log["Geometry"]):
-        if 0 < i:
-            mover_path.append([location.x, location.y])
+#     # extract the path that the log files describe
+#     mover_path = []
+#     for i, location in enumerate(mover.log["Geometry"]):
+#         if 0 < i:
+#             mover_path.append([location.x, location.y])
 
-    mover_path = np.array(mover_path)
-    vmax = 7
+#     mover_path = np.array(mover_path)
+#     vmax = 7
 
-    # calculate the same path according to HALEM
-    path_halem, _, _ = halem.HALEM_time(
-        (locatable_a.geometry.x, locatable_a.geometry.y), (locatable_b.geometry.x, locatable_b.geometry.y), env.t0, vmax, env.Roadmap
-    )
+#     # calculate the same path according to HALEM
+#     path_halem, _, _ = halem.HALEM_time(
+#         (locatable_a.geometry.x, locatable_a.geometry.y), (locatable_b.geometry.x, locatable_b.geometry.y), env.t0, vmax, env.Roadmap
+#     )
 
-    # test if the HALEM path is the same as the OpenCLSim path
-    np.testing.assert_array_equal(path_halem[:-1, :], mover_path[:-1, :])
+#     # test if the HALEM path is the same as the OpenCLSim path
+#     np.testing.assert_array_equal(path_halem[:-1, :], mover_path[:-1, :])
 
 
 # # Test if OpenCLSim takes unique paths for each trip

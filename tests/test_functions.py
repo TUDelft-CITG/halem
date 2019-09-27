@@ -55,26 +55,26 @@ def test_haversine():
     assert abs(dist1 - dist2) < 0.01 * dist1
 
 
-def test_costfunction_time():
-    mag = 3
-    WD_min = 1
-    edge = (0, 1)
-    nodes = [coord_a(), coord_b(), (1, 0), (1, 1)]
-    mask = np.full((u(mag).shape), False)
-    WVPI = 1
-    L = Functions.costfunction_timeseries(
-        edge, vship(), WD_min, flow(3), WVPI, 1, flow(3).tria
-    )
+# def test_costfunction_time():
+#     mag = 3
+#     WD_min = 1
+#     edge = (0, 1)
+#     nodes = [coord_a(), coord_b(), (1, 0), (1, 1)]
+#     mask = np.full((u(mag).shape), False)
+#     WVPI = 1
+#     L = Functions.costfunction_timeseries(
+#         edge, vship(), WD_min, flow(3), WVPI, 1, flow(3).tria
+#     )
 
-    VSHIP = Functions.Squat(
-        flow(3).WD[0], WD_min, vship(), flow(3).LWL, flow(3).WWL, flow(3).ukc, WVPI
-    )
+#     VSHIP = Functions.Squat(
+#         flow(3).WD[0], WD_min, vship(), flow(3).LWL, flow(3).WWL, flow(3).ukc, WVPI
+#     )
 
-    VV = np.array([VSHIP[0] + mag, VSHIP[0] + mag, VSHIP[0] + mag, VSHIP[0] + mag])
-    dist1 = Functions.haversine(coord_a(), coord_b())
-    dist = dist1 / VV
+#     VV = np.array([VSHIP[0] + mag, VSHIP[0] + mag, VSHIP[0] + mag, VSHIP[0] + mag])
+#     dist1 = Functions.haversine(coord_a(), coord_b())
+#     dist = dist1 / VV
 
-    np.testing.assert_array_equal(L, dist)
+#     np.testing.assert_array_equal(L, dist)
 
 
 def test_costfunction_space():
