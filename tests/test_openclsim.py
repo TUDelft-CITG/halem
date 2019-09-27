@@ -29,18 +29,22 @@ from halem import Base_functions as halem
 def geometry_a():
     return shapely.geometry.Point(4.788699, 52.970919)
 
+
 @pytest.fixture
 def geometry_b():
     return shapely.geometry.Point(4.541166, 53.093619)
+
 
 # The locatables to have a destination when moving
 @pytest.fixture
 def locatable_a(geometry_a):
     return core.Locatable(geometry_a)
 
+
 @pytest.fixture
 def locatable_b(geometry_b):
     return core.Locatable(geometry_b)
+
 
 # Make a fixture of the roadmap
 @pytest.fixture
@@ -51,19 +55,29 @@ def Roadmap():
 
     return Roadmap
 
+
 # Create the graph
 @pytest.fixture
 def FG(geometry_a, geometry_b):
     graph = nx.Graph()
 
     # Add nodes
-    graph.add_node((geometry_a.x, geometry_a.y), geometry=geometry_a, name="({}, {})".format(str(geometry_a.x), str(geometry_a.y)))
-    graph.add_node((geometry_b.x, geometry_b.y), geometry=geometry_b, name="({}, {})".format(str(geometry_b.x), str(geometry_b.y)))
+    graph.add_node(
+        (geometry_a.x, geometry_a.y),
+        geometry=geometry_a,
+        name="({}, {})".format(str(geometry_a.x), str(geometry_a.y)),
+    )
+    graph.add_node(
+        (geometry_b.x, geometry_b.y),
+        geometry=geometry_b,
+        name="({}, {})".format(str(geometry_b.x), str(geometry_b.y)),
+    )
 
     # Add edge
     graph.add_edge((geometry_a.x, geometry_a.y), (geometry_b.x, geometry_b.y))
 
     return graph
+
 
 # The environment
 @pytest.fixture
@@ -75,11 +89,11 @@ def env(FG, Roadmap):
 
     # Create environment
     env = simpy.Environment(initial_time=time.mktime(simulation_start.timetuple()))
-    
+
     # Add start time to environment
     env.epoch = time.mktime(simulation_start.timetuple())
     env.t0 = t0
-    
+
     # Add graph to environment
     env.FG = FG
 
@@ -88,13 +102,14 @@ def env(FG, Roadmap):
 
     return env
 
+
 # # Test if the path from HALEM is correctly implemented in the log files
 # def test_halem_single_path(env, locatable_a, locatable_b):
 
 #     # Create mover class
 #     class routeable(halem_core.Routeable, core.ContainerDependentRouteable, core.Log):
 #         pass
-    
+
 #     # Sailing speed
 #     def compute_v_provider(v_empty, v_full):
 #         return lambda x: x * (v_full - v_empty) + v_empty
