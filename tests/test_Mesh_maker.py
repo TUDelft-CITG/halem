@@ -391,4 +391,3 @@ def test_percentageprinter():
             self.WD = blank
 
     f = flow_class()
-``

@@ -31,6 +31,7 @@ requires = [
     "geopy",
     "pyproj",
     "sphinx_rtd_theme",
+    "simplekml",
 ]
 
 setup_requirements = [
