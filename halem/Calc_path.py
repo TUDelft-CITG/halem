@@ -3,6 +3,9 @@ from datetime import datetime
 import datetime, time
 import numpy as np
 
+# Added for openclsim integration
+import openclsim.core as core
+
 
 class Has_route:
     """ This class contains the code for calculating the optimal route from the pre-proccessed Roadmap

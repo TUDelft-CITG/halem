@@ -151,7 +151,9 @@ def costfunction_timeseries(edge, V_max, WD_min, flow, WVPI, L, tria):
     yfrom = flow.nodes[edge[0]][0]
     xto = flow.nodes[edge[1]][1]
     yto = flow.nodes[edge[1]][0]
+    
     IB = inbetweenpoints(edge[0], edge[1], L, tria)
+
     v_w = flow.v[IB[0]]
     u_w = flow.u[IB[0]]
     WD_W = flow.WD[IB[0]]

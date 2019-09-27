@@ -21,7 +21,6 @@ except VersionConflict:
 
 requires = [
     "numpy",
-    "simpy",
     "networkx",
     "shapely",
     "scipy",
@@ -39,10 +38,11 @@ setup_requirements = [
 ]
 
 tests_require = [
-    "pytest",
+    "pytest==3.10.1",
+    "openclsim",
     "pytest-cov",
     "pytest-timeout",
-    "pytest-datadir"
+    "pytest-datadir",
 ]
 
 with open("README.md", "r") as fh:

@@ -371,23 +371,24 @@ def test_Graph_flow_model_repeat():
     assert Roadmap.t.shape[0] == 10
 
 
-def test_percentageprinter():
-    class flow_class:
-        def __init__(self):
-            x = np.arange(0, 1100)
-            y = 0 * np.arange(0, 1100)
-            y[::2] = 5
+# def test_percentageprinter():
+#     class flow_class:
+#         def __init__(self):
+#             x = np.arange(0, 1100)
+#             y = 0 * np.arange(0, 1100)
+#             y[::2] = 5
 
-            nodes = np.zeros((x.size, 2))
-            nodes[:, 1] = x.reshape(x.size)
-            nodes[:, 0] = y.reshape(x.size)
-            tria = Delaunay(nodes)
-            self.t = np.arange(3)
-            self.nodes = nodes
-            blank = np.zeros((len(self.t), len(nodes)))
-            self.tria = tria
-            self.u = blank
-            self.v = blank
-            self.WD = blank
+#             nodes = np.zeros((x.size, 2))
+#             nodes[:, 1] = x.reshape(x.size)
+#             nodes[:, 0] = y.reshape(x.size)
+#             tria = Delaunay(nodes)
+#             self.t = np.arange(3)
+#             self.nodes = nodes
+#             blank = np.zeros((len(self.t), len(nodes)))
+#             self.tria = tria
+#             self.u = blank
+#             self.v = blank
+#             self.WD = blank
 
-    f = flow_class()
+#     f = flow_class()
+#     Q = Mesh_maker.node_reduction(f, (0, 0), 1, 0)
