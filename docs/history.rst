@@ -2,6 +2,13 @@
 History
 =======
 
+0.3.1 (2019-08-08)
+------------------
+* Eight tag on GitHub
+* clean-up
+* Graduation version
+
+
 0.3.0 (2019-08-08)
 ------------------
 * Seventh tag on GitHub
