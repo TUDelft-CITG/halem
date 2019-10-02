@@ -169,8 +169,8 @@ def costfunction_timeseries(edge, V_max, WD_min, flow, WVPI, L, tria):
     u_w = u_w / len(IB)
     U_w = (u_w ** 2 + v_w ** 2) ** 0.5
 
-    # vship = Squat(WD_W, WD_min, V_max, flow.LWL, flow.WWL, flow.ukc, WVPI)
-    vship = V_max + 0 * WD_W
+    vship = Squat(WD_W, WD_min, V_max, flow.LWL, flow.WWL, flow.ukc, WVPI)
+    # vship = V_max + 0 * WD_W
 
     alpha1 = np.arctan2((yto - yfrom), (xto - xfrom))
     alpha2 = np.arctan2(v_w, u_w) - alpha1
