@@ -77,9 +77,10 @@ def inbetweenpoints(start, stop, LL, tria):
 def haversine(coord1, coord2):
     R = 6372800  # https://janakiev.com/blog/gps-points-distance-python/
     lat1, lon1 = coord1
-    lat2, lon2 = (
-        coord2
-    )  # use the Haversine function to determine the distance between two points in the WGS84 coordinate system
+    (
+        lat2,
+        lon2,
+    ) = coord2  # use the Haversine function to determine the distance between two points in the WGS84 coordinate system
 
     phi1, phi2 = math.radians(lat1), math.radians(lat2)
     dphi = math.radians(lat2 - lat1)
