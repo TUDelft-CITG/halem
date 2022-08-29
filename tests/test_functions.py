@@ -1,6 +1,6 @@
-import halem.Mesh_maker as Mesh_maker
-import halem.Functions as Functions
-import halem.Calc_path as Calc_path
+import halem.mesh_maker as mesh_maker
+import halem.functions as functions
+import halem.calc_path as calc_path
 from scipy.spatial import Delaunay
 
 import pytest
@@ -47,8 +47,8 @@ class flow:
 
 
 def test_haversine():
-    dist = Functions.haversine(coord_a(), coord_a())
-    dist1 = Functions.haversine(coord_a(), coord_b())
+    dist = functions.haversine(coord_a(), coord_a())
+    dist1 = functions.haversine(coord_a(), coord_b())
     dist2 = geopy.distance.geodesic(coord_a(), coord_b()).m
 
     assert dist == 0
@@ -62,16 +62,16 @@ def test_costfunction_time():
     nodes = [coord_a(), coord_b(), (1, 0), (1, 1)]
     mask = np.full((u(mag).shape), False)
     WVPI = 1
-    L = Functions.costfunction_timeseries(
+    L = functions.costfunction_timeseries(
         edge, vship(), WD_min, flow(3), WVPI, 1, flow(3).tria
     )
 
-    VSHIP = Functions.Squat(
+    VSHIP = functions.Squat(
         flow(3).WD[0], WD_min, vship(), flow(3).LWL, flow(3).WWL, flow(3).ukc, WVPI
     )
 
     VV = np.array([VSHIP[0] + mag, VSHIP[0] + mag, VSHIP[0] + mag, VSHIP[0] + mag])
-    dist1 = Functions.haversine(coord_a(), coord_b())
+    dist1 = functions.haversine(coord_a(), coord_b())
     dist = dist1 / VV
 
     np.testing.assert_array_equal(L, dist)
@@ -84,10 +84,10 @@ def test_costfunction_space():
     nodes = [coord_a(), coord_b(), (1, 0), (1, 1)]
     mask = np.full((u(mag).shape), False)
     WVPI = 1
-    L = Functions.costfunction_spaceseries(
+    L = functions.costfunction_spaceseries(
         edge, vship(), WD_min, flow(3), WVPI, 1, flow(3).tria
     )
-    dist1 = Functions.haversine(coord_a(), coord_b())
+    dist1 = functions.haversine(coord_a(), coord_b())
     dist = dist1
 
     np.testing.assert_array_equal(L, dist)
@@ -123,7 +123,7 @@ def test_find_neighbor():
     ]
 
     tria = Delaunay(nodes)
-    nb = Functions.find_neighbors(0, tria)
+    nb = functions.find_neighbors(0, tria)
 
     assert len(nb) == 4
     for i in range(1, 5):
@@ -160,20 +160,20 @@ def test_find_neighbor2():
     ]
     tria = Delaunay(nodes)
 
-    nb = Functions.find_neighbors2(0, tria, 0)
+    nb = functions.find_neighbors2(0, tria, 0)
     assert len(nb) == 0
 
-    nb = Functions.find_neighbors2(0, tria, 1)
+    nb = functions.find_neighbors2(0, tria, 1)
     assert len(nb) == 4
     for i in range(1, 5):
         assert i in nb
 
-    nb = Functions.find_neighbors2(0, tria, 2)
+    nb = functions.find_neighbors2(0, tria, 2)
     assert len(nb) == 12
     for i in range(1, 13):
         assert i in nb
 
-    nb = Functions.find_neighbors2(0, tria, 3)
+    nb = functions.find_neighbors2(0, tria, 3)
     assert len(nb) == 24
     for i in range(1, 25):
         assert i in nb
@@ -188,6 +188,6 @@ def test_inbetweenpoints():
     nodes[:, 1] = x.reshape(x.size)
     nodes[:, 0] = y.reshape(x.size)
     tria = Delaunay(nodes)
-    IB = Functions.inbetweenpoints(5, 18, 3, tria)
+    IB = functions.inbetweenpoints(5, 18, 3, tria)
 
     np.testing.assert_array_equal(IB, np.array([5, 18, 7, 11, 12, 16, 17]))

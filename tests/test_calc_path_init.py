@@ -1,7 +1,7 @@
-import halem.Base_functions as halem
-import halem.Mesh_maker as Mesh_maker
-import halem.Functions as Functions
-import halem.Calc_path as Calc_path
+import halem.base_functions as halem
+import halem.mesh_maker as mesh_maker
+import halem.functions as functions
+import halem.calc_path as calc_path
 import datetime
 
 import pytest
@@ -36,10 +36,10 @@ WVPI = np.array([5000, 7000])
 ukc = 0
 
 
-nodes_on_land = Functions.nodes_on_land_None
+nodes_on_land = functions.nodes_on_land_None
 number_of_neighbor_layers = 1
 
-Roadmap = Mesh_maker.Graph_flow_model(
+Roadmap = mesh_maker.Graph_flow_model(
     name_textfile_flow,
     dx_min,
     blend,
@@ -51,7 +51,7 @@ Roadmap = Mesh_maker.Graph_flow_model(
     WVPI,
 )
 
-Roadmap2 = Mesh_maker.Graph_flow_model(
+Roadmap2 = mesh_maker.Graph_flow_model(
     name_textfile_flow,
     dx_min,
     blend,
@@ -69,23 +69,23 @@ clear_output()
 def test_find_startstop():
     nodes = np.array([(0, 0), (0, 1), (1, 0), (1, 1)])
     start = (0.5, 0.5)
-    start = Calc_path.Has_route.find_startstop(Calc_path.Has_route, start, nodes)
+    start = calc_path.Has_route.find_startstop(calc_path.Has_route, start, nodes)
     assert start == 0
     start = (0.1, 0)
-    start = Calc_path.Has_route.find_startstop(Calc_path.Has_route, start, nodes)
+    start = calc_path.Has_route.find_startstop(calc_path.Has_route, start, nodes)
     assert start == 0
     start = (0.1, 1)
-    start = Calc_path.Has_route.find_startstop(Calc_path.Has_route, start, nodes)
+    start = calc_path.Has_route.find_startstop(calc_path.Has_route, start, nodes)
     assert start == 1
     start = (1.1, 1)
-    start = Calc_path.Has_route.find_startstop(Calc_path.Has_route, start, nodes)
+    start = calc_path.Has_route.find_startstop(calc_path.Has_route, start, nodes)
     assert start == 3
 
 
 def test_find_k():
     ts = 100
     t = np.arange(0, 200, 0.33)
-    k = Calc_path.Has_route.find_k_time(Calc_path.Has_route, t, ts)
+    k = calc_path.Has_route.find_k_time(calc_path.Has_route, t, ts)
     assert k == 303
 
 
@@ -110,8 +110,8 @@ def test_dijstra():
         time = Roadmap.weight_time[arg_vship].weights
         vship = Roadmap.vship[arg_vship]
 
-    TT = Calc_path.Has_route((0, 0), (0, 3), Roadmap, t0, graph_functions_time)
-    SS = Calc_path.Has_route((0, 0), (0, 3), Roadmap, t0, graph_functions_space)
+    TT = calc_path.Has_route((0, 0), (0, 3), Roadmap, t0, graph_functions_time)
+    SS = calc_path.Has_route((0, 0), (0, 3), Roadmap, t0, graph_functions_space)
 
     time_path = TT.route
     space_path = SS.route
@@ -144,8 +144,8 @@ def test_Has_route():
         time = Roadmap.weight_time[arg_vship].weights
         vship = Roadmap.vship[arg_vship]
 
-    route_time = Calc_path.Has_route(start, stop, Roadmap, t0, graph_functions_time)
-    route_space = Calc_path.Has_route(start, stop, Roadmap, t0, graph_functions_space)
+    route_time = calc_path.Has_route(start, stop, Roadmap, t0, graph_functions_time)
+    route_space = calc_path.Has_route(start, stop, Roadmap, t0, graph_functions_space)
 
     assert route_space.route[1, 0] == 1
     assert route_time.route[1, 0] == 2
@@ -168,12 +168,12 @@ def test_save_obj():
 def test_find_k_repeat():
     ts = 100
     t = np.arange(0, 200, 0.33)
-    k = Calc_path.Has_route.find_k_repeat(Calc_path.Has_route, ts, t)
+    k = calc_path.Has_route.find_k_repeat(calc_path.Has_route, ts, t)
     assert k == 303
 
     ts = np.inf
     t = np.arange(0, 200, 0.33)
-    k = Calc_path.Has_route.find_k_repeat(Calc_path.Has_route, ts, t)
+    k = calc_path.Has_route.find_k_repeat(calc_path.Has_route, ts, t)
     assert k == len(t) - 1
 
 
@@ -192,7 +192,7 @@ def test_HALEM_time():
         time = Roadmap.weight_time[arg_vship].weights
         vship = Roadmap.vship[arg_vship]
 
-    route_time = Calc_path.Has_route(start, stop, Roadmap, t0, graph_functions_time)
+    route_time = calc_path.Has_route(start, stop, Roadmap, t0, graph_functions_time)
     path, _, _ = halem.HALEM_time(start[::-1], stop[::-1], t0, vmax, Roadmap)
 
     np.testing.assert_array_equal(
@@ -215,7 +215,7 @@ def test_HALEM_space():
         time = Roadmap.weight_time[arg_vship].weights
         vship = Roadmap.vship[arg_vship]
 
-    route_time = Calc_path.Has_route(start, stop, Roadmap, t0, graph_functions_time)
+    route_time = calc_path.Has_route(start, stop, Roadmap, t0, graph_functions_time)
     path, _, _ = halem.HALEM_space(start[::-1], stop[::-1], t0, vmax, Roadmap)
 
     np.testing.assert_array_equal(
@@ -238,7 +238,7 @@ def test_HALEM_cost():
         time = Roadmap.weight_time[arg_vship].weights
         vship = Roadmap.vship[arg_vship]
 
-    route_time = Calc_path.Has_route(start, stop, Roadmap, t0, graph_functions_time)
+    route_time = calc_path.Has_route(start, stop, Roadmap, t0, graph_functions_time)
     path, _, _ = halem.HALEM_cost(start[::-1], stop[::-1], t0, vmax, Roadmap)
 
     np.testing.assert_array_equal(
@@ -261,7 +261,7 @@ def test_HALEM_co2():
         time = Roadmap.weight_time[arg_vship].weights
         vship = Roadmap.vship[arg_vship]
 
-    route_time = Calc_path.Has_route(start, stop, Roadmap, t0, graph_functions_time)
+    route_time = calc_path.Has_route(start, stop, Roadmap, t0, graph_functions_time)
     path, _, _ = halem.HALEM_co2(start[::-1], stop[::-1], t0, vmax, Roadmap)
 
     np.testing.assert_array_equal(

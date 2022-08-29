@@ -3,15 +3,30 @@
 
 # HALEM
 
-> An example repository for Python packages 
+**H**ydrodynamic **A**lgorithm for **L**ogistic **E**nhancement **M**odule: route optimisation in dynamic currents.
 
-The repository holds an example Python package, including development and test configuration to be used with Van Oord.
-This README briefly covers the components that are included, and that you may or may not include in your own Python package, depending on your needs.
+Documentation can be found [here](https://halem.readthedocs.io).
 
-Note that development and test environments are constantly updated and fit to the fast-changing world of software development, but this repository is not.
-**Consult with the Datalab team to make sure this repo is up-to-date, before applying it to your own Python Package!!!**
+## Features
 
-Contact: bas.hoonhout@vanoord.com
+This package contains route optimization for given currents. The following features are taken into account in this version:
+
+* Spatial varying currents
+* Temporal changing currents
+* Variable shipping velocity
+* minimal water depth
+* Squad
+
+Does not take into account:
+
+* Inertial behavior of the ship
+
+Different routes that can be optimized are:
+
+* Shortest route (halem.HALEM_time)
+* Fastest route (halem.HALEM_space)
+* Cheapest route route (halem.HALEM_cost)
+* Cleanest route (halem.HALEM_co2)
 
 ## The Python package
 
