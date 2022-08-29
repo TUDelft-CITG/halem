@@ -39,7 +39,7 @@ def find_neighbors2(index, triang, depth):
     return buren
 
 
-def Squat(h, T, V_max, LWL, WWL, ukc, WVPI):
+def squat(h, T, V_max, LWL, WWL, ukc, WVPI):
     """Function for reducing the sailing velocity in deep water to the sailing velocity
     in shallow unconfined waters.
 
@@ -173,7 +173,7 @@ def costfunction_timeseries(edge, V_max, WD_min, flow, WVPI, L, tria):
     u_w = u_w / len(IB)
     U_w = (u_w**2 + v_w**2) ** 0.5
 
-    vship = Squat(WD_W, WD_min, V_max, flow.LWL, flow.WWL, flow.ukc, WVPI)
+    vship = squat(WD_W, WD_min, V_max, flow.LWL, flow.WWL, flow.ukc, WVPI)
     # vship = V_max + 0 * WD_W
 
     alpha1 = np.arctan2((yto - yfrom), (xto - xfrom))
@@ -235,7 +235,7 @@ def costfunction_spaceseries(edge, V_max, WD_min, flow, WVPI, L, tria):
     u_w = u_w / len(IB)
     U_w = (u_w**2 + v_w**2) ** 0.5
 
-    vship = Squat(WD_W, WD_min, V_max, flow.LWL, flow.WWL, flow.ukc, WVPI)
+    vship = squat(WD_W, WD_min, V_max, flow.LWL, flow.WWL, flow.ukc, WVPI)
 
     alpha1 = np.arctan2((yto - yfrom), (xto - xfrom))
     alpha2 = np.arctan2(v_w, u_w) - alpha1

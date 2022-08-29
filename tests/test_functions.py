@@ -61,7 +61,7 @@ def test_costfunction_time():
         edge, vship(), WD_min, flow(3), WVPI, 1, flow(3).tria
     )
 
-    VSHIP = functions.Squat(
+    VSHIP = functions.squat(
         flow(3).WD[0], WD_min, vship(), flow(3).LWL, flow(3).WWL, flow(3).ukc, WVPI
     )
 

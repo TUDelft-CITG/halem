@@ -45,7 +45,11 @@ def plot_timeseries2(path, time, Roadmap, Color="r", range_CP=5):
     TT = np.array(TT)
     dist = np.array(dist)
     if Roadmap.repeat is True:
-        k = path_finder.PathFinder.find_k_repeat(path_finder.PathFinder, time[0], Roadmap.t)
+        k = path_finder.PathFinder.find_k_repeat(
+            path_finder.PathFinder,
+            time[0],
+            Roadmap.t,
+        )
         plt.plot(dist, (time[:-1] - time[0]) / 3600, color=Color, label="s/t route")
         cval = np.arange(0, 1.1, 0.5)
 
@@ -82,9 +86,9 @@ def plot_timeseries2(path, time, Roadmap, Color="r", range_CP=5):
 
 
 def HALEM_func(start, stop, t0, vmax, Roadmap, costfunction):
-    """Base of the oe lne functions halem.base_functions.HALEM_time,
-    halem.base_functions.HALEM_cost, halem.base_functions.HALEM_space,
-    halem.base_functions.HALEM_co2. This function takes the pre-processing
+    """Base of the functions HALEM_time,
+    HALEM_cost, HALEM_space,
+    HALEM_co2. This function takes the pre-processing
     file, start location, stop location, departure time, and sailing velocity
     and returns the optimized route.
 

@@ -104,14 +104,14 @@ def test_dijstra():
         time = Roadmap.weight_time[arg_vship].weights
         vship = Roadmap.vship[arg_vship]
 
-    class graph_functions_space:
+    class GraphFunctionsSpace:
         function_type = "time optimalisation"
         weights = Roadmap.weight_space[arg_vship].weights
         time = Roadmap.weight_time[arg_vship].weights
         vship = Roadmap.vship[arg_vship]
 
     TT = path_finder.PathFinder((0, 0), (0, 3), Roadmap, t0, GraphFunctionsTime)
-    SS = path_finder.PathFinder((0, 0), (0, 3), Roadmap, t0, graph_functions_space)
+    SS = path_finder.PathFinder((0, 0), (0, 3), Roadmap, t0, GraphFunctionsSpace)
 
     time_path = TT.route
     space_path = SS.route
@@ -138,14 +138,14 @@ def test_PathFinder():
         time = Roadmap.weight_time[arg_vship].weights
         vship = Roadmap.vship[arg_vship]
 
-    class graph_functions_space:
+    class GraphFunctionsSpace:
         function_type = "time optimalisation"
         weights = Roadmap.weight_space[arg_vship].weights
         time = Roadmap.weight_time[arg_vship].weights
         vship = Roadmap.vship[arg_vship]
 
     route_time = path_finder.PathFinder(start, stop, Roadmap, t0, GraphFunctionsTime)
-    route_space = path_finder.PathFinder(start, stop, Roadmap, t0, graph_functions_space)
+    route_space = path_finder.PathFinder(start, stop, Roadmap, t0, GraphFunctionsSpace)
 
     assert route_space.route[1, 0] == 1
     assert route_time.route[1, 0] == 2
