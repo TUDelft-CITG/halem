@@ -81,7 +81,8 @@ class NodeReduction:
 
         return curl
 
-    def closest_node(self, node, nodes, node_list):
+    @staticmethod
+    def closest_node(node, nodes, node_list):
         """Finds the closest node for a subset of nodes in a set of node.
 
         based on WGS84 coordinates.
@@ -335,7 +336,8 @@ class BaseRoadmap(ABC, NodeReduction):
 
         return L, W, euros, co2
 
-    def fifo_maker(self, y, N1):
+    @staticmethod
+    def fifo_maker(y, N1):
         """Makes a FIFO time series from a Non-FIFO time series
         y:  Time series
         N1: Mask file of the time series
