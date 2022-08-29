@@ -3,7 +3,6 @@ import os
 import pickle
 
 import numpy as np
-from IPython.display import clear_output
 
 import halem
 import halem.path_finder as path_finder
@@ -14,9 +13,9 @@ class Roadmap(halem.BaseRoadmap):
         t = np.arange(0, 100) + 1558077464
         nodes = np.array([(0, 0), (0, 0.001), (0.001, 0.001), (0, 0.003)])
 
-        wd = np.ones((len(self.t), len(self.nodes))) * 100
-        u = np.ones((len(self.t), len(self.nodes))) * 0
-        v = np.ones((len(self.t), len(self.nodes))) * 0
+        wd = np.ones((len(t), len(nodes))) * 100
+        u = np.ones((len(t), len(nodes))) * 0
+        v = np.ones((len(t), len(nodes))) * 0
         u[:, 2] = 10
 
         return {
@@ -48,6 +47,7 @@ roadmap = Roadmap(
     WD_min=WD_min,
     WVPI=WVPI,
 )
+roadmap.parse()
 
 roadmap2 = Roadmap(
     dx_min=dx_min,
@@ -59,7 +59,7 @@ roadmap2 = Roadmap(
     WVPI=WVPI,
     repeat=True,
 )
-clear_output()
+roadmap2.parse()
 
 
 def test_find_startstop():
@@ -111,8 +111,6 @@ def test_dijstra():
 
     time_path = TT.route
     space_path = SS.route
-
-    clear_output()
 
     assert time_path[1][0] == 2
     assert space_path[1][0] == 1

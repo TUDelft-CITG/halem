@@ -199,11 +199,11 @@ class BaseRoadmap(ABC, NodeReduction):
         assert self.v.shape == (len_t, len_nodes)
         assert self.WD.shape == (len_t, len_nodes)
 
-        assert np.issubdtype(self.nodes.dtype, np.floating)
-        assert np.issubdtype(self.t.dtype, np.floating)
-        assert np.issubdtype(self.u.dtype, np.floating)
-        assert np.issubdtype(self.v.dtype, np.floating)
-        assert np.issubdtype(self.WD.dtype, np.floating)
+        assert np.issubdtype(self.nodes.dtype, np.number)
+        assert np.issubdtype(self.t.dtype, np.number)
+        assert np.issubdtype(self.u.dtype, np.number)
+        assert np.issubdtype(self.v.dtype, np.number)
+        assert np.issubdtype(self.WD.dtype, np.number)
 
         self.tria = scipy.spatial.Delaunay(self.nodes)
 
