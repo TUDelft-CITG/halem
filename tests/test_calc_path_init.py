@@ -39,7 +39,7 @@ ukc = 0
 nodes_on_land = functions.nodes_on_land_None
 number_of_neighbor_layers = 1
 
-Roadmap = mesh_maker.Graph_flow_model(
+Roadmap = mesh_maker.GraphFlowModel(
     name_textfile_flow,
     dx_min,
     blend,
@@ -51,7 +51,7 @@ Roadmap = mesh_maker.Graph_flow_model(
     WVPI,
 )
 
-Roadmap2 = mesh_maker.Graph_flow_model(
+Roadmap2 = mesh_maker.GraphFlowModel(
     name_textfile_flow,
     dx_min,
     blend,

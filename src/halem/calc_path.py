@@ -4,7 +4,7 @@ import numpy as np
 
 
 class Has_route:
-    """This class contains the code for calculating the optimal route from the pre-proccessed Roadmap
+    """This class contains the code for calculating the optimal route from the Roadmap
 
     start:              start location (lat, lon)
     stop:               destination location (lat, lon)

@@ -118,7 +118,7 @@ The Fourth step is to generate the Roadmap. This step is the pre-processing step
 
     start_time = time.time()
 
-    Roadmap_t = Mesh_maker.Graph_flow_model(name_textfile_flow, 
+    Roadmap_t = Mesh_maker.GraphFlowModel(name_textfile_flow, 
                                             dx_min, 
                                             blend, 
                                             nl, 
@@ -132,8 +132,6 @@ The Fourth step is to generate the Roadmap. This step is the pre-processing step
                                             compute_cost = Q_cost,
                                             compute_co2 = Q_co2,
                                            )
-
-    #TomTom.save_object(Roadmap, name_textfile_save)
 
     stop_time = time.time()
     computation_time = stop_time - start_time
@@ -411,7 +409,7 @@ Define the Roadmaps
     Load_flow = flow_potentiaalveld
     number_of_neighbor_layers = 3
 
-    Roadmap_t = Mesh_maker.Graph_flow_model(name_textfile_flow, 
+    Roadmap_t = Mesh_maker.GraphFlowModel(name_textfile_flow, 
                                             dx_min, 
                                             blend, 
                                             nl, 
@@ -426,7 +424,7 @@ Define the Roadmaps
                                        )
     Load_flow = flow_dyn_cur
     number_of_neighbor_layers = 3
-    Roadmap_d = Mesh_maker.Graph_flow_model(name_textfile_flow, 
+    Roadmap_d = Mesh_maker.GraphFlowModel(name_textfile_flow, 
                                             dx_min, 
                                             blend, 
                                             nl, 
@@ -442,7 +440,7 @@ Define the Roadmaps
 
     Load_flow = flow_wait
     number_of_neighbor_layers = 1
-    Roadmap = Mesh_maker.Graph_flow_model(name_textfile_flow, 
+    Roadmap = Mesh_maker.GraphFlowModel(name_textfile_flow, 
                                             dx_min, 
                                             blend, 
                                             nl, 

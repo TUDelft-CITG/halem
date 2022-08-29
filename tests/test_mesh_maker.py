@@ -4,6 +4,7 @@ from scipy.signal import argrelextrema
 from scipy.spatial import Delaunay
 
 import halem.mesh_maker as mesh_maker
+from halem.node_reduction import NodeReduction
 
 
 class flow_class:
@@ -150,24 +151,24 @@ def test_Graph():
     assert G.edges[node3] == [node1, node2]
 
 
-def test_FIFO_maker2():
+def test_fifo_maker():
     x = np.arange(0, 2 * np.pi, 0.01)
     y = 2 * np.sin(x) + x
     N1 = np.full(len(y), False)
-    y = mesh_maker.Graph_flow_model.FIFO_maker2(mesh_maker.node_reduction, y, N1)
+    y = mesh_maker.GraphFlowModel.fifo_maker(NodeReduction, y, N1)
     loc_min = argrelextrema(y, np.less)
     assert len(loc_min[0]) == 0
 
     x = np.arange(0, 4 * np.pi, 0.01)
     y = 2 * np.sin(x) + x
-    y = mesh_maker.Graph_flow_model.FIFO_maker2(mesh_maker.node_reduction, y, N1)
+    y = mesh_maker.GraphFlowModel.fifo_maker(NodeReduction, y, N1)
     loc_min = argrelextrema(y, np.less)
     assert len(loc_min[0]) == 0
 
     x = np.arange(0, 2 * np.pi, 0.01)
     y = 2 * np.sin(x) + x
     N1 = np.full(len(y), True)
-    y = mesh_maker.Graph_flow_model.FIFO_maker2(mesh_maker.node_reduction, y, N1)
+    y = mesh_maker.GraphFlowModel.fifo_maker(NodeReduction, y, N1)
     loc_min = argrelextrema(y, np.less)
     assert len(loc_min[0]) == 1
 
@@ -177,29 +178,27 @@ def test_closest_node():
     node = 0
     node_list = np.arange(1, 5, dtype=int)
 
-    cn = mesh_maker.node_reduction.closest_node(
-        mesh_maker.node_reduction, node, node_list, nodes
-    )
+    cn = NodeReduction.closest_node(NodeReduction, node, node_list, nodes)
     assert cn == 1
 
 
-def test_Length_scale():
+def test_length_scale():
     flow = flow_class()
     blend = 0
     nl = (1, 1)
-    NR = mesh_maker.node_reduction(flow, nl, 0.1, blend)
+    NR = NodeReduction(flow, nl, 0.1, blend)
 
     for i in range(len(flow.nodes)):
-        ls = NR.Length_scale(i, flow, blend, nl)
+        ls = NR.length_scale(i, flow, blend, nl)
         assert ls == 0.5
 
     blend = 1
     nl = (1, 1)
     error = 0
-    NR = mesh_maker.node_reduction(flow, nl, 0.1, blend)
+    NR = NodeReduction(flow, nl, 0.1, blend)
 
     for i in range(len(flow.nodes)):
-        ls = NR.Length_scale(i, flow, blend, nl)
+        ls = NR.length_scale(i, flow, blend, nl)
         C = np.pi / 5 * np.sin(2 * np.pi * flow.nodes[i, 1] / 10)
         LS = 1 / (1 + abs(C))
         assert abs(LS - ls) < 0.2 * LS
@@ -212,10 +211,10 @@ def test_Length_scale():
     blend = 1
     nl = (1, 1)
     error = 0
-    NR = mesh_maker.node_reduction(flow, nl, 0.1, blend)
+    NR = NodeReduction(flow, nl, 0.1, blend)
 
     for i in range(len(flow.nodes)):
-        ls = NR.Length_scale(i, flow, blend, nl)
+        ls = NR.length_scale(i, flow, blend, nl)
         C = np.pi / 5 * np.cos(2 * np.pi * flow.nodes[i, 0] / 10)
         LS = 1 / (1 + abs(C))
         assert abs(LS - ls) < 0.2 * LS
@@ -228,10 +227,10 @@ def test_Length_scale():
     blend = 1
     nl = (1, 1)
     error = 0
-    NR = mesh_maker.node_reduction(flow, nl, 0.1, blend)
+    NR = NodeReduction(flow, nl, 0.1, blend)
 
     for i in range(len(flow.nodes)):
-        ls = NR.Length_scale(i, flow, blend, nl)
+        ls = NR.length_scale(i, flow, blend, nl)
         C = (
             np.pi
             / 5
@@ -253,7 +252,7 @@ def test_node_reduction():
     nl = (1, 1)
     dx_min = 0.1
 
-    reduced_nodes = mesh_maker.node_reduction(flow, nl, dx_min, blend)
+    reduced_nodes = NodeReduction(flow, nl, dx_min, blend)
 
     assert len(reduced_nodes.new_nodes) == 400
 
@@ -262,13 +261,13 @@ def test_node_reduction():
     nl = (1, 1)
     dx_min = 1
 
-    reduced_nodes = mesh_maker.node_reduction(flow, nl, dx_min, blend)
+    reduced_nodes = NodeReduction(flow, nl, dx_min, blend)
 
     assert len(reduced_nodes.new_nodes) == 200
     assert reduced_nodes.LS.shape == (400,)
 
 
-def test_Graph_flow_model():
+def test_GraphFlowModel():
     name_textfile_flow = "maaktnietuit"
     Load_flow = flow_class
     blend = 0
@@ -279,7 +278,7 @@ def test_Graph_flow_model():
     WVPI = np.array([5000, 6000])
     number_of_neighbor_layers = 1
 
-    Roadmap = mesh_maker.Graph_flow_model(
+    Roadmap = mesh_maker.GraphFlowModel(
         name_textfile_flow,
         dx_min,
         blend,
@@ -297,7 +296,7 @@ def test_Graph_flow_model():
     assert Roadmap.t.shape[0] == 10
 
 
-def test_Graph_flow_model_with_indices():
+def test_GraphFlowModel_with_indices():
     nodes_index = np.loadtxt("tests/Data/idx.csv", dtype=int)
     name_textfile_flow = "maaktnietuit"
     Load_flow = flow_class
@@ -309,7 +308,7 @@ def test_Graph_flow_model_with_indices():
     WVPI = np.array([5000, 6000])
     number_of_neighbor_layers = 1
 
-    Roadmap = mesh_maker.Graph_flow_model(
+    Roadmap = mesh_maker.GraphFlowModel(
         name_textfile_flow,
         dx_min,
         blend,
@@ -328,7 +327,7 @@ def test_Graph_flow_model_with_indices():
     assert Roadmap.t.shape[0] == 10
 
 
-def test_Graph_flow_model_repeat():
+def test_GraphFlowModel_repeat():
     name_textfile_flow = "maaktnietuit"
     Load_flow = flow_class
     blend = 0
@@ -339,7 +338,7 @@ def test_Graph_flow_model_repeat():
     WVPI = np.array([5000, 6000])
     number_of_neighbor_layers = 1
 
-    Roadmap = mesh_maker.Graph_flow_model(
+    Roadmap = mesh_maker.GraphFlowModel(
         name_textfile_flow,
         dx_min,
         blend,
@@ -378,4 +377,4 @@ def test_percentageprinter():
             self.WD = blank
 
     f = flow_class()
-    mesh_maker.node_reduction(f, (0, 0), 1, 0)
+    NodeReduction(f, (0, 0), 1, 0)

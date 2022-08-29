@@ -92,15 +92,18 @@ def HALEM_func(start, stop, t0, vmax, Roadmap, costfunction):
     stop:           (lon, lat) coordinates of the destination location
     t0:             string that indcates the departure time
                     ('day'/'month'/'year' 'hour':'minute':'seconds')
-    vmax:           (N (rows) * M (columns)) numpy array that indicates the sailing velocity in deep water.
+    vmax:           (N (rows) * M (columns)) numpy array that indicates the sailing
+    velocity in deep water.
                     For which N is the number of discretisations
                     in the load factor, and M is the number of discretisations in the
                     dynamic sailing velocity
 
-                    For the optimization type cost and co2 N must be larger or equal to 2.
+                    For the optimization type cost and co2 N must be larger or
+                    equal to 2.
 
-    Roadmap:        Preprocessing file that contains the hydrodynamic properties, and vesssel parameters.
-                    Output of the function halem.mesh_maker.Graph_flow_model
+    Roadmap:        Preprocessing file that contains the hydrodynamic properties, and
+    vesssel parameters.
+                    Output of the function halem.mesh_maker.GraphFlowModel
     costfunction    Costfunction of the route optimization.
                     Roadmap.weight_time returns fastest route
                     Roadmap.weight_space returns shortest route
@@ -137,24 +140,24 @@ def HALEM_func(start, stop, t0, vmax, Roadmap, costfunction):
 
 
 def HALEM_time(start, stop, t0, vmax, Roadmap):
-    """Implementation of the function halem.base_functions.HALEM_func() for the fastest route."""
+    """Implementation of the function HALEM_func() for the fastest route."""
     costfunction = Roadmap.weight_time
     return HALEM_func(start, stop, t0, vmax, Roadmap, costfunction)
 
 
 def HALEM_space(start, stop, t0, vmax, Roadmap):
-    """Implementation of the function halem.base_functions.HALEM_func() for the shortest route."""
+    """Implementation of the function HALEM_func() for the shortest route."""
     costfunction = Roadmap.weight_space
     return HALEM_func(start, stop, t0, vmax, Roadmap, costfunction)
 
 
 def HALEM_cost(start, stop, t0, vmax, Roadmap):
-    """Implementation of the function halem.base_functions.HALEM_func() for the cheapest route."""
+    """Implementation of the function HALEM_func() for the cheapest route."""
     costfunction = Roadmap.weight_cost
     return HALEM_func(start, stop, t0, vmax, Roadmap, costfunction)
 
 
 def HALEM_co2(start, stop, t0, vmax, Roadmap):
-    """Implementation of the function halem.base_functions.HALEM_func() for the least pollutant route."""
+    """Implementation of the function HALEM_func() for the least pollutant route."""
     costfunction = Roadmap.weight_co2
     return HALEM_func(start, stop, t0, vmax, Roadmap, costfunction)
