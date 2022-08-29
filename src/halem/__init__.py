@@ -1,5 +1,15 @@
 import sys
 
+from halem.base_functions import (
+    HALEM_co2,
+    HALEM_cost,
+    HALEM_func,
+    HALEM_space,
+    HALEM_time,
+    plot_timeseries2,
+    save_object,
+)
+
 if sys.version_info[:2] >= (3, 8):
     # TODO: Import directly (no need for conditional) when `python_requires = >= 3.8`
     from importlib.metadata import PackageNotFoundError, version  # pragma: no cover
@@ -14,3 +24,14 @@ except PackageNotFoundError:  # pragma: no cover
     __version__ = "unknown"
 finally:
     del version, PackageNotFoundError
+
+
+__all__ = [
+    "save_object",
+    "plot_timeseries2",
+    "HALEM_func",
+    "HALEM_time",
+    "HALEM_space",
+    "HALEM_cost",
+    "HALEM_co2",
+]

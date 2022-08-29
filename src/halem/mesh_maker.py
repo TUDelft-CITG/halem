@@ -57,7 +57,7 @@ class GraphFlowModel:
             in the load factor, and M is the number of discretisations in the
             dynamic sailing velocity. For the optimization type cost and co2 N must be
             larger or equal to 2.
-    Load_flow:  Class that contains the output of the hydrodynamic model.
+    load_flow:  Class that contains the output of the hydrodynamic model.
                 An example is provided on https://halem.readthedocs.io/en/latest
                 /examples.html
                 class must have the following instances.
@@ -109,7 +109,7 @@ class GraphFlowModel:
         nl,
         number_of_neighbor_layers,
         vship,
-        Load_flow,
+        load_flow,
         WD_min,
         WVPI,
         compute_cost=None,
@@ -144,7 +144,7 @@ class GraphFlowModel:
         self.vship = vship
 
         # 'Load Flow'
-        flow = Load_flow(name_textfile_flow)  # ABC van maken
+        flow = load_flow(name_textfile_flow)  # ABC van maken
         print("1/4")
 
         # 'Calculate nodes and flow conditions in nodes'

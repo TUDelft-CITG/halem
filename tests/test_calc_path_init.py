@@ -6,10 +6,10 @@ import numpy as np
 from IPython.display import clear_output
 from scipy.spatial import Delaunay
 
-import halem.base_functions as halem
-import halem.path_finder as path_finder
+import halem
 import halem.functions as functions
 import halem.mesh_maker as mesh_maker
+import halem.path_finder as path_finder
 
 
 class flow_class:
@@ -26,7 +26,7 @@ class flow_class:
 
 
 name_textfile_flow = "maaktnietuit"
-Load_flow = flow_class
+load_flow = flow_class
 blend = 0
 nl = (1, 1)
 dx_min = 0.0000001
@@ -46,7 +46,7 @@ Roadmap = mesh_maker.GraphFlowModel(
     nl,
     number_of_neighbor_layers,
     vship,
-    Load_flow,
+    load_flow,
     WD_min,
     WVPI,
 )
@@ -58,7 +58,7 @@ Roadmap2 = mesh_maker.GraphFlowModel(
     nl,
     number_of_neighbor_layers,
     vship,
-    Load_flow,
+    load_flow,
     WD_min,
     WVPI,
     repeat=True,

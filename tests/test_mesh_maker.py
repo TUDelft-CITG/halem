@@ -269,7 +269,7 @@ def test_node_reduction():
 
 def test_GraphFlowModel():
     name_textfile_flow = "maaktnietuit"
-    Load_flow = flow_class
+    load_flow = flow_class
     blend = 0
     nl = (1, 1)
     dx_min = 0.5
@@ -285,7 +285,7 @@ def test_GraphFlowModel():
         nl,
         number_of_neighbor_layers,
         vship,
-        Load_flow,
+        load_flow,
         WD_min,
         WVPI,
     )
@@ -299,7 +299,7 @@ def test_GraphFlowModel():
 def test_GraphFlowModel_with_indices():
     nodes_index = np.loadtxt("tests/Data/idx.csv", dtype=int)
     name_textfile_flow = "maaktnietuit"
-    Load_flow = flow_class
+    load_flow = flow_class
     blend = 0
     nl = (1, 1)
     dx_min = 0.5
@@ -315,7 +315,7 @@ def test_GraphFlowModel_with_indices():
         nl,
         number_of_neighbor_layers,
         vship,
-        Load_flow,
+        load_flow,
         WD_min,
         WVPI,
         nodes_index=nodes_index,
@@ -329,7 +329,7 @@ def test_GraphFlowModel_with_indices():
 
 def test_GraphFlowModel_repeat():
     name_textfile_flow = "maaktnietuit"
-    Load_flow = flow_class
+    load_flow = flow_class
     blend = 0
     nl = (1, 1)
     dx_min = 0.5
@@ -345,7 +345,7 @@ def test_GraphFlowModel_repeat():
         nl,
         number_of_neighbor_layers,
         vship,
-        Load_flow,
+        load_flow,
         WD_min,
         WVPI,
         repeat=True,
