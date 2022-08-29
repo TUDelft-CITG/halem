@@ -6,7 +6,7 @@ from halem.functions import (
     HALEM_func,
     HALEM_space,
     HALEM_time,
-    plot_timeseries2,
+    plot_timeseries,
     save_object,
 )
 from halem.roadmap import BaseRoadmap
@@ -30,7 +30,7 @@ finally:
 __all__ = [
     "BaseRoadmap",
     "save_object",
-    "plot_timeseries2",
+    "plot_timeseries",
     "HALEM_func",
     "HALEM_time",
     "HALEM_space",

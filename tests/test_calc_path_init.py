@@ -294,7 +294,7 @@ class TestCalcPath:
         vmax = 5
 
         path, time, _ = halem.HALEM_co2(start[::-1], stop[::-1], t0, vmax, roadmap)
-        halem.plot_timeseries2(path, time, roadmap, Color="r")
+        halem.plot_timeseries(path, time, roadmap, Color="r")
 
         path, time, _ = halem.HALEM_co2(start[::-1], stop[::-1], t0, vmax, roadmap2)
-        halem.plot_timeseries2(path, time, roadmap2, Color="r")
+        halem.plot_timeseries(path, time, roadmap2, Color="r")
