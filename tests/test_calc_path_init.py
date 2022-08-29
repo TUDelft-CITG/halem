@@ -4,29 +4,30 @@ import pickle
 
 import numpy as np
 from IPython.display import clear_output
-from scipy.spatial import Delaunay
 
 import halem
-import halem.functions as functions
-import halem.mesh_maker as mesh_maker
 import halem.path_finder as path_finder
 
 
-class flow_class:
-    def __init__(self, name="maaktnietuit"):
-        self.t = np.arange(0, 100) + 1558077464
-        self.nodes = np.array([(0, 0), (0, 0.001), (0.001, 0.001), (0, 0.003)])
+class Roadmap(halem.BaseRoadmap):
+    def load(self):
+        t = np.arange(0, 100) + 1558077464
+        nodes = np.array([(0, 0), (0, 0.001), (0.001, 0.001), (0, 0.003)])
 
-        self.tria = Delaunay(self.nodes)
+        wd = np.ones((len(self.t), len(self.nodes))) * 100
+        u = np.ones((len(self.t), len(self.nodes))) * 0
+        v = np.ones((len(self.t), len(self.nodes))) * 0
+        u[:, 2] = 10
 
-        self.WD = np.ones((len(self.t), len(self.nodes))) * 100
-        self.u = np.ones((len(self.t), len(self.nodes))) * 0
-        self.v = np.ones((len(self.t), len(self.nodes))) * 0
-        self.u[:, 2] = 10
+        return {
+            "v": v,
+            "u": u,
+            "water_depth": wd,
+            "time": t,
+            "nodes": nodes,
+        }
 
 
-name_textfile_flow = "maaktnietuit"
-load_flow = flow_class
 blend = 0
 nl = (1, 1)
 dx_min = 0.0000001
@@ -36,31 +37,26 @@ WVPI = np.array([5000, 7000])
 ukc = 0
 
 
-nodes_on_land = functions.nodes_on_land_None
 number_of_neighbor_layers = 1
 
-Roadmap = mesh_maker.GraphFlowModel(
-    name_textfile_flow,
-    dx_min,
-    blend,
-    nl,
-    number_of_neighbor_layers,
-    vship,
-    load_flow,
-    WD_min,
-    WVPI,
+roadmap = Roadmap(
+    dx_min=dx_min,
+    blend=blend,
+    nl=nl,
+    number_of_neighbor_layers=number_of_neighbor_layers,
+    vship=vship,
+    WD_min=WD_min,
+    WVPI=WVPI,
 )
 
-Roadmap2 = mesh_maker.GraphFlowModel(
-    name_textfile_flow,
-    dx_min,
-    blend,
-    nl,
-    number_of_neighbor_layers,
-    vship,
-    load_flow,
-    WD_min,
-    WVPI,
+roadmap2 = Roadmap(
+    dx_min=dx_min,
+    blend=blend,
+    nl=nl,
+    number_of_neighbor_layers=number_of_neighbor_layers,
+    vship=vship,
+    WD_min=WD_min,
+    WVPI=WVPI,
     repeat=True,
 )
 clear_output()
@@ -91,7 +87,7 @@ def test_find_k():
 
 def test_dijstra():
     vmax = 5
-    vvmax = Roadmap.vship[:, -1]
+    vvmax = roadmap.vship[:, -1]
     vv = np.abs(vvmax - vmax)
     arg_vship = int(np.argwhere(vv == vv.min())[0])
     t0 = 1558077464
@@ -100,18 +96,18 @@ def test_dijstra():
 
     class GraphFunctionsTime:
         function_type = "time optimalisation"
-        weights = Roadmap.weight_time[arg_vship].weights
-        time = Roadmap.weight_time[arg_vship].weights
-        vship = Roadmap.vship[arg_vship]
+        weights = roadmap.weight_time[arg_vship].weights
+        time = roadmap.weight_time[arg_vship].weights
+        vship = roadmap.vship[arg_vship]
 
     class GraphFunctionsSpace:
         function_type = "time optimalisation"
-        weights = Roadmap.weight_space[arg_vship].weights
-        time = Roadmap.weight_time[arg_vship].weights
-        vship = Roadmap.vship[arg_vship]
+        weights = roadmap.weight_space[arg_vship].weights
+        time = roadmap.weight_time[arg_vship].weights
+        vship = roadmap.vship[arg_vship]
 
-    TT = path_finder.PathFinder((0, 0), (0, 3), Roadmap, t0, GraphFunctionsTime)
-    SS = path_finder.PathFinder((0, 0), (0, 3), Roadmap, t0, GraphFunctionsSpace)
+    TT = path_finder.PathFinder((0, 0), (0, 3), roadmap, t0, GraphFunctionsTime)
+    SS = path_finder.PathFinder((0, 0), (0, 3), roadmap, t0, GraphFunctionsSpace)
 
     time_path = TT.route
     space_path = SS.route
@@ -128,24 +124,24 @@ def test_PathFinder():
     stop = (0.0001, 0.003001)
     t0 = "17/05/2019 9:18:15"
     vmax = 5
-    vvmax = Roadmap.vship[:, -1]
+    vvmax = roadmap.vship[:, -1]
     vv = np.abs(vvmax - vmax)
     arg_vship = int(np.argwhere(vv == vv.min())[0])
 
     class GraphFunctionsTime:
         function_type = "time optimalisation"
-        weights = Roadmap.weight_time[arg_vship].weights
-        time = Roadmap.weight_time[arg_vship].weights
-        vship = Roadmap.vship[arg_vship]
+        weights = roadmap.weight_time[arg_vship].weights
+        time = roadmap.weight_time[arg_vship].weights
+        vship = roadmap.vship[arg_vship]
 
     class GraphFunctionsSpace:
         function_type = "time optimalisation"
-        weights = Roadmap.weight_space[arg_vship].weights
-        time = Roadmap.weight_time[arg_vship].weights
-        vship = Roadmap.vship[arg_vship]
+        weights = roadmap.weight_space[arg_vship].weights
+        time = roadmap.weight_time[arg_vship].weights
+        vship = roadmap.vship[arg_vship]
 
-    route_time = path_finder.PathFinder(start, stop, Roadmap, t0, GraphFunctionsTime)
-    route_space = path_finder.PathFinder(start, stop, Roadmap, t0, GraphFunctionsSpace)
+    route_time = path_finder.PathFinder(start, stop, roadmap, t0, GraphFunctionsTime)
+    route_space = path_finder.PathFinder(start, stop, roadmap, t0, GraphFunctionsSpace)
 
     assert route_space.route[1, 0] == 1
     assert route_time.route[1, 0] == 2
@@ -154,15 +150,15 @@ def test_PathFinder():
 
 
 def test_save_obj():
-    halem.save_object(Roadmap, "tests/Data/Roadmap")
+    halem.save_object(roadmap, "tests/Data/Roadmap")
     assert os.path.exists("tests/Data/Roadmap")
     with open("tests/Data/Roadmap", "rb") as input:
         Roadmap_load = pickle.load(input)
     os.remove("tests/Data/Roadmap")
-    np.testing.assert_array_equal(Roadmap_load.nodes, Roadmap.nodes)
-    np.testing.assert_array_equal(Roadmap_load.u, Roadmap.u)
-    np.testing.assert_array_equal(Roadmap_load.v, Roadmap.v)
-    np.testing.assert_array_equal(Roadmap_load.WD, Roadmap.WD)
+    np.testing.assert_array_equal(Roadmap_load.nodes, roadmap.nodes)
+    np.testing.assert_array_equal(Roadmap_load.u, roadmap.u)
+    np.testing.assert_array_equal(Roadmap_load.v, roadmap.v)
+    np.testing.assert_array_equal(Roadmap_load.WD, roadmap.WD)
 
 
 def test_find_k_repeat():
@@ -182,21 +178,21 @@ def test_HALEM_time():
     stop = (0.0001, 0.003001)
     t0 = "17/05/2019 9:18:15"
     vmax = 5
-    vvmax = Roadmap.vship[:, -1]
+    vvmax = roadmap.vship[:, -1]
     vv = np.abs(vvmax - vmax)
     arg_vship = int(np.argwhere(vv == vv.min())[0])
 
     class GraphFunctionsTime:
         function_type = "time optimalisation"
-        weights = Roadmap.weight_time[arg_vship].weights
-        time = Roadmap.weight_time[arg_vship].weights
-        vship = Roadmap.vship[arg_vship]
+        weights = roadmap.weight_time[arg_vship].weights
+        time = roadmap.weight_time[arg_vship].weights
+        vship = roadmap.vship[arg_vship]
 
-    route_time = path_finder.PathFinder(start, stop, Roadmap, t0, GraphFunctionsTime)
-    path, _, _ = halem.HALEM_time(start[::-1], stop[::-1], t0, vmax, Roadmap)
+    route_time = path_finder.PathFinder(start, stop, roadmap, t0, GraphFunctionsTime)
+    path, _, _ = halem.HALEM_time(start[::-1], stop[::-1], t0, vmax, roadmap)
 
     np.testing.assert_array_equal(
-        Roadmap.nodes[np.array(route_time.route[:, 0], dtype=int)], path[:, ::-1]
+        roadmap.nodes[np.array(route_time.route[:, 0], dtype=int)], path[:, ::-1]
     )
 
 
@@ -205,21 +201,21 @@ def test_HALEM_space():
     stop = (0.0001, 0.003001)
     t0 = "17/05/2019 9:18:15"
     vmax = 5
-    vvmax = Roadmap.vship[:, -1]
+    vvmax = roadmap.vship[:, -1]
     vv = np.abs(vvmax - vmax)
     arg_vship = int(np.argwhere(vv == vv.min())[0])
 
     class GraphFunctionsTime:
         function_type = "time optimalisation"
-        weights = Roadmap.weight_space[arg_vship].weights
-        time = Roadmap.weight_time[arg_vship].weights
-        vship = Roadmap.vship[arg_vship]
+        weights = roadmap.weight_space[arg_vship].weights
+        time = roadmap.weight_time[arg_vship].weights
+        vship = roadmap.vship[arg_vship]
 
-    route_time = path_finder.PathFinder(start, stop, Roadmap, t0, GraphFunctionsTime)
-    path, _, _ = halem.HALEM_space(start[::-1], stop[::-1], t0, vmax, Roadmap)
+    route_time = path_finder.PathFinder(start, stop, roadmap, t0, GraphFunctionsTime)
+    path, _, _ = halem.HALEM_space(start[::-1], stop[::-1], t0, vmax, roadmap)
 
     np.testing.assert_array_equal(
-        Roadmap.nodes[np.array(route_time.route[:, 0], dtype=int)], path[:, ::-1]
+        roadmap.nodes[np.array(route_time.route[:, 0], dtype=int)], path[:, ::-1]
     )
 
 
@@ -228,21 +224,21 @@ def test_HALEM_cost():
     stop = (0.0001, 0.003001)
     t0 = "17/05/2019 9:18:15"
     vmax = 5
-    vvmax = Roadmap.vship[:, -1]
+    vvmax = roadmap.vship[:, -1]
     vv = np.abs(vvmax - vmax)
     arg_vship = int(np.argwhere(vv == vv.min())[0])
 
     class GraphFunctionsTime:
         function_type = "time optimalisation"
-        weights = Roadmap.weight_cost[arg_vship].weights
-        time = Roadmap.weight_time[arg_vship].weights
-        vship = Roadmap.vship[arg_vship]
+        weights = roadmap.weight_cost[arg_vship].weights
+        time = roadmap.weight_time[arg_vship].weights
+        vship = roadmap.vship[arg_vship]
 
-    route_time = path_finder.PathFinder(start, stop, Roadmap, t0, GraphFunctionsTime)
-    path, _, _ = halem.HALEM_cost(start[::-1], stop[::-1], t0, vmax, Roadmap)
+    route_time = path_finder.PathFinder(start, stop, roadmap, t0, GraphFunctionsTime)
+    path, _, _ = halem.HALEM_cost(start[::-1], stop[::-1], t0, vmax, roadmap)
 
     np.testing.assert_array_equal(
-        Roadmap.nodes[np.array(route_time.route[:, 0], dtype=int)], path[:, ::-1]
+        roadmap.nodes[np.array(route_time.route[:, 0], dtype=int)], path[:, ::-1]
     )
 
 
@@ -251,21 +247,21 @@ def test_HALEM_co2():
     stop = (0.0001, 0.003001)
     t0 = "17/05/2019 9:18:15"
     vmax = 5
-    vvmax = Roadmap.vship[:, -1]
+    vvmax = roadmap.vship[:, -1]
     vv = np.abs(vvmax - vmax)
     arg_vship = int(np.argwhere(vv == vv.min())[0])
 
     class GraphFunctionsTime:
         function_type = "time optimalisation"
-        weights = Roadmap.weight_co2[arg_vship].weights
-        time = Roadmap.weight_time[arg_vship].weights
-        vship = Roadmap.vship[arg_vship]
+        weights = roadmap.weight_co2[arg_vship].weights
+        time = roadmap.weight_time[arg_vship].weights
+        vship = roadmap.vship[arg_vship]
 
-    route_time = path_finder.PathFinder(start, stop, Roadmap, t0, GraphFunctionsTime)
-    path, _, _ = halem.HALEM_co2(start[::-1], stop[::-1], t0, vmax, Roadmap)
+    route_time = path_finder.PathFinder(start, stop, roadmap, t0, GraphFunctionsTime)
+    path, _, _ = halem.HALEM_co2(start[::-1], stop[::-1], t0, vmax, roadmap)
 
     np.testing.assert_array_equal(
-        Roadmap.nodes[np.array(route_time.route[:, 0], dtype=int)], path[:, ::-1]
+        roadmap.nodes[np.array(route_time.route[:, 0], dtype=int)], path[:, ::-1]
     )
 
 
@@ -275,8 +271,8 @@ def test_plot():
     t0 = "17/05/2019 9:18:15"
     vmax = 5
 
-    path, time, _ = halem.HALEM_co2(start[::-1], stop[::-1], t0, vmax, Roadmap)
-    halem.plot_timeseries2(path, time, Roadmap, Color="r")
+    path, time, _ = halem.HALEM_co2(start[::-1], stop[::-1], t0, vmax, roadmap)
+    halem.plot_timeseries2(path, time, roadmap, Color="r")
 
-    path, time, _ = halem.HALEM_co2(start[::-1], stop[::-1], t0, vmax, Roadmap2)
-    halem.plot_timeseries2(path, time, Roadmap2, Color="r")
+    path, time, _ = halem.HALEM_co2(start[::-1], stop[::-1], t0, vmax, roadmap2)
+    halem.plot_timeseries2(path, time, roadmap2, Color="r")

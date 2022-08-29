@@ -104,8 +104,6 @@ def HALEM_func(start, stop, t0, vmax, Roadmap, costfunction):
                     equal to 2.
 
     Roadmap:        Preprocessing file that contains the hydrodynamic properties, and
-    vesssel parameters.
-                    Output of the function halem.mesh_maker.GraphFlowModel
     costfunction    Costfunction of the route optimization.
                     Roadmap.weight_time returns fastest route
                     Roadmap.weight_space returns shortest route
@@ -425,8 +423,3 @@ def costfunction_spaceseries(edge, V_max, WD_min, flow, WVPI, L, tria):
     t[t != np.inf] = L
 
     return np.array(t)
-
-
-def nodes_on_land_None(nodes, u, v, WD):
-    """Standard function that returns itself"""
-    return nodes, u, v, WD

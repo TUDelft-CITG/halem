@@ -1,6 +1,6 @@
 import sys
 
-from halem.base_functions import (
+from halem.functions import (
     HALEM_co2,
     HALEM_cost,
     HALEM_func,
@@ -9,6 +9,7 @@ from halem.base_functions import (
     plot_timeseries2,
     save_object,
 )
+from halem.roadmap import BaseRoadmap
 
 if sys.version_info[:2] >= (3, 8):
     # TODO: Import directly (no need for conditional) when `python_requires = >= 3.8`
@@ -27,6 +28,7 @@ finally:
 
 
 __all__ = [
+    "BaseRoadmap",
     "save_object",
     "plot_timeseries2",
     "HALEM_func",
