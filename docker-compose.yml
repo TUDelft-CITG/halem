@@ -1,0 +1,14 @@
+version: "3.2"
+
+services:
+  package:
+    image: halem:latest
+    build:
+      context: .
+      args:
+        GITHUB_TOKEN: ${GITHUB_TOKEN}
+    container_name: halem
+    environment:
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+    ports:
+      - "8820:8888"
