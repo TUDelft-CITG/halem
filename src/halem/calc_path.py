@@ -1,14 +1,10 @@
-import halem.functions as functions
-from datetime import datetime
-import datetime, time
-import numpy as np
+import datetime
 
-# Added for openclsim integration
-import openclsim.core as core
+import numpy as np
 
 
 class Has_route:
-    """ This class contains the code for calculating the optimal route from the pre-proccessed Roadmap
+    """This class contains the code for calculating the optimal route from the pre-proccessed Roadmap
 
     start:              start location (lat, lon)
     stop:               destination location (lat, lon)
@@ -45,7 +41,7 @@ class Has_route:
         time_paths = {initial: (None, t0)}
         current_node = initial
         visited = set()
-        find_k = self.find_k_time if Roadmap.repeat == False else self.find_k_repeat
+        find_k = self.find_k_time if Roadmap.repeat is False else self.find_k_repeat
 
         while current_node != end:
             visited.add(current_node)

@@ -1,15 +1,15 @@
-import halem.base_functions as halem
-import halem.mesh_maker as mesh_maker
-import halem.functions as functions
-import halem.calc_path as calc_path
 import datetime
-
-import pytest
-import numpy as np
-from scipy.spatial import Delaunay
-from IPython.display import clear_output
 import os
 import pickle
+
+import numpy as np
+from IPython.display import clear_output
+from scipy.spatial import Delaunay
+
+import halem.base_functions as halem
+import halem.calc_path as calc_path
+import halem.functions as functions
+import halem.mesh_maker as mesh_maker
 
 
 class flow_class:

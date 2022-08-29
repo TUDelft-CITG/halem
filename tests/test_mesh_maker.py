@@ -1,12 +1,9 @@
-import halem.mesh_maker as mesh_maker
-import halem.functions as functions
-import halem.calc_path as calc_path
-
-import pytest
 import numpy as np
-from scipy.spatial import Delaunay
-from scipy.signal import argrelextrema
 from IPython.display import clear_output
+from scipy.signal import argrelextrema
+from scipy.spatial import Delaunay
+
+import halem.mesh_maker as mesh_maker
 
 
 class flow_class:
@@ -248,7 +245,6 @@ def test_Length_scale():
         e = abs(LS - ls) / LS
         if e > error:
             error = e
-    # print(error)
 
 
 def test_node_reduction():
@@ -270,15 +266,6 @@ def test_node_reduction():
 
     assert len(reduced_nodes.new_nodes) == 200
     assert reduced_nodes.LS.shape == (400,)
-
-    # flow = flow_class4()
-    # blend = 0
-    # nl = (1, 1)
-    # dx_min = 1
-
-    # reduced_nodes = mesh_maker.node_reduction(flow, nl, dx_min, blend)
-
-    # assert len(reduced_nodes.new_nodes) == 200
 
 
 def test_Graph_flow_model():
@@ -391,4 +378,4 @@ def test_percentageprinter():
             self.WD = blank
 
     f = flow_class()
-    Q = mesh_maker.node_reduction(f, (0, 0), 1, 0)
+    mesh_maker.node_reduction(f, (0, 0), 1, 0)

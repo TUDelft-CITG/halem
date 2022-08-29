@@ -11,7 +11,7 @@ Development Lead
 Collaboration
 ------------
 
-This package is created to work in cooperation with 'OpenCLSim'_ . A special thanks to the developers of OpenCLSim for their help with creating this repository. 
+A special thanks to the following devellopers for contibuting to this package:
 
 * `Gerben de Boer`_
 * `Mark van Koningsveld`_
@@ -22,4 +22,3 @@ This package is created to work in cooperation with 'OpenCLSim'_ . A special tha
 .. _Mark van Koningsveld: https://www.tudelft.nl/citg/over-faculteit/afdelingen/hydraulic-engineering/sections/rivers-ports-waterways-and-dredging-engineering/staff/van-koningsveld-m/
 .. _Joris den Uijl: https://github.com/uijl
 .. _Fedor Baart: https://github.com/SiggyF
-.. _OpenCLSim: https://openclsim.readthedocs.io/en/latest/

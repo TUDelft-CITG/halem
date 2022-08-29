@@ -1,11 +1,10 @@
-import halem.mesh_maker as mesh_maker
-import halem.functions as functions
-import halem.calc_path as calc_path
-import matplotlib.pyplot as plt
-from datetime import datetime
-import datetime, time
-import numpy as np
 import pickle
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+import halem.calc_path as calc_path
+import halem.functions as functions
 
 
 def save_object(obj, filename):
@@ -15,16 +14,16 @@ def save_object(obj, filename):
 
 
 def plot_timeseries2(path, time, Roadmap, Color="r", range_CP=5):
-    """ This function can plot the time series for the route 
-    and shows a contourplot of the unsaiable areas of that route 
-    
-    path:       lon, lat coordinates of the route. 
-                This is in the format of the output 
+    """This function can plot the time series for the route
+    and shows a contourplot of the unsaiable areas of that route
+
+    path:       lon, lat coordinates of the route.
+                This is in the format of the output
                 from halem.base_functions.HALEM_func[0]
-    time:       time series of the path. 
-                This is in the format of the output 
+    time:       time series of the path.
+                This is in the format of the output
                 from halem.base_functions.HALEM_func[1]
-    Roadmap:    Roadmap that is used to calculate the route. 
+    Roadmap:    Roadmap that is used to calculate the route.
     Color:      Color of the plot of the time series.
                 Type sting, with matplotlib color"""
 
@@ -45,7 +44,7 @@ def plot_timeseries2(path, time, Roadmap, Color="r", range_CP=5):
         TT.append(T)
     TT = np.array(TT)
     dist = np.array(dist)
-    if Roadmap.repeat == True:
+    if Roadmap.repeat is True:
         k = calc_path.Has_route.find_k_repeat(calc_path.Has_route, time[0], Roadmap.t)
         plt.plot(dist, (time[:-1] - time[0]) / 3600, color=Color, label="s/t route")
         cval = np.arange(0, 1.1, 0.5)
@@ -83,24 +82,24 @@ def plot_timeseries2(path, time, Roadmap, Color="r", range_CP=5):
 
 
 def HALEM_func(start, stop, t0, vmax, Roadmap, costfunction):
-    """ Base of the oe lne functions halem.base_functions.HALEM_time,
-    halem.base_functions.HALEM_cost, halem.base_functions.HALEM_space, 
-    halem.base_functions.HALEM_co2. This function takes the pre-processing 
-    file, start location, stop location, departure time, and sailing velocity 
-    and returns the optimized route. 
+    """Base of the oe lne functions halem.base_functions.HALEM_time,
+    halem.base_functions.HALEM_cost, halem.base_functions.HALEM_space,
+    halem.base_functions.HALEM_co2. This function takes the pre-processing
+    file, start location, stop location, departure time, and sailing velocity
+    and returns the optimized route.
 
     start:          (lon, lat) coordinates of the start location
     stop:           (lon, lat) coordinates of the destination location
     t0:             string that indcates the departure time
                     ('day'/'month'/'year' 'hour':'minute':'seconds')
-    vmax:           (N (rows) * M (columns)) numpy array that indicates the sailing velocity in deep water. 
+    vmax:           (N (rows) * M (columns)) numpy array that indicates the sailing velocity in deep water.
                     For which N is the number of discretisations
-                    in the load factor, and M is the number of discretisations in the 
+                    in the load factor, and M is the number of discretisations in the
                     dynamic sailing velocity
 
                     For the optimization type cost and co2 N must be larger or equal to 2.
 
-    Roadmap:        Preprocessing file that contains the hydrodynamic properties, and vesssel parameters. 
+    Roadmap:        Preprocessing file that contains the hydrodynamic properties, and vesssel parameters.
                     Output of the function halem.mesh_maker.Graph_flow_model
     costfunction    Costfunction of the route optimization.
                     Roadmap.weight_time returns fastest route

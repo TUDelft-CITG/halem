@@ -1,65 +1,67 @@
-from IPython.display import clear_output
-from scipy.signal import argrelextrema
-import halem.functions as functions
 from collections import defaultdict
-import scipy.spatial
-from numpy import ma
+
 import numpy as np
-import time
+import scipy.spatial
+from IPython.display import clear_output
+from numpy import ma
+from scipy.signal import argrelextrema
+
+import halem.functions as functions
 
 
 class Graph_flow_model:
     """Pre-processing function fir the HALEM optimizations. In this fucntion the hydrodynamic
     model and the vessel properties are transformed into weights for the Time dependend Dijkstra
     function.
-    
+
     name_textfile_flow: string that gives the location of the hydrodynamic model in the directory.
     dx_min: float, minimal spatial resolution. Parameter of the lengt scale function concerning the node reduction
-    blend:  blend factor between the verticity and magnitude of the flow. 
+    blend:  blend factor between the verticity and magnitude of the flow.
             Parameter of the lengt scale function concerning the node reduction
     nl: float (nl_c, nl_m) Non linearity factor.
-        Should consist out of two numbers nl_c non-linearity factor for the corticity, nl_m non-linearity factor for the magnitude of the flow. Parameter of the lengt scale function concerning the node reduction
-    number_of_neighbor_layers:  number of neigbouring layers for which edges are created. 
-                                increasing this number results in a higher directional resolution. 
-    vship:  (N (rows) * M (columns)) numpy array that indicates the sailing velocity in deep water. 
+        Should consist out of two numbers nl_c non-linearity factor for the corticity, nl_m non-linearity factor for the
+        magnitude of the flow. Parameter of the lengt scale function concerning the node reduction
+    number_of_neighbor_layers:  number of neigbouring layers for which edges are created.
+                                increasing this number results in a higher directional resolution.
+    vship:  (N (rows) * M (columns)) numpy array that indicates the sailing velocity in deep water.
             For which N is the number of discretisations
-            in the load factor, and M is the number of discretisations in the 
+            in the load factor, and M is the number of discretisations in the
             dynamic sailing velocity. For the optimization type cost and co2 N must be larger or equal to 2.
-    Load_flow:  Class that contains the output of the hydrodynamic model. 
+    Load_flow:  Class that contains the output of the hydrodynamic model.
                 An example is provided on https://halem.readthedocs.io/en/latest/examples.html
-                class must have the following instances. 
+                class must have the following instances.
                 u: numpy array with shape (N, M)
                 v: numpy array with shape (N, M)
                 WD: numpy array with shape (N, M)
                 nodes: numpy array with shape (N, 2) (lat, lon)
                 t: numpy array with shape M (seconds since 01-01-1970 00:00:00)
                 tria: triangulation of the nodes (output of scipy.spatial.Delaunay(nodes)
-                in which N is the number of nodes of the hydrodynamic model, and 
+                in which N is the number of nodes of the hydrodynamic model, and
                 M is the number of time steps of the hydrodynamic model
-    WD_min: numpy array with the draft of the vessel. 
+    WD_min: numpy array with the draft of the vessel.
             Numpy array has the shape of the number of discretisations in the dynamic sailing velocity
     WVPI:   Numpy array with the total weight of the vessel.
 
     compute_cost:   Lambda function that returns the cost for sailing based on the travel time and the travel velocity.
 
-    compute_co2:    Lambda function that returns the emmision for sailing based on the travel time and the travel velocity. 
-         
-    WWL:    Width over Water Line of the vessel in meters 
+    compute_co2:    Lambda function that returns the emmision for sailing based on the travel time and the travel velocity.
 
-    LWL:    Length over Water Line of the vessel in meters   
+    WWL:    Width over Water Line of the vessel in meters
 
-    ukc:    Minimal needed under keel clearance in  meters. 
+    LWL:    Length over Water Line of the vessel in meters
+
+    ukc:    Minimal needed under keel clearance in  meters.
 
     nodes_on_land:  Function that adds hydrodynamic conditions on land to if nodes on land are not included in the hydrodynamic model
 
-    repeat: Indicator if the roadmap can be repeated (True / False) 
+    repeat: Indicator if the roadmap can be repeated (True / False)
             True for hydrodynamic models based on a tidal analysis
-    optimization_type:  list of optimization types. 
-                        Excluding one or more not needed optimization types can 
-                        significantly decrease the size of the preprocessing file   
+    optimization_type:  list of optimization types.
+                        Excluding one or more not needed optimization types can
+                        significantly decrease the size of the preprocessing file
     nodes_index:    Numpy array that contains the indices of the nodes of the reduced hydrodynamic model.
-                    nodes_index is the output of Roadmap.nodes_index. This option allows you to skip the 
-                    node reduction step if this is already done.                                                           
+                    nodes_index is the output of Roadmap.nodes_index. This option allows you to skip the
+                    node reduction step if this is already done.
     """
 
     def __init__(
@@ -86,15 +88,15 @@ class Graph_flow_model:
         def compute_cost_f(week_rate, fuel_rate):
             second_rate = week_rate / 7 / 24 / 60 / 60
             return lambda travel_time, speed: (
-                travel_time * second_rate + fuel_rate * travel_time * speed ** 3
+                travel_time * second_rate + fuel_rate * travel_time * speed**3
             )
 
         def compute_co2_f(fuel_rate):
-            return lambda travel_time, speed: (fuel_rate * travel_time * speed ** 3)
+            return lambda travel_time, speed: (fuel_rate * travel_time * speed**3)
 
-        if compute_cost == None:
+        if compute_cost is None:
             compute_cost = compute_cost_f(700_000, 0.0008)
-        if compute_co2 == None:
+        if compute_co2 is None:
             compute_co2 = compute_co2_f(1)
 
         self.WWL = WWL
@@ -109,7 +111,7 @@ class Graph_flow_model:
         print("1/4")
 
         # 'Calculate nodes and flow conditions in nodes'
-        if nodes_index.all() == None:
+        if nodes_index.all() is None:
             reduces_nodes = node_reduction(flow, nl, dx_min, blend)
             self.nodes_index = reduces_nodes.new_nodes
             self.LS = reduces_nodes.LS
@@ -155,7 +157,7 @@ class Graph_flow_model:
 
         # 'Calculate Weights'
 
-        if self.repeat == True:
+        if self.repeat:
             calc_weights = self.calc_weights_time
         else:
             calc_weights = self.calc_weights_time
@@ -275,9 +277,9 @@ class Graph_flow_model:
 
 
 class Graph:
-    """class that contains the nodes, arcs, and weights for the time-dependent, 
+    """class that contains the nodes, arcs, and weights for the time-dependent,
     directional, weighted, and Non-FIFO graph of the route optimization problem.
-    This class is used multiple times in the halem.mesh_maker.Graph_flow_model() 
+    This class is used multiple times in the halem.mesh_maker.Graph_flow_model()
     function"""
 
     def __init__(self):
@@ -298,37 +300,37 @@ class Graph:
 
 
 class node_reduction:
-    """ This class can reduce the number of gridpoints of the hydrodynamic model. This is done 
+    """This class can reduce the number of gridpoints of the hydrodynamic model. This is done
     Based on the vorticity and the magnitude of the flow. The nodes are pruned based on a length
-    scale. The formula for this length scale is: LS / ∆min = α(1+|∇×u|)^−βc+(1−α)(1+|u|)^−βm. 
+    scale. The formula for this length scale is: LS / ∆min = α(1+|∇×u|)^−βc+(1−α)(1+|u|)^−βm.
     With: LS = resulting length scale, α = blend factor between the curl and
-    the magnitude method, ∆min = minimal length scale, βc = non linearity 
+    the magnitude method, ∆min = minimal length scale, βc = non linearity
     parameter for the method with  the curl of the flow, βm = non linearity parameter for
     the method with  the magnitude of the flow, and u = the velocity vector
     of the flow.
 
     flow:                           class that contains the hydrodynamic properties.
-                                    class must have the following instances. 
+                                    class must have the following instances.
                                     u: numpy array with shape (N, M)
                                     v: numpy array with shape (N, M)
                                     WD: numpy array with shape (N, M)
                                     nodes: numpy array with shape (N, 2) (lat, lon)
                                     t: numpy array with shape M (seconds since 01-01-1970 00:00:00)
                                     tria: triangulation of the nodes (output of scipy.spatial.Delaunay(nodes))
-                                    in which N is the number of nodes of the hydrodynamic model, and 
+                                    in which N is the number of nodes of the hydrodynamic model, and
                                     M is the number of time steps of the hydrodynamic model
-    dx_min:                         float, minimal spatial resolution. 
+    dx_min:                         float, minimal spatial resolution.
                                     Parameter of the lengt scale function concerning the node reduction
     blend:                          blend factor between the verticity and magnitude of the flow.
                                     Parameter of the lengt scale function concerning the node reduction
-    nl:                             float (nl_c, nl_m) 
+    nl:                             float (nl_c, nl_m)
                                     Non linearity factor consisting out of two numbers
                                     nl_c non-linearity factor for the corticity, nl_m non-linearity factor
-                                    for the magnitude of the flow. Parameter of the lengt scale function 
+                                    for the magnitude of the flow. Parameter of the lengt scale function
                                     concerning the node reduction
-    number_of_neighbor_layers:      number of neigbouring layers for which edges are created. 
-                                    increasing this number results in a higher directional resolution.  
-                                    """
+    number_of_neighbor_layers:      number of neigbouring layers for which edges are created.
+                                    increasing this number results in a higher directional resolution.
+    """
 
     def __init__(self, flow, nl, dx_min, blend):
         self.new_nodes, self.LS = self.Get_nodes(flow, nl, dx_min, blend)
@@ -352,7 +354,7 @@ class node_reduction:
 
             y_dist = nodes[closest_nod][0] - nodes[i][0]
             x_dist = nodes[closest_nod][1] - nodes[i][1]
-            distu = (y_dist ** 2 + x_dist ** 2) ** 0.5
+            distu = (y_dist**2 + x_dist**2) ** 0.5
 
             if distu > dx_min * LS_node:
                 new_nodes.append(i)
@@ -410,7 +412,7 @@ class node_reduction:
         return pt
 
     def slope(self, xs, ys, zs):
-        """Function for the slope of a plane in x and y direction. 
+        """Function for the slope of a plane in x and y direction.
         Used to calculate the  curl of the flow for the node reduction step"""
 
         tmp_A = []

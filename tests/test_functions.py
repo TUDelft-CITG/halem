@@ -1,11 +1,8 @@
-import halem.mesh_maker as mesh_maker
-import halem.functions as functions
-import halem.calc_path as calc_path
+import geopy.distance
+import numpy as np
 from scipy.spatial import Delaunay
 
-import pytest
-import numpy as np
-import geopy.distance
+import halem.functions as functions
 
 
 def coord_a():
@@ -59,8 +56,6 @@ def test_costfunction_time():
     mag = 3
     WD_min = 1
     edge = (0, 1)
-    nodes = [coord_a(), coord_b(), (1, 0), (1, 1)]
-    mask = np.full((u(mag).shape), False)
     WVPI = 1
     L = functions.costfunction_timeseries(
         edge, vship(), WD_min, flow(3), WVPI, 1, flow(3).tria
@@ -78,11 +73,8 @@ def test_costfunction_time():
 
 
 def test_costfunction_space():
-    mag = 3
     WD_min = 1
     edge = (0, 1)
-    nodes = [coord_a(), coord_b(), (1, 0), (1, 1)]
-    mask = np.full((u(mag).shape), False)
     WVPI = 1
     L = functions.costfunction_spaceseries(
         edge, vship(), WD_min, flow(3), WVPI, 1, flow(3).tria

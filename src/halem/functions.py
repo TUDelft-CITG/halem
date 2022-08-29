@@ -1,6 +1,6 @@
-from numpy import ma
-import numpy as np
 import math
+
+import numpy as np
 
 
 def find_neighbors(pindex, triang):
@@ -17,7 +17,7 @@ def find_neighbors(pindex, triang):
 
 
 def find_neighbors2(index, triang, depth):
-    """Function that can find the neighbours of a Delauney mesh, for 
+    """Function that can find the neighbours of a Delauney mesh, for
     multiple layers of neighbours.
 
     pindex:         Index of the considered node.
@@ -40,23 +40,23 @@ def find_neighbors2(index, triang, depth):
 
 
 def Squat(h, T, V_max, LWL, WWL, ukc, WVPI):
-    """Function for reducing the sailing velocity in deep water to the sailing velocity in shallow unconfined waters. 
+    """Function for reducing the sailing velocity in deep water to the sailing velocity in shallow unconfined waters.
 
     h:                              Array of the water depth in meters
     V_max:                          Sailing velocity in deep water in meters per second
-    WWL:                            Width over Water Line of the vessel in meters 
-    LWL:                            Length over Water Line of the vessel in meters   
-    ukc:                            Minimal needed under keel clearance in  meters. 
-    T:                              numpy array with the draft of the vessel. Numpy array has the shape of 
+    WWL:                            Width over Water Line of the vessel in meters
+    LWL:                            Length over Water Line of the vessel in meters
+    ukc:                            Minimal needed under keel clearance in  meters.
+    T:                              numpy array with the draft of the vessel. Numpy array has the shape of
                                     the number of discretisations in the dynamic sailing velocity in meters
     WVPI:                           total weight of the the vessel in tf
 
-    V:                              Array of sailing velocities reduced for squat, corresponding to the input arrat h. 
+    V:                              Array of sailing velocities reduced for squat, corresponding to the input arrat h.
     """
     Gamma_water = 1025
     b = 9 * WWL
     g = 9.81
-    ghv2 = g * h / (V_max ** 2)
+    ghv2 = g * h / (V_max**2)
     squat_max = h - T - ukc
     CB = WVPI / (LWL * WWL * T * Gamma_water)
     AsAc = (WWL * T) / (b * h - WWL * T)
@@ -85,8 +85,8 @@ def Squat(h, T, V_max, LWL, WWL, ukc, WVPI):
 
 
 def inbetweenpoints(start, stop, LL, tria):
-    """This node returns the nodes of influence for a specific arc. This function 
-    retruns the start and stop node plus the nodes in between the start and stop 
+    """This node returns the nodes of influence for a specific arc. This function
+    retruns the start and stop node plus the nodes in between the start and stop
     node. This function makes sure the route does not jump over hydrodynamic features
     when the neightbouring layers are higher than one.
 
@@ -110,8 +110,8 @@ def inbetweenpoints(start, stop, LL, tria):
 
 
 def haversine(coord1, coord2):
-    """use the Haversine function to determine the distance between two points 
-    in the WGS84 coordinate system. Returns the distance between the two points 
+    """use the Haversine function to determine the distance between two points
+    in the WGS84 coordinate system. Returns the distance between the two points
     in meters.
     Source: https://janakiev.com/blog/gps-points-distance-python/
 
@@ -135,15 +135,15 @@ def haversine(coord1, coord2):
 
 
 def costfunction_timeseries(edge, V_max, WD_min, flow, WVPI, L, tria):
-    """ Function that returns the time series of the weights of a specific edge.
+    """Function that returns the time series of the weights of a specific edge.
 
-    edge:       (int) cosidered edge. edge: index of the location node 
+    edge:       (int) cosidered edge. edge: index of the location node
                 in Roadmap.nodes
     V_max:      Shipping velocity in deep water  in meters per second
     WD_min:     minimal needed draft in meters
     flow:       Class that contains the hydrodynamic conditions
     WVPI:       Weight of the vessel in tf
-    L:         (int) number of neighbouring layers.         
+    L:         (int) number of neighbouring layers.
     tria:       triangulation of the nodes (output of scipy.spatial.Delaunay(nodes)
     """
 
@@ -167,7 +167,7 @@ def costfunction_timeseries(edge, V_max, WD_min, flow, WVPI, L, tria):
     # WD_W= WD_W / len(IB)
     v_w = v_w / len(IB)
     u_w = u_w / len(IB)
-    U_w = (u_w ** 2 + v_w ** 2) ** 0.5
+    U_w = (u_w**2 + v_w**2) ** 0.5
 
     vship = Squat(WD_W, WD_min, V_max, flow.LWL, flow.WWL, flow.ukc, WVPI)
     # vship = V_max + 0 * WD_W
@@ -176,7 +176,7 @@ def costfunction_timeseries(edge, V_max, WD_min, flow, WVPI, L, tria):
     alpha2 = np.arctan2(v_w, u_w) - alpha1
 
     s_t1 = U_w * np.cos(alpha2)
-    s_t2 = vship ** 2 - (U_w * np.sin(alpha2)) ** 2
+    s_t2 = vship**2 - (U_w * np.sin(alpha2)) ** 2
     s_t = np.array(
         [s_t1[i] + s_t2[i] ** 0.5 if s_t2[i] > 0 else 0 for i in range(len(s_t1))]
     )
@@ -185,29 +185,29 @@ def costfunction_timeseries(edge, V_max, WD_min, flow, WVPI, L, tria):
     v_t = np.sin(alpha1) * (s_t)
 
     L = haversine((yfrom, xfrom), (yto, xto))
-    U_t = (u_t ** 2 + v_t ** 2) ** 0.5
+    U_t = (u_t**2 + v_t**2) ** 0.5
     t = np.array([L / U_t1 if U_t1 > 0 else np.inf for U_t1 in U_t])
 
     t[U_t == np.inf] = np.inf
     t[np.isnan(t)] = np.inf
     t[WD_W < WD_min + flow.ukc] = np.inf
     t[WD_W < WD_min + flow.ukc] = np.inf
-    t[(U_w * np.sin(alpha2)) ** 2 > vship ** 2] = np.inf
+    t[(U_w * np.sin(alpha2)) ** 2 > vship**2] = np.inf
     t[np.isnan(s_t)] = np.inf
     t[s_t < 0] = np.inf
     return np.array(t)
 
 
 def costfunction_spaceseries(edge, V_max, WD_min, flow, WVPI, L, tria):
-    """ Function that returns the time series of the weights of a specifiv edge.
+    """Function that returns the time series of the weights of a specifiv edge.
 
-    edge:       (int) cosidered edge. edge: index of the location node 
+    edge:       (int) cosidered edge. edge: index of the location node
                 in Roadmap.nodes
     V_max:      Shipping velocity in deep water  in meters per second
     WD_min:     minimal needed draft in meters
     flow:       Class that contains the hydrodynamic conditions
     WVPI:       Weight of the vessel in tf
-    L:         (int) number of neighbouring layers.         
+    L:         (int) number of neighbouring layers.
     tria:       triangulation of the nodes (output of scipy.spatial.Delaunay(nodes)
     """
 
@@ -229,7 +229,7 @@ def costfunction_spaceseries(edge, V_max, WD_min, flow, WVPI, L, tria):
     # WD_W= WD_W / len(IB)
     v_w = v_w / len(IB)
     u_w = u_w / len(IB)
-    U_w = (u_w ** 2 + v_w ** 2) ** 0.5
+    U_w = (u_w**2 + v_w**2) ** 0.5
 
     vship = Squat(WD_W, WD_min, V_max, flow.LWL, flow.WWL, flow.ukc, WVPI)
 
@@ -237,7 +237,7 @@ def costfunction_spaceseries(edge, V_max, WD_min, flow, WVPI, L, tria):
     alpha2 = np.arctan2(v_w, u_w) - alpha1
 
     s_t1 = U_w * np.cos(alpha2)
-    s_t2 = vship ** 2 - (U_w * np.sin(alpha2)) ** 2
+    s_t2 = vship**2 - (U_w * np.sin(alpha2)) ** 2
     s_t = np.array(
         [s_t1[i] + s_t2[i] ** 0.5 if s_t2[i] > 0 else 0 for i in range(len(s_t1))]
     )
@@ -246,14 +246,14 @@ def costfunction_spaceseries(edge, V_max, WD_min, flow, WVPI, L, tria):
     v_t = np.sin(alpha1) * (s_t)
 
     L = haversine((yfrom, xfrom), (yto, xto))
-    U_t = (u_t ** 2 + v_t ** 2) ** 0.5
+    U_t = (u_t**2 + v_t**2) ** 0.5
     t = np.array([L / U_t1 if U_t1 > 0 else np.inf for U_t1 in U_t])
 
     t[U_t == np.inf] = np.inf
     t[np.isnan(t)] = np.inf
     t[WD_W < WD_min + flow.ukc] = np.inf
     t[WD_W < WD_min + flow.ukc] = np.inf
-    t[(U_w * np.sin(alpha2)) ** 2 > vship ** 2] = np.inf
+    t[(U_w * np.sin(alpha2)) ** 2 > vship**2] = np.inf
     t[np.isnan(s_t)] = np.inf
     t[s_t < 0] = np.inf
     t[t != np.inf] = L
