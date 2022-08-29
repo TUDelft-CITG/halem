@@ -97,16 +97,14 @@ Once your code is on Github, you can tag it with a semantic version. A semantic 
 Once your code has a semantic version tagged to it, you can install it using `pip` (Linux/Docker syntax):
 
 ```bash
-pip install halem --index-url=https://$GITHUB_TOKEN@pypi.data.vanoord.com
+pip install halem
 ```
 
 Or on Windows/Anaconda:
 
 ```bash
-pip install halem --index-url=https://%GITHUB_TOKEN%@pypi.data.vanoord.com
+pip install halem
 ```
-
-Where `$GITHUB_TOKEN` or `%GITHUB_TOKEN%` is an environment variable with the following form `ghp_...:x-oauth-basic`. You can obtain your Github token from the Github website under `Settings` -> `Developer settings`.
 
 ## The Dockerfile (optional)
 

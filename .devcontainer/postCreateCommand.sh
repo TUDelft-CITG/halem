@@ -3,7 +3,7 @@ sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools
 
 # install application
 pip install -U pip
-pip install -e .[testing] --index-url https://$GITHUB_TOKEN@pypi.data.vanoord.com/
+pip install -e .[testing]
 
 # add alias autoformat for autoformatting, typical usage: autoformat **/*.py
 pip install isort autoflake py-spy sqlparse jupyter jupyter_contrib_nbextensions

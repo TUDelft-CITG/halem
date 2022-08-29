@@ -35,7 +35,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install wheel netCDF4
-          pip install -e .[testing] --index-url=https://$GITHUB_TOKEN:x-oauth-basic@pypi.data.vanoord.com
+          pip install -e .[testing]
       - name: Lint with flake8
         run: |
           # stop the build if there are Python syntax errors or undefined names
@@ -76,7 +76,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install wheel
-          pip install -e .[docs] --index-url=https://$GITHUB_TOKEN:x-oauth-basic@pypi.data.vanoord.com
+          pip install -e .[docs]
       - name: Create docs
         run: |
           python setup.py docs

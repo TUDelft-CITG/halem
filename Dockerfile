@@ -1,7 +1,5 @@
 # use python package as base
 FROM python:3.10-slim
-ARG GITHUB_TOKEN
-ARG PYPI_URL=https://${GITHUB_TOKEN}@pypi.data.vanoord.com/
 
 # use the same userid in the container as you have outside of the container
 # this avoids permission conflicts when mounting volumes 
@@ -45,7 +43,7 @@ COPY --chown=me:me . /halem
 
 # run pip install
 RUN --mount=type=cache,target=/tmp/cache/pip \
-    pip install -e .[testing]  --index-url $PYPI_URL
+    pip install -e .[testing]
 
 # set permissions and change user
 RUN chown -R me:me /home/me /halem*
