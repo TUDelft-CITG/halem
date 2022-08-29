@@ -3,7 +3,7 @@ import datetime
 import numpy as np
 
 
-class Has_route:
+class PathFinder:
     """This class contains the code for calculating the optimal route from the Roadmap
 
     start:              start location (lat, lon)

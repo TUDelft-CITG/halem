@@ -31,7 +31,7 @@ The First step is to load the dependencies.
     import halem
     import halem.Mesh_maker as Mesh_maker
     import halem.Functions as Functions
-    import halem.Calc_path as Calc_path
+    import halem.path_finder as path_finder
     import halem.Flow_class as Flow_class
 
 
@@ -260,7 +260,7 @@ Import the required libaries
     import halem.Base_functions as halem
     import halem.Mesh_maker as Mesh_maker
     import halem.Functions as Functions
-    import halem.Calc_path as Calc_path
+    import halem.path_finder as path_finder
     import halem.Flow_class as Flow_class
 
 

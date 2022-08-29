@@ -3,7 +3,7 @@ import pickle
 import matplotlib.pyplot as plt
 import numpy as np
 
-import halem.calc_path as calc_path
+import halem.path_finder as path_finder
 import halem.functions as functions
 
 
@@ -45,7 +45,7 @@ def plot_timeseries2(path, time, Roadmap, Color="r", range_CP=5):
     TT = np.array(TT)
     dist = np.array(dist)
     if Roadmap.repeat is True:
-        k = calc_path.Has_route.find_k_repeat(calc_path.Has_route, time[0], Roadmap.t)
+        k = path_finder.PathFinder.find_k_repeat(path_finder.PathFinder, time[0], Roadmap.t)
         plt.plot(dist, (time[:-1] - time[0]) / 3600, color=Color, label="s/t route")
         cval = np.arange(0, 1.1, 0.5)
 
@@ -118,12 +118,12 @@ def HALEM_func(start, stop, t0, vmax, Roadmap, costfunction):
     vv = np.abs(vvmax - vmax)
     arg_vship = int(np.argwhere(vv == vv.min())[0])
 
-    class graph_functions_time:
+    class GraphFunctionsTime:
         weights = costfunction[arg_vship].weights
         time = Roadmap.weight_time[arg_vship].weights
         vship = Roadmap.vship[arg_vship]
 
-    route = calc_path.Has_route(start, stop, Roadmap, t0, graph_functions_time)
+    route = path_finder.PathFinder(start, stop, Roadmap, t0, GraphFunctionsTime)
     path = Roadmap.nodes[np.array(route.route[:, 0], dtype=int)]
     time = route.route[:, 1]
 

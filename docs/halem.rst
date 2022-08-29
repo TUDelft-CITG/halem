@@ -2,7 +2,7 @@
 HALEM
 =========
 
-This page lists all functions and classes available in the halem, halem.Mesh_maker, halem.Functions and halem.Calc_path modules. For examples on how to use these submodules please check out the Examples page, information on installing HALEM can be found on the Installation page.
+This page lists all functions and classes available in the halem, halem.Mesh_maker, halem.Functions and halem.path_finder modules. For examples on how to use these submodules please check out the Examples page, information on installing HALEM can be found on the Installation page.
 
 Submodules
 ----------
@@ -31,10 +31,10 @@ halem\.functions module
    :undoc-members:
    :show-inheritance:
 
-halem\.calc_path module
+halem\.path_finder module
 --------------------------
 
-.. automodule:: halem.calc_path
+.. automodule:: halem.path_finder
    :members:
    :undoc-members:
    :show-inheritance:
