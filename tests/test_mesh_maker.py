@@ -4,7 +4,7 @@ from scipy.signal import argrelextrema
 from scipy.spatial import Delaunay
 
 import halem.mesh_maker as mesh_maker
-from halem.node_reduction import NodeReduction
+from halem.mesh_maker import NodeReduction
 
 
 class flow_class:
