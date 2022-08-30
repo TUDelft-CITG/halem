@@ -1,5 +1,4 @@
 import math
-import pickle
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -7,15 +6,9 @@ import numpy as np
 import halem.path_finder as path_finder
 
 
-def save_object(obj, filename):
-    """This function can save the roadmap using pickle"""
-    with open(filename, "wb") as output:  # Overwrites any existing file.
-        pickle.dump(obj, output, pickle.HIGHEST_PROTOCOL)
-
-
 def plot_timeseries(path, time, Roadmap, Color="r", range_CP=5):
     """This function can plot the time series for the route
-    and shows a contourplot of the unsaiable areas of that route
+    and shows a contourplot of the unsaiable areas of that route.
 
     path:       lon, lat coordinates of the route.
                 This is in the format of the output
@@ -103,7 +96,7 @@ def HALEM_func(start, stop, t0, vmax, Roadmap, costfunction):
                     For the optimization type cost and co2 N must be larger or
                     equal to 2.
 
-    Roadmap:        Preprocessing file that contains the hydrodynamic properties, and
+    Roadmap:        Preprocessing file that contains the hydrodynamic properties.
     costfunction    Costfunction of the route optimization.
                     Roadmap.weight_time returns fastest route
                     Roadmap.weight_space returns shortest route
@@ -140,25 +133,86 @@ def HALEM_func(start, stop, t0, vmax, Roadmap, costfunction):
 
 
 def HALEM_time(start, stop, t0, vmax, Roadmap):
-    """Implementation of the function HALEM_func() for the fastest route."""
+    """Implementation of the function HALEM_func() for the fastest route.
+
+    start:          (lon, lat) coordinates of the start location
+    stop:           (lon, lat) coordinates of the destination location
+    t0:             string that indcates the departure time
+                    ('day'/'month'/'year' 'hour':'minute':'seconds')
+    vmax:           (N (rows) * M (columns)) numpy array that indicates the sailing
+    velocity in deep water.
+                    For which N is the number of discretisations
+                    in the load factor, and M is the number of discretisations in the
+                    dynamic sailing velocity
+
+                    For the optimization type cost and co2 N must be larger or
+                    equal to 2.
+
+    Roadmap:        Preprocessing file that contains the hydrodynamic properties.
+    """
     costfunction = Roadmap.weight_time
     return HALEM_func(start, stop, t0, vmax, Roadmap, costfunction)
 
 
 def HALEM_space(start, stop, t0, vmax, Roadmap):
-    """Implementation of the function HALEM_func() for the shortest route."""
+    """Implementation of the function HALEM_func() for the shortest route.
+
+    start:          (lon, lat) coordinates of the start location
+    stop:           (lon, lat) coordinates of the destination location
+    t0:             string that indcates the departure time
+                    ('day'/'month'/'year' 'hour':'minute':'seconds')
+    vmax:           (N (rows) * M (columns)) numpy array that indicates the sailing
+    velocity in deep water.
+                    For which N is the number of discretisations
+                    in the load factor, and M is the number of discretisations in the
+                    dynamic sailing velocity
+
+                    For the optimization type cost and co2 N must be larger or
+                    equal to 2.
+
+    Roadmap:        Preprocessing file that contains the hydrodynamic properties."""
     costfunction = Roadmap.weight_space
     return HALEM_func(start, stop, t0, vmax, Roadmap, costfunction)
 
 
 def HALEM_cost(start, stop, t0, vmax, Roadmap):
-    """Implementation of the function HALEM_func() for the cheapest route."""
+    """Implementation of the function HALEM_func() for the cheapest route.
+
+    start:          (lon, lat) coordinates of the start location
+    stop:           (lon, lat) coordinates of the destination location
+    t0:             string that indcates the departure time
+                    ('day'/'month'/'year' 'hour':'minute':'seconds')
+    vmax:           (N (rows) * M (columns)) numpy array that indicates the sailing
+    velocity in deep water.
+                    For which N is the number of discretisations
+                    in the load factor, and M is the number of discretisations in the
+                    dynamic sailing velocity
+
+                    For the optimization type cost and co2 N must be larger or
+                    equal to 2.
+
+    Roadmap:        Preprocessing file that contains the hydrodynamic properties."""
     costfunction = Roadmap.weight_cost
     return HALEM_func(start, stop, t0, vmax, Roadmap, costfunction)
 
 
 def HALEM_co2(start, stop, t0, vmax, Roadmap):
-    """Implementation of the function HALEM_func() for the least pollutant route."""
+    """Implementation of the function HALEM_func() for the least pollutant route.
+
+    start:          (lon, lat) coordinates of the start location
+    stop:           (lon, lat) coordinates of the destination location
+    t0:             string that indcates the departure time
+                    ('day'/'month'/'year' 'hour':'minute':'seconds')
+    vmax:           (N (rows) * M (columns)) numpy array that indicates the sailing
+    velocity in deep water.
+                    For which N is the number of discretisations
+                    in the load factor, and M is the number of discretisations in the
+                    dynamic sailing velocity
+
+                    For the optimization type cost and co2 N must be larger or
+                    equal to 2.
+
+    Roadmap:        Preprocessing file that contains the hydrodynamic properties."""
     costfunction = Roadmap.weight_co2
     return HALEM_func(start, stop, t0, vmax, Roadmap, costfunction)
 

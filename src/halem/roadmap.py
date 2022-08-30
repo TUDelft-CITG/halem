@@ -10,7 +10,19 @@ import halem.functions as functions
 
 
 class Graph:
+    """class that contains the nodes, arcs, and weights for the time-dependent,
+    directional, weighted, and Non-FIFO graph of the route optimization problem.
+    This class is used multiple times in the halem.mesh_maker.GraphFlowModel()
+    function"""
+
     def __init__(self):
+        """
+        self.edges is a dict of all possible next nodes
+        e.g. {'X': ['A', 'B', 'C', 'E'], ...}
+        self.weights has all the weights between two nodes,
+        with the two nodes as a tuple as the key
+        e.g. {('X', 'A'): 7, ('X', 'B'): 2, ...}
+        """
         self.edges = defaultdict(list)
         self.weights = {}
 
@@ -21,6 +33,40 @@ class Graph:
 
 
 class NodeReduction:
+    """This class can reduce the number of gridpoints of the hydrodynamic model. This
+    is done based on the vorticity and the magnitude of the flow. The nodes are pruned
+    based on a length scale. The formula for this length scale is:
+    LS / ∆min = α(1+|∇×u|)^−βc+(1−α)(1+|u|)^−βm.
+    With: LS = resulting length scale, α = blend factor between the curl and
+    the magnitude method, ∆min = minimal length scale, βc = non linearity
+    parameter for the method with  the curl of the flow, βm = non linearity parameter
+    for the method with  the magnitude of the flow, and u = the velocity vector
+    of the flow.
+
+    flow:       class that contains the hydrodynamic properties.
+                class must have the following instances.
+                u: numpy array with shape (N, M)
+                v: numpy array with shape (N, M)
+                WD: numpy array with shape (N, M)
+                nodes: numpy array with shape (N, 2) (lat, lon)
+                t: numpy array with shape M (seconds since 01-01-1970 00:00:00)
+                tria: triangulation of the nodes (output of scipy.spatial.Delaunay)
+                in which N is the number of nodes of the hydrodynamic model, and
+                M is the number of time steps of the hydrodynamic model
+    dx_min:     float, minimal spatial resolution.
+                Parameter of the lengt scale function concerning the node reduction
+    blend:      blend factor between the verticity and magnitude of the flow.
+                Parameter of the lengt scale function concerning the node reduction
+    nl:         float (nl_c, nl_m)
+                Non linearity factor consisting out of two numbers
+                nl_c non-linearity factor for the corticity, nl_m non-linearity factor
+                for the magnitude of the flow. Parameter of the lengt scale function
+                concerning the node reduction
+    number_of_neighbor_layers:   number of neigbouring layers for which edges are
+                created. increasing this number results in a higher directional
+                resolution.
+    """
+
     def __init__(
         self,
         dx_min,
@@ -36,6 +82,7 @@ class NodeReduction:
         self.nl = nl
 
     def get_nodes(self):
+        "Reduce the number of gridpoints of the hydrodynamic model."
         nodes = self.nodes
         new_nodes = [0]
         LS = []
@@ -53,6 +100,7 @@ class NodeReduction:
         return new_nodes, ma.array(LS, fill_value=np.nan)
 
     def length_scale(self, node):
+        "Determine the lengthscale of the grid."
         mag = (self.u[:, node] ** 2 + self.v[:, node] ** 2) ** 0.5
         mag = mag.max()
         curl = abs(self.curl_func(node))
@@ -62,6 +110,7 @@ class NodeReduction:
         return LS
 
     def curl_func(self, node):
+        "Determine the curl of the grid."
         nb = functions.find_neighbors(node, self.tria)
         nb = np.append(nb, node)
         DUDY = []
@@ -120,6 +169,44 @@ class NodeReduction:
 
 
 class BaseRoadmap(ABC, NodeReduction):
+    """Absctract Base class for the Roadmap.
+
+    Pre-processing function for the HALEM optimizations. In this fucntion the
+    hydrodynamic model and the vessel properties are transformed into weights for
+    the Time dependend Dijkstra function.
+
+    number_of_neighbor_layers:  number of neigbouring layers for which edges are
+                                created. increasing this number results in a higher
+                                directional resolution.
+    vship:  (N (rows) * M (columns)) numpy array that indicates the sailing velocity
+            in deep water.
+            For which N is the number of discretisations
+            in the load factor, and M is the number of discretisations in the
+            dynamic sailing velocity. For the optimization type cost and co2 N must be
+            larger or equal to 2.
+    WD_min: numpy array with the draft of the vessel.
+            Numpy array has the shape of the number of discretisations in the dynamic
+            sailing velocity
+    WVPI:   Numpy array with the total weight of the vessel.
+
+    WWL:    Width over Water Line of the vessel in meters
+
+    LWL:    Length over Water Line of the vessel in meters
+
+    ukc:    Minimal needed under keel clearance in  meters.
+
+    repeat: Indicator if the roadmap can be repeated (True / False)
+            True for hydrodynamic models based on a tidal analysis
+    optimization_type:  list of optimization types.
+                        Excluding one or more not needed optimization types can
+                        significantly decrease the size of the preprocessing file
+    nodes_index:    Numpy array that contains the indices of the nodes of the reduced
+                    hydrodynamic model.
+                    nodes_index is the output of Roadmap.nodes_index. This option
+                    allows you to skip the
+                    node reduction step if this is already done.
+    """
+
     def __init__(
         self,
         number_of_neighbor_layers,
@@ -155,6 +242,7 @@ class BaseRoadmap(ABC, NodeReduction):
 
     @staticmethod
     def compute_cost(travel_time, speed):
+        "Default cost function for price."
         week_rate = 700_000
         fuel_rate = 0.008
         second_rate = week_rate / 7 / 24 / 60 / 60
@@ -162,6 +250,7 @@ class BaseRoadmap(ABC, NodeReduction):
 
     @staticmethod
     def compute_co2(travel_time, speed):
+        "Default cost function for co2."
         fuel_rate = 1
         return fuel_rate * travel_time * speed**3
 

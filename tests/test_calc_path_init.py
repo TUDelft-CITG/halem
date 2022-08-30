@@ -1,6 +1,4 @@
 import datetime
-import os
-import pickle
 
 import numpy as np
 import pytest
@@ -168,17 +166,6 @@ class TestCalcPath:
         assert route_time.route[1, 0] == 2
         assert route_time.y_route[1] == 0.001
         assert route_space.y_route[1] == 0
-
-    def test_save_obj(self, roadmap):
-        halem.save_object(roadmap, "tests/Data/Roadmap")
-        assert os.path.exists("tests/Data/Roadmap")
-        with open("tests/Data/Roadmap", "rb") as input:
-            Roadmap_load = pickle.load(input)
-        os.remove("tests/Data/Roadmap")
-        np.testing.assert_array_equal(Roadmap_load.nodes, roadmap.nodes)
-        np.testing.assert_array_equal(Roadmap_load.u, roadmap.u)
-        np.testing.assert_array_equal(Roadmap_load.v, roadmap.v)
-        np.testing.assert_array_equal(Roadmap_load.WD, roadmap.WD)
 
     def test_find_k_repeat(self):
         ts = 100

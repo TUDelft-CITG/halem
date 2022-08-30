@@ -43,7 +43,7 @@ COPY --chown=me:me . /halem
 
 # run pip install
 RUN --mount=type=cache,target=/tmp/cache/pip \
-    pip install -e .[testing]
+    pip install -e .[testing,docs]
 
 # set permissions and change user
 RUN chown -R me:me /home/me /halem*

@@ -16,7 +16,6 @@ Contents
    :maxdepth: 2
 
    Overview <readme>
-   Examples <examples>
    Halem <halem>
    Contributions & Help <contributing>
    License <license>
