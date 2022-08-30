@@ -1,9 +1,10 @@
-version: '3'
+version: "3.2"
 
 services:
-  main:
-    build: .
-    container_name: Route_optimization_in_dynamic_currents
-    # this helps with https://github.com/docker/compose/issues/3106
-    # also make sure to run docker compose with -f flag
-    command: sleep 9999d
+  package:
+    image: halem:latest
+    build:
+      context: .
+    container_name: halem
+    ports:
+      - "8820:8888"
