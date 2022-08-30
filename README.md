@@ -1,6 +1,3 @@
-[![halem status](https://github.com/TUDelft-CITG/halem/actions/workflows/action.yml/badge.svg)](https://github.com/TUDelft-CITG/halem/actions/workflows/action.yml)
-[![halem coverage](https://TUDelft-CITG.github.io/halem/coverage/coverage.svg)](https://TUDelft-CITG.github.io/halem/coverage/)
-
 # HALEM
 
 **H**ydrodynamic **A**lgorithm for **L**ogistic **E**nhancement **M**odule: route optimisation in dynamic currents.
